@@ -1,121 +1,297 @@
+import 'dart:typed_data';
 import './models.dart';
 
-/// A finite set of all squares on a chessboard.
+/// A finite set of all squares on a board.
 ///
-/// All the squares are represented by a single 64-bit integer, where each bit
+/// All the squares are represented by 8 32-bit integers, where each bit
 /// corresponds to a square, using a little-endian rank-file mapping.
 /// See also [Square].
 ///
 /// The set operations are implemented as bitwise operations on the integer.
-extension type const SquareSet(int value) {
+
+extension type const SquareSet(Uint32List value) {
+  SquareSet._internal(Uint32List dRows) : value = dRows;
+
+  factory SquareSet.fromList(List<int> dRows) {
+    final list = Uint32List(8);
+    for (int i = 0; i < 8; i++) {
+      list[i] = _toUint32(dRows[i]);
+    }
+    return SquareSet._internal(list);
+  }
+
   /// Creates a [SquareSet] with a single [Square].
-  const SquareSet.fromSquare(Square square) : value = 1 << square;
+  factory SquareSet.fromSquare(int square) {
+    if (square >= 256 || square < 0) return SquareSet.empty;
+    final newRows = List<int>.filled(8, 0);
+    final index = square >>> 5;
+    newRows[index] = 1 << (square - index * 32);
+    return SquareSet.fromList(newRows);
+  }
 
   /// Creates a [SquareSet] from several [Square]s.
-  SquareSet.fromSquares(Iterable<Square> squares)
-      : value = squares
-            .map((square) => 1 << square)
-            .fold(0, (left, right) => left | right);
+  factory SquareSet.fromSquares(List<int> squares) {
+    final newRows = List<int>.filled(8, 0);
+    for (final square in squares) {
+      if (square < 256 && square >= 0) {
+        final index = square >>> 5;
+        newRows[index] = newRows[index] | (1 << (square - index * 32));
+      }
+    }
+    return SquareSet.fromList(newRows);
+  }
 
   /// Create a [SquareSet] containing all squares of the given rank.
-  const SquareSet.fromRank(Rank rank)
-      : value = 0xff << (8 * rank),
-        assert(rank >= 0 && rank < 8);
+  factory SquareSet.fromRank(int rank) {
+    return SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])
+        .shl256(16 * rank);
+  }
 
   /// Create a [SquareSet] containing all squares of the given file.
-  const SquareSet.fromFile(File file)
-      : value = 0x0101010101010101 << file,
-        assert(file >= 0 && file < 8);
+  factory SquareSet.fromFile(int file) {
+    final val = 0x10001 << file;
+    return SquareSet.fromList([val, val, val, val, val, val, val, val]);
+  }
 
-  /// Create a [SquareSet] containing all squares of the given backrank [Side].
-  const SquareSet.backrankOf(Side side)
-      : value = side == Side.white ? 0xff : 0xff00000000000000;
+  /// Create a [SquareSet] containing all ranks from [rank] above.
+  static SquareSet ranksAbove(int rank) {
+    return SquareSet.full.shr256(16 * (16 - rank));
+  }
 
-  static const empty = SquareSet(0);
-  static const full = SquareSet(0xffffffffffffffff);
-  static const lightSquares = SquareSet(0x55AA55AA55AA55AA);
-  static const darkSquares = SquareSet(0xAA55AA55AA55AA55);
-  static const diagonal = SquareSet(0x8040201008040201);
-  static const antidiagonal = SquareSet(0x0102040810204080);
-  static const corners = SquareSet(0x8100000000000081);
-  static const center = SquareSet(0x0000001818000000);
-  static const backranks = SquareSet(0xff000000000000ff);
-  static const firstRank = SquareSet(0xff);
-  static const eighthRank = SquareSet(0xff00000000000000);
-  static const aFile = SquareSet(0x0101010101010101);
-  static const hFile = SquareSet(0x8080808080808080);
+  /// Create a [SquareSet] containing all ranks from [rank] below.
+  static SquareSet ranksBelow(int rank) {
+    return SquareSet.full.shl256(16 * (rank + 1));
+  }
+
+  static final empty = SquareSet.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
+  static final full = SquareSet.fromList([
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+  ]);
+  static final diagonal = SquareSet.fromList([
+    0x20001,
+    0x80004,
+    0x200010,
+    0x800040,
+    0x2000100,
+    0x8000400,
+    0x20001000,
+    0x80004000,
+  ]);
+  static final antidiagonal = SquareSet.fromList([
+    0x40008000,
+    0x10002000,
+    0x4000800,
+    0x1000200,
+    0x400080,
+    0x100020,
+    0x40008,
+    0x10002
+  ]);
 
   /// Bitwise right shift
-  SquareSet shr(int shift) {
-    if (shift >= 64) return SquareSet.empty;
-    if (shift > 0) return SquareSet(value >>> shift);
+  SquareSet shr256(int shift) {
+    if (shift >= 256) return SquareSet.empty;
+    if (shift > 0) {
+      final newRows = List<int>.filled(8, 0);
+      final cutoff = shift >>> 5;
+      final shift1 = shift & 0x1f;
+      final shift2 = 32 - shift1;
+
+      for (int i = 0; i < 8 - cutoff; i++) {
+        newRows[i] = value[i + cutoff] >>> shift1;
+        if (shift2 < 32 && i + cutoff + 1 < 8) {
+          newRows[i] ^= value[i + cutoff + 1] << shift2;
+        }
+      }
+      return SquareSet.fromList(newRows);
+    }
     return this;
   }
 
   /// Bitwise left shift
-  SquareSet shl(int shift) {
-    if (shift >= 64) return SquareSet.empty;
-    if (shift > 0) return SquareSet(value << shift);
+  SquareSet shl256(int shift) {
+    if (shift >= 256) return SquareSet.empty;
+    if (shift > 0) {
+      final newRows = List<int>.filled(8, 0);
+      final cutoff = shift >> 5;
+      final shift1 = shift & 0x1f;
+      final shift2 = 32 - shift1;
+
+      for (int i = cutoff; i < 8; i++) {
+        newRows[i] = value[i - cutoff] << shift1;
+        if (shift2 < 32 && i - cutoff - 1 >= 0) {
+          newRows[i] ^= value[i - cutoff - 1] >>> shift2;
+        }
+      }
+      return SquareSet.fromList(newRows);
+    }
     return this;
   }
 
   /// Returns a new [SquareSet] with a bitwise XOR of this set and [other].
-  SquareSet xor(SquareSet other) => SquareSet(value ^ other.value);
-  SquareSet operator ^(SquareSet other) => SquareSet(value ^ other.value);
+  SquareSet xor(SquareSet other) => SquareSet.fromList([
+        value[0] ^ other.value[0],
+        value[1] ^ other.value[1],
+        value[2] ^ other.value[2],
+        value[3] ^ other.value[3],
+        value[4] ^ other.value[4],
+        value[5] ^ other.value[5],
+        value[6] ^ other.value[6],
+        value[7] ^ other.value[7],
+      ]);
+  SquareSet operator ^(SquareSet other) => xor(other);
 
   /// Returns a new [SquareSet] with the squares that are in either this set or [other].
-  SquareSet union(SquareSet other) => SquareSet(value | other.value);
-  SquareSet operator |(SquareSet other) => SquareSet(value | other.value);
+  SquareSet union(SquareSet other) => SquareSet.fromList([
+        value[0] | other.value[0],
+        value[1] | other.value[1],
+        value[2] | other.value[2],
+        value[3] | other.value[3],
+        value[4] | other.value[4],
+        value[5] | other.value[5],
+        value[6] | other.value[6],
+        value[7] | other.value[7],
+      ]);
+  SquareSet operator |(SquareSet other) => union(other);
 
   /// Returns a new [SquareSet] with the squares that are in both this set and [other].
-  SquareSet intersect(SquareSet other) => SquareSet(value & other.value);
-  SquareSet operator &(SquareSet other) => SquareSet(value & other.value);
+  SquareSet intersect(SquareSet other) => SquareSet.fromList([
+        value[0] & other.value[0],
+        value[1] & other.value[1],
+        value[2] & other.value[2],
+        value[3] & other.value[3],
+        value[4] & other.value[4],
+        value[5] & other.value[5],
+        value[6] & other.value[6],
+        value[7] & other.value[7],
+      ]);
+  SquareSet operator &(SquareSet other) => intersect(other);
 
   /// Returns a new [SquareSet] with the [other] squares removed from this set.
-  SquareSet minus(SquareSet other) => SquareSet(value - other.value);
-  SquareSet operator -(SquareSet other) => SquareSet(value - other.value);
+  SquareSet minus256(SquareSet other) {
+    int c = 0;
+    final newRows = List<int>.from(value);
+
+    for (int i = 0; i < 8; i++) {
+      final otherWithC = _toUint32(other.value[i] + c);
+      newRows[i] = _toUint32(newRows[i] - otherWithC);
+      c = ((newRows[i] & otherWithC & 1) +
+              (otherWithC >>> 1) +
+              (newRows[i] >>> 1)) >>>
+          31;
+    }
+    return SquareSet.fromList(newRows);
+  }
+
+  SquareSet operator -(SquareSet other) => minus256(other);
 
   /// Returns the set complement of this set.
-  SquareSet complement() => SquareSet(~value);
+  SquareSet complement() {
+    return SquareSet.fromList([
+      ~value[0],
+      ~value[1],
+      ~value[2],
+      ~value[3],
+      ~value[4],
+      ~value[5],
+      ~value[6],
+      ~value[7],
+    ]);
+  }
 
   /// Returns the set difference of this set and [other].
-  SquareSet diff(SquareSet other) => SquareSet(value & ~other.value);
+  SquareSet diff(SquareSet other) {
+    return SquareSet.fromList([
+      value[0] & ~other.value[0],
+      value[1] & ~other.value[1],
+      value[2] & ~other.value[2],
+      value[3] & ~other.value[3],
+      value[4] & ~other.value[4],
+      value[5] & ~other.value[5],
+      value[6] & ~other.value[6],
+      value[7] & ~other.value[7],
+    ]);
+  }
 
   /// Flips the set vertically.
-  SquareSet flipVertical() {
-    const k1 = 0x00FF00FF00FF00FF;
-    const k2 = 0x0000FFFF0000FFFF;
-    int x = ((value >>> 8) & k1) | ((value & k1) << 8);
-    x = ((x >>> 16) & k2) | ((x & k2) << 16);
-    x = (x >>> 32) | (x << 32);
-    return SquareSet(x);
+  SquareSet rowSwap256() {
+    return SquareSet.fromList([
+      _rowSwap32(value[7]),
+      _rowSwap32(value[6]),
+      _rowSwap32(value[5]),
+      _rowSwap32(value[4]),
+      _rowSwap32(value[3]),
+      _rowSwap32(value[2]),
+      _rowSwap32(value[1]),
+      _rowSwap32(value[0]),
+    ]);
   }
 
   /// Flips the set horizontally.
-  SquareSet mirrorHorizontal() {
-    const k1 = 0x5555555555555555;
-    const k2 = 0x3333333333333333;
-    const k4 = 0x0f0f0f0f0f0f0f0f;
-    int x = ((value >>> 1) & k1) | ((value & k1) << 1);
-    x = ((x >>> 2) & k2) | ((x & k2) << 2);
-    x = ((x >>> 4) & k4) | ((x & k4) << 4);
-    return SquareSet(x);
+  SquareSet rbit256() {
+    return SquareSet.fromList([
+      _rbit32(value[7]),
+      _rbit32(value[6]),
+      _rbit32(value[5]),
+      _rbit32(value[4]),
+      _rbit32(value[3]),
+      _rbit32(value[2]),
+      _rbit32(value[1]),
+      _rbit32(value[0]),
+    ]);
   }
 
   /// Returns the number of squares in the set.
-  int get size => _popcnt64(value);
+  int get size {
+    int count = 0;
+    for (int i = 0; i < 8; i++) {
+      count += _popcnt32(value[i]);
+    }
+    return count;
+  }
 
   /// Returns true if the set is empty.
-  bool get isEmpty => value == 0;
+  bool get isEmpty {
+    for (int i = 0; i < 8; i++) {
+      if (value[i] != 0) return false;
+    }
+    return true;
+  }
 
   /// Returns true if the set is not empty.
-  bool get isNotEmpty => value != 0;
+  bool get isNotEmpty {
+    for (int i = 0; i < 8; i++) {
+      if (value[i] != 0) return true;
+    }
+    return false;
+  }
 
   /// Returns the first square in the set, or null if the set is empty.
-  Square? get first => _getFirstSquare(value);
+  Square? first() {
+    for (int i = 0; i < 8; i++) {
+      if (value[i] != 0) {
+        return Square((i + 1) * 32 - 1 - _clz32(value[i] & -value[i]));
+      }
+    }
+    return null;
+  }
 
   /// Returns the last square in the set, or null if the set is empty.
-  Square? get last => _getLastSquare(value);
+  Square? last() {
+    for (int i = 7; i >= 0; i--) {
+      if (value[i] != 0) {
+        return Square((i + 1) * 32 - 1 - _clz32(value[i]));
+      }
+    }
+    return null;
+  }
 
   /// Returns the squares in the set as an iterable.
   Iterable<Square> get squares => _iterateSquares();
@@ -124,14 +300,29 @@ extension type const SquareSet(int value) {
   Iterable<Square> get squaresReversed => _iterateSquaresReversed();
 
   /// Returns true if the set contains more than one square.
-  bool get moreThanOne => isNotEmpty && size > 1;
+  bool moreThanOne() {
+    final occ = <int>[];
+    for (int i = 0; i < 8; i++) {
+      if (value[i] != 0) occ.add(value[i]);
+    }
+    if (occ.length > 1) return true;
+    return occ.any((r) => (r & (r - 1)) != 0);
+  }
 
   /// Returns square if it is single, otherwise returns null.
-  Square? get singleSquare => moreThanOne ? null : last;
+  int? singleSquare() {
+    return moreThanOne() ? null : last();
+  }
+
+  bool isSingleSquare() {
+    return isNotEmpty && !moreThanOne();
+  }
 
   /// Returns true if the [SquareSet] contains the given [square].
-  bool has(Square square) {
-    return value & (1 << square) != 0;
+  bool has(int square) {
+    if (square >= 256 || square < 0) return false;
+    final index = square >>> 5;
+    return (value[index] & (1 << (square - 32 * index))) != 0;
   }
 
   /// Returns true if the square set has any square in the [other] square set.
@@ -141,106 +332,137 @@ extension type const SquareSet(int value) {
   bool isDisjoint(SquareSet other) => intersect(other).isEmpty;
 
   /// Returns a new [SquareSet] with the given [square] added.
-  SquareSet withSquare(Square square) {
-    return SquareSet(value | (1 << square));
+  SquareSet with_(int square) {
+    if (square >= 256 || square < 0) return this;
+    final index = square >>> 5;
+    final newDRows = List<int>.from(value);
+    newDRows[index] = newDRows[index] | (1 << (square - index * 32));
+    return SquareSet.fromList(newDRows);
+  }
+
+  /// Returns a new [SquareSet] with all the given [squares] added.
+  SquareSet withMany(List<int> squares) {
+    final newDRows = List<int>.from(value);
+    for (final square in squares) {
+      if (square < 256 && square >= 0) {
+        final index = square >>> 5;
+        newDRows[index] = newDRows[index] | (1 << (square - index * 32));
+      }
+    }
+    return SquareSet.fromList(newDRows);
   }
 
   /// Returns a new [SquareSet] with the given [square] removed.
-  SquareSet withoutSquare(Square square) {
-    return SquareSet(value & ~(1 << square));
+  SquareSet without(int square) {
+    if (square >= 256 || square < 0) return this;
+    final index = square >>> 5;
+    final newDRows = List<int>.from(value);
+    newDRows[index] = newDRows[index] & ~(1 << (square - index * 32));
+    return SquareSet.fromList(newDRows);
   }
 
-  /// Removes [Square] if present, or put it if absent.
-  SquareSet toggleSquare(Square square) {
-    return SquareSet(value ^ (1 << square));
+  SquareSet withoutMany(List<int> squares) {
+    final newDRows = List<int>.from(value);
+    for (final square in squares) {
+      if (square < 256 && square >= 0) {
+        final index = square >>> 5;
+        newDRows[index] = newDRows[index] & ~(1 << (square - index * 32));
+      }
+    }
+    return SquareSet.fromList(newDRows);
   }
 
   /// Returns a new [SquareSet] with its first [Square] removed.
   SquareSet withoutFirst() {
-    final f = first;
-    return f != null ? withoutSquare(f) : empty;
+    final newDRows = List<int>.from(value);
+    for (int i = 0; i < 8; i++) {
+      if (value[i] != 0) {
+        newDRows[i] = newDRows[i] & (newDRows[i] - 1);
+        return SquareSet.fromList(newDRows);
+      }
+    }
+    return this;
   }
 
   /// Returns the hexadecimal string representation of the bitboard value.
-  String toHexString() {
+  String hex() {
+    final parts = <String>[];
+    for (int i = 0; i < 8; i++) {
+      parts.add('0x${value[i].toRadixString(16)}');
+    }
+    return parts.join(', ');
+  }
+
+  String visual() {
     final buffer = StringBuffer();
-    for (int square = 63; square >= 0; square--) {
-      buffer.write(has(Square(square)) ? '1' : '0');
+    for (int y = 0; y < 8; y++) {
+      for (int x = 15; x >= 0; x--) {
+        final sq = 32 * y + x;
+        buffer.write(has(sq) ? ' 1' : ' 0');
+        if (sq % 16 == 0) buffer.write('\n');
+      }
+      for (int x = 31; x >= 16; x--) {
+        final sq = 32 * y + x;
+        buffer.write(has(sq) ? ' 1' : ' 0');
+        if (sq % 16 == 0) buffer.write('\n');
+      }
     }
-    final b = buffer.toString();
-    final first = int.parse(b.substring(0, 32), radix: 2)
-        .toRadixString(16)
-        .toUpperCase()
-        .padLeft(8, '0');
-    final last = int.parse(b.substring(32, 64), radix: 2)
-        .toRadixString(16)
-        .toUpperCase()
-        .padLeft(8, '0');
-    final stringVal = '$first$last';
-    if (stringVal == '0000000000000000') {
-      return '0';
-    }
-    return '0x$first$last';
+    return buffer.toString();
   }
 
   Iterable<Square> _iterateSquares() sync* {
-    int bitboard = value;
-    while (bitboard != 0) {
-      final square = _getFirstSquare(bitboard);
-      bitboard ^= 1 << square!;
-      yield square;
+    for (var i = 0; i < value.length; i++) {
+      int tmp = value[i];
+      while (tmp != 0) {
+        final idx = 31 - _clz32(tmp & -tmp);
+        tmp ^= 1 << idx;
+        yield Square((i << 5) + idx);
+      }
     }
   }
 
   Iterable<Square> _iterateSquaresReversed() sync* {
-    int bitboard = value;
-    while (bitboard != 0) {
-      final square = _getLastSquare(bitboard);
-      bitboard ^= 1 << square!;
-      yield square;
+    for (var i = 7; i >= 0; i--) {
+      int tmp = value[i];
+      while (tmp != 0) {
+        final idx = 31 - _clz32(tmp);
+        tmp ^= 1 << idx;
+        yield Square((i << 5) + idx);
+      }
     }
   }
-
-  Square? _getFirstSquare(int bitboard) {
-    final ntz = _ntz64(bitboard);
-    return ntz >= 0 && ntz < 64 ? Square(ntz) : null;
-  }
-
-  Square? _getLastSquare(int bitboard) {
-    if (bitboard == 0) return null;
-    return Square(63 - _nlz64(bitboard));
-  }
 }
 
-int _popcnt64(int n) {
-  final count2 = n - ((n >>> 1) & 0x5555555555555555);
-  final count4 =
-      (count2 & 0x3333333333333333) + ((count2 >>> 2) & 0x3333333333333333);
-  final count8 = (count4 + (count4 >>> 4)) & 0x0f0f0f0f0f0f0f0f;
-  return (count8 * 0x0101010101010101) >>> 56;
+int _popcnt32(int np) {
+  int n = np;
+  n = n - ((n >>> 1) & 0x55555555);
+  n = (n & 0x33333333) + ((n >>> 2) & 0x33333333);
+  n = _toUint32(((n + (n >>> 4)) & 0x0f0f0f0f) * 0x01010101);
+  return n >>> 24;
 }
 
-int _nlz64(int x) {
-  int r = x;
-  r |= r >>> 1;
-  r |= r >>> 2;
-  r |= r >>> 4;
-  r |= r >>> 8;
-  r |= r >>> 16;
-  r |= r >>> 32;
-  return 64 - _popcnt64(r);
+int _bswap32(int np) {
+  int n = np;
+  n = ((n >>> 8) & 0x00ff00ff) | _toUint32((n & 0x00ff00ff) << 8);
+  return _rowSwap32(n);
 }
 
-// from https://gist.github.com/jtmcdole/297434f327077dbfe5fb19da3b4ef5be
-int _ntz64(int x) => _ntzLut64[(x & -x) % 131];
-const _ntzLut64 = [
-  64, 0, 1, -1, 2, 46, -1, -1, 3, 14, 47, 56, -1, 18, -1, //
-  -1, 4, 43, 15, 35, 48, 38, 57, 23, -1, -1, 19, -1, -1, 51,
-  -1, 29, 5, 63, 44, 12, 16, 41, 36, -1, 49, -1, 39, -1, 58,
-  60, 24, -1, -1, 62, -1, -1, 20, 26, -1, -1, -1, -1, 52, -1,
-  -1, -1, 30, -1, 6, -1, -1, -1, 45, -1, 13, 55, 17, -1, 42,
-  34, 37, 22, -1, -1, 50, 28, -1, 11, 40, -1, -1, -1, 59,
-  -1, 61, -1, 25, -1, -1, -1, -1, -1, -1, -1, -1, 54, -1,
-  33, 21, -1, 27, 10, -1, -1, -1, -1, -1, -1, -1, -1, 53,
-  32, -1, 9, -1, -1, -1, -1, 31, 8, -1, -1, 7, -1, -1,
-];
+int _rowSwap32(int n) {
+  return ((n >>> 16) & 0xffff) | _toUint32((n & 0xffff) << 16);
+}
+
+int _rbit32(int np) {
+  int n = np;
+  n = ((n >>> 1) & 0x55555555) | _toUint32((n & 0x55555555) << 1);
+  n = ((n >>> 2) & 0x33333333) | _toUint32((n & 0x33333333) << 2);
+  n = ((n >>> 4) & 0x0f0f0f0f) | _toUint32((n & 0x0f0f0f0f) << 4);
+  return _bswap32(n);
+}
+
+int _clz32(int n) {
+  final int val = _toUint32(n);
+  if (val == 0) return 32;
+  return 32 - val.bitLength;
+}
+
+int _toUint32(int n) => n.toUnsigned(32);
