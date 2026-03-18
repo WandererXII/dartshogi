@@ -289,10 +289,18 @@ SquareSet attacks(Piece piece, Square square, SquareSet occupied) {
 /// `a` and `b`, or an empty set if they are not aligned.
 SquareSet ray(Square a, Square b) {
   final other = SquareSet.fromSquare(b);
-  if (_rankRange[a].isIntersected(other)) return _rankRange[a].with_(a);
-  if (_antiDiagRange[a].isIntersected(other)) return _antiDiagRange[a].with_(a);
-  if (_diagRange[a].isIntersected(other)) return _diagRange[a].with_(a);
-  if (_fileRange[a].isIntersected(other)) return _fileRange[a].with_(a);
+  if (_rankRange[a].isIntersected(other)) {
+    return _rankRange[a].withSquare(a);
+  }
+  if (_antiDiagRange[a].isIntersected(other)) {
+    return _antiDiagRange[a].withSquare(a);
+  }
+  if (_diagRange[a].isIntersected(other)) {
+    return _diagRange[a].withSquare(a);
+  }
+  if (_fileRange[a].isIntersected(other)) {
+    return _fileRange[a].withSquare(a);
+  }
   return SquareSet.empty;
 }
 

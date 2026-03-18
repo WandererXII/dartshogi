@@ -332,7 +332,7 @@ extension type const SquareSet(Uint32List value) {
   bool isDisjoint(SquareSet other) => intersect(other).isEmpty;
 
   /// Returns a new [SquareSet] with the given [square] added.
-  SquareSet with_(int square) {
+  SquareSet withSquare(int square) {
     if (square >= 256 || square < 0) return this;
     final index = square >>> 5;
     final newDRows = List<int>.from(value);
