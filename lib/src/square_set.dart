@@ -431,6 +431,14 @@ extension type const SquareSet(Uint32List value) {
       }
     }
   }
+
+  bool equals(SquareSet other) {
+    if (value.length != other.value.length) return false;
+    for (var i = 0; i < value.length; i++) {
+      if (value[i] != other.value[i]) return false;
+    }
+    return true;
+  }
 }
 
 int _popcnt32(int np) {

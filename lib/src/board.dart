@@ -101,20 +101,24 @@ class Board {
   }
 
   /// Puts a [Piece] on a [Square] overriding the existing one, if any.
+  @useResult
   Board setPieceAt(Square square, Piece piece) {
-    return removePieceAt(square).copyWith(
-      occupied: occupied.withSquare(square),
-      sente: piece.color == Side.sente ? sente.withSquare(square) : null,
-      gote: piece.color == Side.gote ? gote.withSquare(square) : null,
-      roles: roles.update(
+    final removed = removePieceAt(square);
+    return removed.copyWith(
+      occupied: removed.occupied.withSquare(square),
+      sente:
+          piece.color == Side.sente ? removed.sente.withSquare(square) : null,
+      gote: piece.color == Side.gote ? removed.gote.withSquare(square) : null,
+      roles: removed.roles.update(
         piece.role,
         (sqs) => sqs.withSquare(square),
-        ifAbsent: () => SquareSet.empty,
+        ifAbsent: () => SquareSet.empty.withSquare(square),
       ),
     );
   }
 
   /// Removes the [Piece] at this [Square] if it exists.
+  @useResult
   Board removePieceAt(Square square) {
     final piece = pieceAt(square);
     return piece != null
@@ -126,13 +130,14 @@ class Board {
             roles: roles.update(
               piece.role,
               (sqs) => sqs.withoutSquare(square),
-              ifAbsent: () => SquareSet.empty,
+              ifRemove: (_, sqs) => sqs.isEmpty,
             ),
           )
         : this;
   }
 
   /// Returns a copy of this board with some fields updated.
+  @useResult
   Board copyWith({
     SquareSet? occupied,
     SquareSet? sente,
@@ -154,9 +159,9 @@ class Board {
   bool operator ==(Object other) {
     return identical(this, other) ||
         other is Board &&
-            other.occupied == occupied &&
-            other.sente == sente &&
-            other.gote == gote &&
+            other.occupied.equals(occupied) &&
+            other.sente.equals(sente) &&
+            other.gote.equals(gote) &&
             other.roles == roles;
   }
 

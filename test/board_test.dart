@@ -1,72 +1,36 @@
-import 'package:dartchess/dartchess.dart';
+import 'package:dartshogi/src/models.dart';
+import 'package:dartshogi/src/square_set.dart';
+import 'package:dartshogi/src/board.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('implements hashCode/==', () {
     expect(Board.empty, Board.empty);
-    expect(Board.standard, Board.standard);
-    expect(Board.empty, isNot(Board.standard));
-    expect(Board.standard, isNot(Board.empty));
-    expect(Board.parseFen(kInitialBoardFEN), Board.standard);
   });
 
   test('empty board', () {
     expect(Board.empty.pieces.isEmpty, true);
-    expect(Board.empty.pieceAt(Square.a1), null);
-  });
-
-  test('standard board', () {
-    expect(Board.standard.pieces.length, 32);
+    expect(Board.empty.pieceAt(const Square(0)), null);
   });
 
   test('setPieceAt', () {
-    const piece = Piece.whiteKing;
-    final board = Board.empty.setPieceAt(Square.a1, piece);
-    expect(board.occupied, const SquareSet(0x0000000000000001));
+    const piece = Piece(color: Side.sente, role: Role.bishop);
+    const square = Square(0);
+
+    final board = Board.empty.setPieceAt(square, piece);
+    expect(board.occupied, SquareSet.empty.withSquare(0));
+    expect(board.sente, SquareSet.empty.withSquare(0));
+    expect(board.gote, SquareSet.empty);
+    expect(board.roles.get(piece.role), SquareSet.empty.withSquare(0));
+    expect(board.pieceAt(square), piece);
     expect(board.pieces.length, 1);
-    expect(board.pieceAt(Square.a1), piece);
-
-    final board2 = Board.standard.setPieceAt(Square.e8, piece);
-    expect(board2.pieceAt(Square.e8), piece);
-    expect(board2.white, const SquareSet(0x100000000000FFFF));
-
-    expect(board2.black, const SquareSet(0xEFFF000000000000));
-    expect(board2.pawns, const SquareSet(0x00FF00000000FF00));
-    expect(board2.knights, const SquareSet(0x4200000000000042));
-    expect(board2.bishops, const SquareSet(0x2400000000000024));
-    expect(board2.rooks, SquareSet.corners);
-    expect(board2.queens, const SquareSet(0x0800000000000008));
-    expect(board2.kings, const SquareSet(0x1000000000000010));
   });
 
   test('removePieceAt', () {
-    final board = Board.empty.setPieceAt(Square.c2, Piece.whiteKing);
-    expect(board.removePieceAt(Square.c2), Board.empty);
-  });
+    const square = Square(0);
+    const piece = Piece(color: Side.sente, role: Role.rook);
 
-  test('parse board fen', () {
-    final board = Board.parseFen(kInitialBoardFEN);
-    expect(board, Board.standard);
-  });
-
-  test('parse board fen, promoted piece', () {
-    final board =
-        Board.parseFen('rQ~q1kb1r/pp2pppp/2p5/8/3P1Bb1/4PN2/PPP3PP/R2QKB1R');
-    expect(board.promoted.squares.length, 1);
-  });
-
-  test('invalid board fen', () {
-    expect(
-        () => Board.parseFen('4k2r/8/8/8/8/RR2K2R'),
-        throwsA(predicate(
-            (e) => e is FenException && e.cause == IllegalFenCause.board)));
-
-    expect(() => Board.parseFen('lol'),
-        throwsA(const TypeMatcher<FenException>()));
-  });
-
-  test('make board fen', () {
-    expect(Board.empty.fen, kEmptyBoardFEN);
-    expect(Board.standard.fen, kInitialBoardFEN);
+    final board = Board.empty.setPieceAt(square, piece);
+    expect(board.removePieceAt(square), Board.empty);
   });
 }
