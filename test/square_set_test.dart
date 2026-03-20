@@ -31,7 +31,7 @@ void main() {
 
     test('fromSquare', () {
       for (int square = 0; square < 256; square++) {
-        expect(SquareSet.empty.with_(square),
+        expect(SquareSet.empty.withSquare(square),
             equals(SquareSet.fromSquare(square)));
       }
     });
@@ -40,7 +40,8 @@ void main() {
       expect(SquareSet.fromSquares([]), equals(SquareSet.empty));
       expect(
           SquareSet.fromSquares([-1, -2, 256, 257]), equals(SquareSet.empty));
-      expect(SquareSet.fromSquares([128]), equals(SquareSet.empty.with_(128)));
+      expect(SquareSet.fromSquares([128]),
+          equals(SquareSet.empty.withSquare(128)));
       expect(
         SquareSet.fromSquares(List.generate(256, (i) => i)),
         equals(SquareSet.full),
@@ -596,7 +597,7 @@ void main() {
       for (int square = 0; square < 256; square++) {
         expect(
           SquareSet.full.intersect(SquareSet.fromSquare(square)),
-          equals(SquareSet.full.without(square).xor(SquareSet.full)),
+          equals(SquareSet.full.withoutSquare(square).xor(SquareSet.full)),
         );
       }
     });
@@ -636,7 +637,7 @@ void main() {
       final s =
           SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80000000]);
       for (int i = 0; i < 256; i++) {
-        expect(s.shr256(i), equals(SquareSet.empty.with_(255 - i)));
+        expect(s.shr256(i), equals(SquareSet.empty.withSquare(255 - i)));
       }
     });
 
@@ -697,7 +698,7 @@ void main() {
 
       final s = SquareSet.fromList([0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]);
       for (int i = 0; i < 256; i++) {
-        expect(s.shl256(i), equals(SquareSet.empty.with_(i)));
+        expect(s.shl256(i), equals(SquareSet.empty.withSquare(i)));
       }
     });
 
@@ -810,22 +811,27 @@ void main() {
       expect(squares.isEmpty, isTrue);
 
       for (int i = 0; i < 256; i++) {
-        squares = squares.with_(i);
+        squares = squares.withSquare(i);
         expect(squares.size, equals(i + 1));
         expect(squares.isEmpty, isFalse);
         expect(squares.isNotEmpty, isTrue);
       }
 
       for (int i = 255; i >= 0; i--) {
-        squares = squares.without(i);
+        squares = squares.withoutSquare(i);
         expect(squares.size, equals(i));
       }
     });
 
     test('with/without many', () {
       expect(SquareSet.empty.withMany([0, 1, 2]),
-          equals(SquareSet.empty.with_(0).with_(1).with_(2)));
-      expect(SquareSet.empty.with_(0).with_(1).with_(2).withoutMany([0, 1, 2]),
+          equals(SquareSet.empty.withSquare(0).withSquare(1).withSquare(2)));
+      expect(
+          SquareSet.empty
+              .withSquare(0)
+              .withSquare(1)
+              .withSquare(2)
+              .withoutMany([0, 1, 2]),
           equals(SquareSet.empty));
       expect(SquareSet.full.withoutMany(List.generate(256, (i) => i)),
           equals(SquareSet.empty));
@@ -838,14 +844,14 @@ void main() {
       expect(squares.last(), isNull);
 
       for (int i = 0; i < 256; i++) {
-        squares = squares.with_(i);
+        squares = squares.withSquare(i);
         expect(squares.first(), equals(0));
         expect(squares.last(), equals(i));
       }
 
       squares = SquareSet.empty;
       for (int i = 255; i >= 0; i--) {
-        squares = squares.with_(i);
+        squares = squares.withSquare(i);
         expect(squares.first(), equals(i));
         expect(squares.last(), equals(255));
       }

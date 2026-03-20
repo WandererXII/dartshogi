@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import './models.dart';
+import './core/square.dart';
 
 /// A finite set of all squares on a board.
 ///
@@ -310,7 +310,7 @@ extension type const SquareSet(Uint32List value) {
   }
 
   /// Returns square if it is single, otherwise returns null.
-  int? singleSquare() {
+  Square? singleSquare() {
     return moreThanOne() ? null : last();
   }
 
@@ -353,7 +353,7 @@ extension type const SquareSet(Uint32List value) {
   }
 
   /// Returns a new [SquareSet] with the given [square] removed.
-  SquareSet without(int square) {
+  SquareSet withoutSquare(int square) {
     if (square >= 256 || square < 0) return this;
     final index = square >>> 5;
     final newDRows = List<int>.from(value);
