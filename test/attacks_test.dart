@@ -1,7 +1,10 @@
-import 'package:dartshogi/src/models.dart';
-import 'package:test/test.dart';
+import 'package:dartshogi/src/core/side.dart';
+import 'package:dartshogi/src/core/role.dart';
+import 'package:dartshogi/src/core/piece.dart';
+import 'package:dartshogi/src/core/square.dart';
 import 'package:dartshogi/src/square_set.dart';
 import 'package:dartshogi/src/attacks.dart';
+import 'package:test/test.dart';
 
 void main() {
   Square s(int v) => Square(v);
@@ -1065,25 +1068,25 @@ void main() {
 
     test('chushogi pieces', () {
       expect(
-        attacks(const Piece(role: Role.leopard, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.leopard, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x1c000000, 0x1c000000, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.copper, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.copper, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x1c000000, 0x8000000, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.elephant, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.elephant, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x1c000000, 0x14001400, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.chariot, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.chariot, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x8000800,
@@ -1097,31 +1100,31 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.tiger, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.tiger, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x14000000, 0x1c001400, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.phoenix, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.phoenix, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x8002200, 0x8001400, 0x2200, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.kirin, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.kirin, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x14000800, 0x14002200, 0x800, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.sidemover, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.sidemover, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x8000000, 0x800f7ff, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.verticalmover, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.verticalmover, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x8000800,
@@ -1135,7 +1138,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.queen, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.queen, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x49008880,
@@ -1149,25 +1152,25 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.lion, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.lion, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x3e003e00, 0x3e003600, 0x3e00, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.gobetween, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.gobetween, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x8000000, 0x8000000, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.promotedpawn, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.promotedpawn, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x1c000000, 0x8001400, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.ox, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.ox, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x49008880,
@@ -1181,7 +1184,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.stag, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.stag, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x8000800,
@@ -1195,7 +1198,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.boar, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.boar, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x41008080,
@@ -1209,7 +1212,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.falcon, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.falcon, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x41008080,
@@ -1223,13 +1226,13 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.prince, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.prince, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x1c000000, 0x1c001400, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.eagle, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.eagle, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x8000800,
@@ -1243,7 +1246,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.whale, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.whale, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x8000800,
@@ -1257,7 +1260,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.whitehorse, color: Side.sente), s(75),
+        attacks(const Piece(role: Role.whitehorse, side: Side.sente), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x49008880,
@@ -1273,31 +1276,31 @@ void main() {
 
       // Gote tests
       expect(
-        attacks(const Piece(role: Role.copper, color: Side.gote), s(75),
+        attacks(const Piece(role: Role.copper, side: Side.gote), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x8000000, 0x1c000000, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.elephant, color: Side.gote), s(75),
+        attacks(const Piece(role: Role.elephant, side: Side.gote), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x14000000, 0x1c001400, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.tiger, color: Side.gote), s(75),
+        attacks(const Piece(role: Role.tiger, side: Side.gote), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x1c000000, 0x14001400, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.promotedpawn, color: Side.gote), s(75),
+        attacks(const Piece(role: Role.promotedpawn, side: Side.gote), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList(
             [0x0, 0x8000000, 0x1c001400, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
       expect(
-        attacks(const Piece(role: Role.falcon, color: Side.gote), s(75),
+        attacks(const Piece(role: Role.falcon, side: Side.gote), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x49008880,
@@ -1311,7 +1314,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.eagle, color: Side.gote), s(75),
+        attacks(const Piece(role: Role.eagle, side: Side.gote), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x49008880,
@@ -1325,7 +1328,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.whale, color: Side.gote), s(75),
+        attacks(const Piece(role: Role.whale, side: Side.gote), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x49008880,
@@ -1339,7 +1342,7 @@ void main() {
         ])),
       );
       expect(
-        attacks(const Piece(role: Role.whitehorse, color: Side.gote), s(75),
+        attacks(const Piece(role: Role.whitehorse, side: Side.gote), s(75),
             SquareSet.empty),
         equals(SquareSet.fromList([
           0x8000800,

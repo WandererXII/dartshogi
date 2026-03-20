@@ -1,7 +1,10 @@
 import 'package:meta/meta.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import './square_set.dart';
-import './models.dart';
+import './core/piece.dart';
+import './core/role.dart';
+import './core/square.dart';
+import './core/side.dart';
 
 /// A board represented by several square sets for each piece.
 @immutable
@@ -30,7 +33,7 @@ class Board {
     occupied: SquareSet.empty,
     sente: SquareSet.empty,
     gote: SquareSet.empty,
-    roles: const IMap.empty(),
+    roles: const IMapConst({}),
   );
 
   /// An iterable of each [Piece] associated to its [Square].
@@ -59,7 +62,7 @@ class Board {
 
   /// Gets all squares occupied by [Piece].
   SquareSet byPiece(Piece piece) {
-    return bySide(piece.color) & byRole(piece.role);
+    return bySide(piece.side) & byRole(piece.role);
   }
 
   /// Gets the [Side] at this [Square], if any.
@@ -88,27 +91,28 @@ class Board {
   /// Gets the [Piece] at this [Square], if any.
   Piece? pieceAt(Square square) {
     final side = sideAt(square);
-    if (side == null) {
-      return null;
-    }
+    if (side == null) return null;
     final role = roleAt(square)!;
-    return Piece(color: side, role: role);
+    return Piece(side: side, role: role);
   }
 
   /// Finds the unique king [Square] of the given [Side], if any.
   Square? kingOf(Side side) {
-    return byPiece(Piece(color: side, role: Role.king)).singleSquare();
+    return byPiece(Piece(side: side, role: Role.king)).singleSquare();
   }
 
   /// Puts a [Piece] on a [Square] overriding the existing one, if any.
   @useResult
   Board setPieceAt(Square square, Piece piece) {
     final removed = removePieceAt(square);
-    return removed.copyWith(
+    return Board(
       occupied: removed.occupied.withSquare(square),
-      sente:
-          piece.color == Side.sente ? removed.sente.withSquare(square) : null,
-      gote: piece.color == Side.gote ? removed.gote.withSquare(square) : null,
+      sente: piece.side == Side.sente
+          ? removed.sente.withSquare(square)
+          : removed.sente,
+      gote: piece.side == Side.gote
+          ? removed.gote.withSquare(square)
+          : removed.gote,
       roles: removed.roles.update(
         piece.role,
         (sqs) => sqs.withSquare(square),
@@ -121,39 +125,18 @@ class Board {
   @useResult
   Board removePieceAt(Square square) {
     final piece = pieceAt(square);
-    return piece != null
-        ? copyWith(
-            occupied: occupied.withoutSquare(square),
-            sente:
-                piece.color == Side.sente ? sente.withoutSquare(square) : null,
-            gote: piece.color == Side.gote ? gote.withoutSquare(square) : null,
-            roles: roles.update(
-              piece.role,
-              (sqs) => sqs.withoutSquare(square),
-              ifRemove: (_, sqs) => sqs.isEmpty,
-            ),
-          )
-        : this;
-  }
-
-  /// Returns a copy of this board with some fields updated.
-  @useResult
-  Board copyWith({
-    SquareSet? occupied,
-    SquareSet? sente,
-    SquareSet? gote,
-    IMap<Role, SquareSet>? roles,
-  }) {
+    if (piece == null) return this;
     return Board(
-      occupied: occupied ?? this.occupied,
-      sente: sente ?? this.sente,
-      gote: gote ?? this.gote,
-      roles: roles ?? this.roles,
+      occupied: occupied.withoutSquare(square),
+      sente: piece.side == Side.sente ? sente.withoutSquare(square) : sente,
+      gote: piece.side == Side.gote ? gote.withoutSquare(square) : gote,
+      roles: roles.update(
+        piece.role,
+        (sqs) => sqs.withoutSquare(square),
+        ifRemove: (_, sqs) => sqs.isEmpty,
+      ),
     );
   }
-
-  // @override
-  // String toString() => sfen;
 
   @override
   bool operator ==(Object other) {

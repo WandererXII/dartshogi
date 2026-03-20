@@ -1,4 +1,7 @@
-import 'package:dartshogi/src/models.dart';
+import 'package:dartshogi/src/core/piece.dart';
+import 'package:dartshogi/src/core/side.dart';
+import 'package:dartshogi/src/core/square.dart';
+import 'package:dartshogi/src/core/role.dart';
 import 'package:dartshogi/src/square_set.dart';
 import 'package:dartshogi/src/board.dart';
 import 'package:test/test.dart';
@@ -14,7 +17,7 @@ void main() {
   });
 
   test('setPieceAt', () {
-    const piece = Piece(color: Side.sente, role: Role.bishop);
+    const piece = Piece(side: Side.sente, role: Role.bishop);
     const square = Square(0);
 
     final board = Board.empty.setPieceAt(square, piece);
@@ -28,7 +31,7 @@ void main() {
 
   test('removePieceAt', () {
     const square = Square(0);
-    const piece = Piece(color: Side.sente, role: Role.rook);
+    const piece = Piece(side: Side.sente, role: Role.rook);
 
     final board = Board.empty.setPieceAt(square, piece);
     expect(board.removePieceAt(square), Board.empty);

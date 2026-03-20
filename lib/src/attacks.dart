@@ -1,5 +1,8 @@
+import './core/square.dart';
 import './square_set.dart';
-import './models.dart';
+import './core/piece.dart';
+import './core/role.dart';
+import './core/side.dart';
 
 /// Gets squares attacked or defended by a king on [Square].
 SquareSet kingAttacks(Square square) {
@@ -102,9 +105,9 @@ SquareSet leopardAttacks(Square square) {
 
 SquareSet tigerAttacks(Square square, Side side) {
   if (side == Side.sente) {
-    return _neighbors[square].without(square - 16);
+    return _neighbors[square].withoutSquare(square - 16);
   } else {
-    return _neighbors[square].without(square + 16);
+    return _neighbors[square].withoutSquare(square + 16);
   }
 }
 
@@ -210,20 +213,20 @@ SquareSet lionAttacks(Square square) {
 SquareSet attacks(Piece piece, Square square, SquareSet occupied) {
   switch (piece.role) {
     case Role.pawn:
-      return pawnAttacks(square, piece.color);
+      return pawnAttacks(square, piece.side);
     case Role.lance:
-      return lanceAttacks(square, piece.color, occupied);
+      return lanceAttacks(square, piece.side, occupied);
     case Role.knight:
-      return knightAttacks(square, piece.color);
+      return knightAttacks(square, piece.side);
     case Role.silver:
-      return silverAttacks(square, piece.color);
+      return silverAttacks(square, piece.side);
     case Role.promotedpawn:
     case Role.tokin:
     case Role.promotedlance:
     case Role.promotedknight:
     case Role.promotedsilver:
     case Role.gold:
-      return goldAttacks(square, piece.color);
+      return goldAttacks(square, piece.side);
     case Role.bishop:
     case Role.bishoppromoted:
       return bishopAttacks(square, occupied);
@@ -237,12 +240,12 @@ SquareSet attacks(Piece piece, Square square, SquareSet occupied) {
     case Role.dragonpromoted:
       return dragonAttacks(square, occupied);
     case Role.tiger:
-      return tigerAttacks(square, piece.color);
+      return tigerAttacks(square, piece.side);
     case Role.copper:
-      return copperAttacks(square, piece.color);
+      return copperAttacks(square, piece.side);
     case Role.elephant:
     case Role.elephantpromoted:
-      return elephantAttacks(square, piece.color);
+      return elephantAttacks(square, piece.side);
     case Role.leopard:
       return leopardAttacks(square);
     case Role.ox:
@@ -254,7 +257,7 @@ SquareSet attacks(Piece piece, Square square, SquareSet occupied) {
     case Role.gobetween:
       return goBetweenAttacks(square);
     case Role.falcon:
-      return falconAttacks(square, piece.color, occupied);
+      return falconAttacks(square, piece.side, occupied);
     case Role.kirin:
       return kirinAttacks(square);
     case Role.lion:
@@ -271,14 +274,14 @@ SquareSet attacks(Piece piece, Square square, SquareSet occupied) {
     case Role.sidemoverpromoted:
       return sideMoverAttacks(square, occupied);
     case Role.eagle:
-      return eagleAttacks(square, piece.color, occupied);
+      return eagleAttacks(square, piece.side, occupied);
     case Role.verticalmover:
     case Role.verticalmoverpromoted:
       return verticalMoverAttacks(square, occupied);
     case Role.whale:
-      return whaleAttacks(square, piece.color, occupied);
+      return whaleAttacks(square, piece.side, occupied);
     case Role.whitehorse:
-      return whiteHorseAttacks(square, piece.color, occupied);
+      return whiteHorseAttacks(square, piece.side, occupied);
     case Role.prince:
     case Role.king:
       return kingAttacks(square);
@@ -344,10 +347,10 @@ final _neighbors = _tabulateSquares(
     (sq) => _computeRange(sq, [-17, -16, -15, -1, 1, 15, 16, 17]));
 
 final _fileRange =
-    _tabulateSquares((sq) => SquareSet.fromFile(sq.file).without(sq));
+    _tabulateSquares((sq) => SquareSet.fromFile(sq.file).withoutSquare(sq));
 
 final _rankRange =
-    _tabulateSquares((sq) => SquareSet.fromRank(sq.rank).without(sq));
+    _tabulateSquares((sq) => SquareSet.fromRank(sq.rank).withoutSquare(sq));
 
 final _diagRange = _tabulateSquares((sq) {
   final diag = SquareSet.fromList([
@@ -361,7 +364,8 @@ final _diagRange = _tabulateSquares((sq) {
     0x80004000,
   ]);
   final shift = 16 * (sq.rank - sq.file);
-  return (shift >= 0 ? diag.shl256(shift) : diag.shr256(-shift)).without(sq);
+  return (shift >= 0 ? diag.shl256(shift) : diag.shr256(-shift))
+      .withoutSquare(sq);
 });
 final _antiDiagRange = _tabulateSquares((sq) {
   final diag = SquareSet.fromList([
@@ -375,7 +379,8 @@ final _antiDiagRange = _tabulateSquares((sq) {
     0x10002,
   ]);
   final shift = 16 * (sq.rank + sq.file - 15);
-  return (shift >= 0 ? diag.shl256(shift) : diag.shr256(-shift)).without(sq);
+  return (shift >= 0 ? diag.shl256(shift) : diag.shr256(-shift))
+      .withoutSquare(sq);
 });
 
 SquareSet _hyperbola(SquareSet bit, SquareSet range, SquareSet occupied) {
