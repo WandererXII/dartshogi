@@ -3,17 +3,6 @@ extension type const Rank._(int value) implements int {
   /// Gets the board [Rank] from a rank index between 0 and 15.
   const Rank(this.value) : assert(value >= 0 && value < 16);
 
-  /// Gets a [Rank] from its name in algebraic notation.
-  ///
-  /// Throws a [FormatException] if the algebraic notation is invalid.
-  factory Rank.fromName(String algebraic) {
-    final rank = algebraic.codeUnitAt(0) - 97;
-    if (rank < 0 || rank > 15) {
-      throw FormatException('Invalid algebraic notation: $algebraic');
-    }
-    return Rank(rank);
-  }
-
   static const rankA = Rank(0);
   static const rankB = Rank(1);
   static const rankC = Rank(2);

@@ -3,17 +3,6 @@ extension type const File._(int value) implements int {
   /// Gets the board [File] from a file index between 0 and 15.
   const File(this.value) : assert(value >= 0 && value < 16);
 
-  /// Gets a [File] from its name in algebraic notation.
-  ///
-  /// Throws a [FormatException] if the algebraic notation is invalid.
-  factory File.fromName(String algebraic) {
-    final file = int.tryParse(algebraic);
-    if (file == null || file < 0 || file > 15) {
-      throw FormatException('Invalid algebraic notation: $algebraic');
-    }
-    return File(file);
-  }
-
   static const file1 = File(0);
   static const file2 = File(1);
   static const file3 = File(2);
