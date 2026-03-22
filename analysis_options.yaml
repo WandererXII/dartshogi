@@ -23,9 +23,12 @@ linter:
   rules:
     require_trailing_commas: false
     avoid_print: false
-    directives_ordering: false
+    directives_ordering: true
     always_use_package_imports: false
     prefer_single_quotes: true
+
+formatter:
+  page_width: 100
 
 # analyzer:
 #   exclude:
