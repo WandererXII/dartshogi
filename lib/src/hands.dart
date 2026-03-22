@@ -1,5 +1,7 @@
-import 'package:meta/meta.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:meta/meta.dart';
+
+import './core/piece.dart';
 import './core/role.dart';
 import './core/side.dart';
 
@@ -11,47 +13,49 @@ class Hand {
 
   static const empty = Hand(handMap: IMapConst({}));
 
-  // Helper to ensure we don't store zeros or negatives
-  static IMap<Role, int> _clean(IMap<Role, int> map) =>
-      map.removeWhere((role, count) => count <= 0);
-
   @useResult
   Hand combine(Hand other) {
     var newMap = handMap;
     for (final entry in other.handMap.entries) {
-      newMap = newMap.update(entry.key, (curr) => curr + entry.value,
-          ifAbsent: () => entry.value);
+      newMap = newMap.update(entry.key, (curr) => curr + entry.value, ifAbsent: () => entry.value);
     }
-    return Hand(handMap: _clean(newMap));
+    return Hand(handMap: newMap);
   }
 
   int countOf(Role role) => handMap[role] ?? 0;
 
   @useResult
-  Hand set(Role role, int cnt) => Hand(
-          handMap: _clean(handMap.update(
+  Hand _update(Role role, int offset) => Hand(
+          handMap: handMap.update(
         role,
-        (_) => cnt,
-        ifAbsent: () => cnt,
-      )));
+        (cnt) => cnt + offset,
+        ifAbsent: offset > 0 ? () => offset : null,
+        ifRemove: (_, cnt) => cnt <= 0,
+      ));
 
   @useResult
-  Hand drop(Role role) => set(role, countOf(role) - 1);
+  Hand remove(Role role, {int cnt = 1}) => _update(role, -cnt);
 
   @useResult
-  Hand capture(Role role) => set(role, countOf(role) + 1);
+  Hand store(Role role, {int cnt = 1}) => _update(role, cnt);
 
-  bool get isEmpty => handMap.isEmpty;
-  bool get nonEmpty => handMap.isNotEmpty;
+  bool get nonEmpty => handMap.values.any((cnt) => cnt > 0);
+  bool get isEmpty => !nonEmpty;
 
   int get count => handMap.values.fold(0, (acc, cnt) => acc + cnt);
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is Hand && handMap == other.handMap;
+  Iterable<Role> get roles => handMap.entries.where((e) => e.value > 0).map((e) => e.key);
+
+  // Helper to ensure we don't store zeros or negatives
+  static IMap<Role, int> _clean(IMap<Role, int> map) =>
+      map.removeWhere((role, count) => count <= 0);
 
   @override
-  int get hashCode => handMap.hashCode;
+  bool operator ==(Object other) =>
+      identical(this, other) || (other is Hand && _clean(handMap) == _clean(other.handMap));
+
+  @override
+  int get hashCode => _clean(handMap).hashCode;
 }
 
 @immutable
@@ -70,6 +74,17 @@ class Hands {
   Hands combine(Hands other) =>
       Hands(sente: sente.combine(other.sente), gote: gote.combine(other.gote));
 
+  @useResult
+  Hands remove(Piece piece, {int cnt = 1}) => Hands(
+        gote: piece.side == Side.gote ? gote.remove(piece.role, cnt: cnt) : gote,
+        sente: piece.side == Side.sente ? sente.remove(piece.role, cnt: cnt) : sente,
+      );
+
+  @useResult
+  Hands store(Piece piece, {int cnt = 1}) => Hands(
+      gote: piece.side == Side.gote ? gote.store(piece.role, cnt: cnt) : gote,
+      sente: piece.side == Side.sente ? sente.store(piece.role, cnt: cnt) : sente);
+
   Hand side(Side side) => side == Side.sente ? sente : gote;
 
   int get count => sente.count + gote.count;
@@ -80,8 +95,7 @@ class Hands {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other is Hands && other.sente == sente && other.gote == gote);
+    return identical(this, other) || (other is Hands && other.sente == sente && other.gote == gote);
   }
 
   @override
