@@ -1,33 +1,31 @@
-Chess and chess variant rules written in dart for native platforms (does not support web).
+[![lishogi.org](https://img.shields.io/badge/☗_lishogi.org-Play_shogi-black)](https://lishogi.org)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/WandererXII/dartshogi/ci.yml?label=CI)
+
+WIP - Shogi and shogi variant rules written in dart. Based on `dartchess` and `shogiops`.
+
+NOT ALL FEATURES SUPPORTED YET!
 
 ## Features
 
 - Completely immutable Position class
-- Read and write FEN
-- Read and write SAN
-- Chess rules:
+- Read and write SFEN
+- Read and write USI
+- Shogi rules:
     - move making
     - legal moves generation
     - game end and outcome
-    - insufficient material
     - setup validation
-- Chess960 support
-- Chess variants: Antichess, Atomic, Crazyhouse, KingOfTheHill, ThreeCheck
-- PGN parser and writer
+- Shogi variants: Minishogi, Chushogi, Annanshogi, Kyotoshogi, Checkshogi, Dobutsu
+- KIF and CSA parser and writer
+- Move notation - Western, Japanese, Kitao-Kawasaki, Yorozuya
 - Bitboards
 - Attacks and rays using hyperbola quintessence
 
 ## Example
 
 ```dart
-import 'package:dartchess/dartchess.dart';
+import 'package:dartshogi/dartshogi.dart';
 
-final pos = Chess.fromSetup(Setup.parseFen('r1bqkbnr/ppp2Qpp/2np4/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4'));
-assert(pos.isCheckmate == true);
+final pos = parseSfen(Rule.shogi, initialSfen(Rule.shogi));
+assert(pos.allMoveDests().length == 40);
 ```
-
-## Additional information
-
-This package was heavily inspired from:
-- https://github.com/niklasf/chessops
-- https://github.com/niklasf/shakmaty
