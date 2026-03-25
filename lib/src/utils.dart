@@ -1,37 +1,34 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-import 'models.dart';
-import 'position.dart';
+import './core/piece.dart';
+import './core/square.dart';
+import './position/position.dart';
 
-/// Returns all the legal moves of the [Position] in a convenient format.
-///
-/// Includes both possible representations of castling moves unless `includeAlternateCastlingMoves` is false.
-IMap<Square, ISet<Square>> makeLegalMoves(
-  Position pos, {
-  bool includeAlternateCastlingMoves = true,
-}) {
+IMap<Square, ISet<Square>> makeLegalMoves(Position pos) {
   final Map<Square, ISet<Square>> result = {};
-  for (final entry in pos.legalMoves.entries) {
+  for (final entry in pos.allMoveDests().entries) {
     final dests = entry.value.squares;
     if (dests.isNotEmpty) {
       final from = entry.key;
       final destSet = dests.toSet();
-      if (includeAlternateCastlingMoves &&
-          from == pos.board.kingOf(pos.turn) &&
-          entry.key.file == 4) {
-        if (dests.contains(Square.a1)) {
-          destSet.add(Square.c1);
-        } else if (dests.contains(Square.a8)) {
-          destSet.add(Square.c8);
-        }
-        if (dests.contains(Square.h1)) {
-          destSet.add(Square.g1);
-        } else if (dests.contains(Square.h8)) {
-          destSet.add(Square.g8);
-        }
-      }
       result[from] = ISet(destSet);
     }
   }
   return IMap(result);
 }
+
+IMap<Piece, ISet<Square>> makeLegalDrops(Position pos) {
+  final Map<Piece, ISet<Square>> result = {};
+  for (final entry in pos.allDropDests().entries) {
+    final dests = entry.value.squares;
+    if (dests.isNotEmpty) {
+      final from = entry.key;
+      final destSet = dests.toSet();
+      result[from] = ISet(destSet);
+    }
+  }
+  return IMap(result);
+}
+
+// Unique object to use as a sentinel value in copyWith methods.
+const uniqueObjectInstance = Object();
