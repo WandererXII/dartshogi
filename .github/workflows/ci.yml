@@ -24,11 +24,11 @@ jobs:
 
       - name: Verify formatting
         run: |
-          dart format --output=none --set-exit-if-changed $(find lib/src -name "*.dart" -not \( -name "*models.dart" \) )
+          dart format --output=none --set-exit-if-changed $(find lib/src -name "*.dart" )
           dart format --output=none --set-exit-if-changed $(find test -name "*.dart" )
 
       - name: Analyze project source
         run: dart analyze
 
       - name: Run tests
-        run: dart test -x full_perft
+        run: dart test
