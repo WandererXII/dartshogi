@@ -89,10 +89,14 @@ class _Shogi extends Shogi {
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest: lastDest == uniqueObjectInstance ? this.lastDest : lastDest as Square?,
-      lastLionCapture: lastLionCapture == uniqueObjectInstance
-          ? this.lastLionCapture
-          : lastLionCapture as Square?,
+      lastDest:
+          lastDest == uniqueObjectInstance
+              ? this.lastDest
+              : lastDest as Square?,
+      lastLionCapture:
+          lastLionCapture == uniqueObjectInstance
+              ? this.lastLionCapture
+              : lastLionCapture as Square?,
     );
   }
 }
@@ -104,20 +108,35 @@ SquareSet standardSquareAttackers(
   SquareSet occupied,
 ) {
   final defender = attacker.opposite;
-  return board.bySide(attacker).intersect(
+  return board
+      .bySide(attacker)
+      .intersect(
         rookAttacks(square, occupied)
             .intersect(board.byRoles([Role.rook, Role.dragon]))
             .union(
-              bishopAttacks(square, occupied).intersect(board.byRoles([Role.bishop, Role.horse])),
+              bishopAttacks(
+                square,
+                occupied,
+              ).intersect(board.byRoles([Role.bishop, Role.horse])),
             )
             .union(
-              lanceAttacks(square, defender, occupied).intersect(board.byRole(Role.lance)),
+              lanceAttacks(
+                square,
+                defender,
+                occupied,
+              ).intersect(board.byRole(Role.lance)),
             )
             .union(
-              knightAttacks(square, defender).intersect(board.byRole(Role.knight)),
+              knightAttacks(
+                square,
+                defender,
+              ).intersect(board.byRole(Role.knight)),
             )
             .union(
-              silverAttacks(square, defender).intersect(board.byRole(Role.silver)),
+              silverAttacks(
+                square,
+                defender,
+              ).intersect(board.byRole(Role.silver)),
             )
             .union(
               goldAttacks(square, defender).intersect(
@@ -134,24 +153,29 @@ SquareSet standardSquareAttackers(
               pawnAttacks(square, defender).intersect(board.byRole(Role.pawn)),
             )
             .union(
-              kingAttacks(square).intersect(board.byRoles([Role.king, Role.dragon, Role.horse])),
+              kingAttacks(
+                square,
+              ).intersect(board.byRoles([Role.king, Role.dragon, Role.horse])),
             ),
       );
 }
 
-SquareSet standardSquareSnipers(
-  Square square,
-  Side attacker,
-  Board board,
-) {
+SquareSet standardSquareSnipers(Square square, Side attacker, Board board) {
   final empty = SquareSet.empty;
   return rookAttacks(square, empty)
       .intersect(board.byRoles([Role.rook, Role.dragon]))
       .union(
-        bishopAttacks(square, empty).intersect(board.byRoles([Role.bishop, Role.horse])),
+        bishopAttacks(
+          square,
+          empty,
+        ).intersect(board.byRoles([Role.bishop, Role.horse])),
       )
       .union(
-        lanceAttacks(square, attacker.opposite, empty).intersect(board.byRole(Role.lance)),
+        lanceAttacks(
+          square,
+          attacker.opposite,
+          empty,
+        ).intersect(board.byRole(Role.lance)),
       )
       .intersect(board.bySide(attacker));
 }
@@ -161,9 +185,11 @@ SquareSet standardMoveDests(Position pos, Square square, [Context? ctx]) {
   final piece = pos.board.pieceAt(square);
   if (piece == null || piece.side != ctx.side) return SquareSet.empty;
 
-  var pseudo = attacks(piece, square, pos.board.occupied)
-      .intersect(fullSquareSet(pos.rule))
-      .diff(pos.board.bySide(ctx.side));
+  var pseudo = attacks(
+    piece,
+    square,
+    pos.board.occupied,
+  ).intersect(fullSquareSet(pos.rule)).diff(pos.board.bySide(ctx.side));
 
   final king = ctx.king;
   if (king != null) {
@@ -210,7 +236,9 @@ SquareSet standardDropDests(Position pos, Piece piece, [Context? ctx]) {
     );
   } else if (role == Role.knight) {
     mask = mask.diff(
-      ctx.side == Side.sente ? SquareSet.ranksAbove(2) : SquareSet.ranksBelow(dims.ranks - 3),
+      ctx.side == Side.sente
+          ? SquareSet.ranksAbove(2)
+          : SquareSet.ranksBelow(dims.ranks - 3),
     );
   }
 
@@ -222,7 +250,9 @@ SquareSet standardDropDests(Position pos, Piece piece, [Context? ctx]) {
   }
 
   if (role == Role.pawn) {
-    final pawns = pos.board.byRole(Role.pawn).intersect(pos.board.bySide(ctx.side));
+    final pawns = pos.board
+        .byRole(Role.pawn)
+        .intersect(pos.board.bySide(ctx.side));
     for (final pawn in pawns.squares) {
       mask = mask.diff(SquareSet.fromFile(pawn.file));
     }
@@ -231,7 +261,9 @@ SquareSet standardDropDests(Position pos, Piece piece, [Context? ctx]) {
     if (enemyKing != null) {
       final kingFront = enemyKing.offset(ctx.side == Side.sente ? 16 : -16);
       if (kingFront != null && mask.has(kingFront)) {
-        final child = pos.playUnchecked(DropMove(role: Role.pawn, to: kingFront));
+        final child = pos.playUnchecked(
+          DropMove(role: Role.pawn, to: kingFront),
+        );
         if (child.outcome()?.result == GameResult.checkmate) {
           mask = mask.withoutSquare(kingFront);
         }

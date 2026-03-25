@@ -37,8 +37,9 @@ class Board {
     }
   }
 
-  IMap<Role, int> materialCount(Side side) =>
-      IMap.fromEntries(Role.values.map((role) => MapEntry(role, piecesOf(side, role).size)));
+  IMap<Role, int> materialCount(Side side) => IMap.fromEntries(
+    Role.values.map((role) => MapEntry(role, piecesOf(side, role).size)),
+  );
 
   SquareSet piecesOf(Side side, Role role) {
     return bySide(side) & byRole(role);
@@ -52,7 +53,9 @@ class Board {
 
   SquareSet byRoles(List<Role> roleList) {
     return roleList.fold<SquareSet>(
-        SquareSet.empty, (v, e) => v.union(roles[e] ?? SquareSet.empty));
+      SquareSet.empty,
+      (v, e) => v.union(roles[e] ?? SquareSet.empty),
+    );
   }
 
   SquareSet byPiece(Piece piece) {
@@ -92,7 +95,10 @@ class Board {
   }
 
   Set<Role> presentRoles() {
-    return roles.entries.where((e) => e.value.isNotEmpty).map((e) => e.key).toSet();
+    return roles.entries
+        .where((e) => e.value.isNotEmpty)
+        .map((e) => e.key)
+        .toSet();
   }
 
   @useResult
@@ -100,8 +106,14 @@ class Board {
     final removed = removePieceAt(square);
     return Board(
       occupied: removed.occupied.withSquare(square),
-      sente: piece.side == Side.sente ? removed.sente.withSquare(square) : removed.sente,
-      gote: piece.side == Side.gote ? removed.gote.withSquare(square) : removed.gote,
+      sente:
+          piece.side == Side.sente
+              ? removed.sente.withSquare(square)
+              : removed.sente,
+      gote:
+          piece.side == Side.gote
+              ? removed.gote.withSquare(square)
+              : removed.gote,
       roles: removed.roles.update(
         piece.role,
         (sqs) => sqs.withSquare(square),

@@ -1,12 +1,6 @@
 import 'package:meta/meta.dart';
 
-enum IllegalSfenCause {
-  format,
-  board,
-  turn,
-  hands,
-  moveNumber,
-}
+enum IllegalSfenCause { format, board, turn, hands, moveNumber }
 
 @immutable
 class SfenException implements Exception {

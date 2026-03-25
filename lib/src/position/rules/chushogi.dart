@@ -32,11 +32,11 @@ abstract class Chushogi extends Position {
 
   @override
   PositionValidation get validation => const PositionValidation(
-        doublePawn: false,
-        oppositeCheck: false,
-        unpromotedForcedPromotion: false,
-        maxNumberOfRoyalPieces: 2,
-      );
+    doublePawn: false,
+    oppositeCheck: false,
+    unpromotedForcedPromotion: false,
+    maxNumberOfRoyalPieces: 2,
+  );
 
   @override
   SquareSet squareAttackers(Square square, Side attacker, SquareSet occupied) {
@@ -87,10 +87,14 @@ class _Chushogi extends Chushogi {
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest: lastDest == uniqueObjectInstance ? this.lastDest : lastDest as Square?,
-      lastLionCapture: lastLionCapture == uniqueObjectInstance
-          ? this.lastLionCapture
-          : lastLionCapture as Square?,
+      lastDest:
+          lastDest == uniqueObjectInstance
+              ? this.lastDest
+              : lastDest as Square?,
+      lastLionCapture:
+          lastLionCapture == uniqueObjectInstance
+              ? this.lastLionCapture
+              : lastLionCapture as Square?,
     );
   }
 }

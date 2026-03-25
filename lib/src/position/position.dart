@@ -49,14 +49,15 @@ class PositionValidation {
   final int maxNumberOfRoyalPieces;
 }
 
-typedef PositionBuilder<T> = T Function({
-  required Board board,
-  required Hands hands,
-  required Side turn,
-  required int moveNumber,
-  required Square? lastDest,
-  required Square? lastLionCapture,
-});
+typedef PositionBuilder<T> =
+    T Function({
+      required Board board,
+      required Hands hands,
+      required Side turn,
+      required int moveNumber,
+      required Square? lastDest,
+      required Square? lastLionCapture,
+    });
 
 @immutable
 abstract class Position {
@@ -123,49 +124,58 @@ abstract class Position {
 
   /// Doesn't consider safety of the king
   SquareSet illegalMoveDests(Square square) => moveDests(
-        square,
-        Context(
-          side: turn,
-          king: null,
-          blockers: SquareSet.empty,
-          checkers: SquareSet.empty,
-        ),
-      );
+    square,
+    Context(
+      side: turn,
+      king: null,
+      blockers: SquareSet.empty,
+      checkers: SquareSet.empty,
+    ),
+  );
 
   /// Doesn't consider safety of the king
   SquareSet illegalDropDests(Piece piece) => dropDests(
-        piece,
-        Context(
-          side: turn,
-          king: null,
-          blockers: SquareSet.empty,
-          checkers: SquareSet.empty,
-        ),
-      );
+    piece,
+    Context(
+      side: turn,
+      king: null,
+      blockers: SquareSet.empty,
+      checkers: SquareSet.empty,
+    ),
+  );
 
   Result<void> validate({bool strict = false}) {
     if (!board.occupied.intersect(fullSquareSet(rule)).equals(board.occupied)) {
-      return const Failure(PositionSetupException(IllegalSetupCause.piecesOutsideBoard));
+      return const Failure(
+        PositionSetupException(IllegalSetupCause.piecesOutsideBoard),
+      );
     }
 
     for (final side in Side.values) {
       for (final role in hands.side(side).roles) {
         if (!handRoles(rule).contains(role)) {
-          return const Failure(PositionSetupException(IllegalSetupCause.invalidPiecesHand));
+          return const Failure(
+            PositionSetupException(IllegalSetupCause.invalidPiecesHand),
+          );
         }
       }
     }
 
     for (final role in board.presentRoles()) {
       if (!allRoles(rule).contains(role)) {
-        return const Failure(PositionSetupException(IllegalSetupCause.invalidPieces));
+        return const Failure(
+          PositionSetupException(IllegalSetupCause.invalidPieces),
+        );
       }
     }
 
     if (validation.oppositeCheck) {
       final otherKing = kingsOf(turn.opposite).singleSquare();
-      if (otherKing != null && squareAttackers(otherKing, turn, board.occupied).isNotEmpty) {
-        return const Failure(PositionSetupException(IllegalSetupCause.oppositeCheck));
+      if (otherKing != null &&
+          squareAttackers(otherKing, turn, board.occupied).isNotEmpty) {
+        return const Failure(
+          PositionSetupException(IllegalSetupCause.oppositeCheck),
+        );
       }
     }
 
@@ -180,7 +190,9 @@ abstract class Position {
           final pawns = board.byRole(Role.pawn).intersect(board.bySide(side));
           for (final pawn in pawns.squares) {
             if (!files.add(pawn.file)) {
-              return const Failure(PositionSetupException(IllegalSetupCause.doublePawns));
+              return const Failure(
+                PositionSetupException(IllegalSetupCause.doublePawns),
+              );
             }
           }
         }
@@ -197,7 +209,9 @@ abstract class Position {
       if (validation.unpromotedForcedPromotion) {
         for (final (square, piece) in board.pieces) {
           if (pieceForcePromote(rule, piece, square)) {
-            return const Failure(PositionSetupException(IllegalSetupCause.piecesInDeadZone));
+            return const Failure(
+              PositionSetupException(IllegalSetupCause.piecesInDeadZone),
+            );
           }
         }
       }
@@ -231,7 +245,8 @@ abstract class Position {
     );
   }
 
-  SquareSet kingsOf(Side side) => board.byRole(Role.king).intersect(board.bySide(side));
+  SquareSet kingsOf(Side side) =>
+      board.byRole(Role.king).intersect(board.bySide(side));
 
   bool isCheck([Side? side]) {
     side ??= turn;
@@ -261,12 +276,15 @@ abstract class Position {
     final c = ctx ?? makeCtx();
     if (!hasDests(c)) {
       return Outcome(
-        result: c.checkers.isNotEmpty ? GameResult.checkmate : GameResult.stalemate,
+        result:
+            c.checkers.isNotEmpty ? GameResult.checkmate : GameResult.stalemate,
         winner: c.side.opposite,
       );
     }
-    final totalSente = board.bySide(Side.sente).size + hands.side(Side.sente).count;
-    final totalGote = board.bySide(Side.gote).size + hands.side(Side.gote).count;
+    final totalSente =
+        board.bySide(Side.sente).size + hands.side(Side.sente).count;
+    final totalGote =
+        board.bySide(Side.gote).size + hands.side(Side.gote).count;
     if (totalSente < 2 && totalGote < 2) {
       return const Outcome(result: GameResult.draw, winner: null);
     }
@@ -276,7 +294,8 @@ abstract class Position {
   Map<Square, SquareSet> allMoveDests([Context? ctx]) {
     final c = ctx ?? makeCtx();
     return {
-      for (final square in board.bySide(c.side).squares) square: moveDests(square, c),
+      for (final square in board.bySide(c.side).squares)
+        square: moveDests(square, c),
     };
   }
 
@@ -284,9 +303,10 @@ abstract class Position {
     final c = ctx ?? makeCtx();
     return {
       for (final role in handRoles(rule))
-        Piece(side: c.side, role: role): hands.side(c.side).countOf(role) > 0
-            ? dropDests(Piece(side: c.side, role: role), c)
-            : SquareSet.empty,
+        Piece(side: c.side, role: role):
+            hands.side(c.side).countOf(role) > 0
+                ? dropDests(Piece(side: c.side, role: role), c)
+                : SquareSet.empty,
     };
   }
 
@@ -306,7 +326,8 @@ abstract class Position {
   bool isLegal(MoveOrDrop md, [Context? ctx]) {
     final side = ctx?.side ?? turn;
     if (md is DropMove) {
-      if (!handRoles(rule).contains(md.role) || hands.side(side).countOf(md.role) <= 0) {
+      if (!handRoles(rule).contains(md.role) ||
+          hands.side(side).countOf(md.role) <= 0) {
         return false;
       }
       return dropDests(Piece(side: side, role: md.role), ctx).has(md.to);
@@ -343,7 +364,9 @@ abstract class Position {
     if (md is DropMove) {
       return copyWith(
         board: board.setPieceAt(md.to, Piece(role: md.role, side: turn)),
-        hands: hands.remove(Piece(side: turn, role: unpromoteForHand(rule, md.role) ?? md.role)),
+        hands: hands.remove(
+          Piece(side: turn, role: unpromoteForHand(rule, md.role) ?? md.role),
+        ),
         turn: turn.opposite,
         moveNumber: moveNumber + 1,
         lastDest: md.to,
@@ -356,13 +379,24 @@ abstract class Position {
 
       newBoard = board.removePieceAt(md.from);
 
-      final shouldPromote = (md.promotion == true &&
-              pieceCanPromote(rule, piece, md.from, md.to, newBoard.pieceAt(md.to))) ||
+      final shouldPromote =
+          (md.promotion == true &&
+              pieceCanPromote(
+                rule,
+                piece,
+                md.from,
+                md.to,
+                newBoard.pieceAt(md.to),
+              )) ||
           pieceForcePromote(rule, piece, md.to);
 
-      final movedPiece = shouldPromote
-          ? Piece(side: piece.side, role: promote(rule, piece.role) ?? piece.role)
-          : piece;
+      final movedPiece =
+          shouldPromote
+              ? Piece(
+                side: piece.side,
+                role: promote(rule, piece.role) ?? piece.role,
+              )
+              : piece;
 
       final capture = newBoard.pieceAt(md.to);
       newBoard = newBoard.setPieceAt(md.to, movedPiece);
@@ -406,8 +440,14 @@ abstract class Position {
     final unpromotedRole = unpromoteForHand(rule, capture.role);
     if (unpromotedRole != null && handRoles(rule).contains(unpromotedRole)) {
       return Hands(
-        gote: capture.side.opposite == Side.gote ? h.gote.store(unpromotedRole) : h.gote,
-        sente: capture.side.opposite == Side.sente ? h.sente.store(unpromotedRole) : h.sente,
+        gote:
+            capture.side.opposite == Side.gote
+                ? h.gote.store(unpromotedRole)
+                : h.gote,
+        sente:
+            capture.side.opposite == Side.sente
+                ? h.sente.store(unpromotedRole)
+                : h.sente,
       );
     }
     return h;

@@ -17,7 +17,11 @@ class Hand {
   Hand combine(Hand other) {
     var newMap = handMap;
     for (final entry in other.handMap.entries) {
-      newMap = newMap.update(entry.key, (curr) => curr + entry.value, ifAbsent: () => entry.value);
+      newMap = newMap.update(
+        entry.key,
+        (curr) => curr + entry.value,
+        ifAbsent: () => entry.value,
+      );
     }
     return Hand(handMap: newMap);
   }
@@ -26,12 +30,13 @@ class Hand {
 
   @useResult
   Hand _update(Role role, int offset) => Hand(
-          handMap: handMap.update(
-        role,
-        (cnt) => cnt + offset,
-        ifAbsent: offset > 0 ? () => offset : null,
-        ifRemove: (_, cnt) => cnt <= 0,
-      ));
+    handMap: handMap.update(
+      role,
+      (cnt) => cnt + offset,
+      ifAbsent: offset > 0 ? () => offset : null,
+      ifRemove: (_, cnt) => cnt <= 0,
+    ),
+  );
 
   @useResult
   Hand remove(Role role, {int cnt = 1}) => _update(role, -cnt);
@@ -44,7 +49,8 @@ class Hand {
 
   int get count => handMap.values.fold(0, (acc, cnt) => acc + cnt);
 
-  Iterable<Role> get roles => handMap.entries.where((e) => e.value > 0).map((e) => e.key);
+  Iterable<Role> get roles =>
+      handMap.entries.where((e) => e.value > 0).map((e) => e.key);
 
   // Helper to ensure we don't store zeros or negatives
   static IMap<Role, int> _clean(IMap<Role, int> map) =>
@@ -52,7 +58,8 @@ class Hand {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || (other is Hand && _clean(handMap) == _clean(other.handMap));
+      identical(this, other) ||
+      (other is Hand && _clean(handMap) == _clean(other.handMap));
 
   @override
   int get hashCode => _clean(handMap).hashCode;
@@ -60,10 +67,7 @@ class Hand {
 
 @immutable
 class Hands {
-  const Hands({
-    required this.sente,
-    required this.gote,
-  });
+  const Hands({required this.sente, required this.gote});
 
   final Hand sente;
   final Hand gote;
@@ -76,14 +80,16 @@ class Hands {
 
   @useResult
   Hands remove(Piece piece, {int cnt = 1}) => Hands(
-        gote: piece.side == Side.gote ? gote.remove(piece.role, cnt: cnt) : gote,
-        sente: piece.side == Side.sente ? sente.remove(piece.role, cnt: cnt) : sente,
-      );
+    gote: piece.side == Side.gote ? gote.remove(piece.role, cnt: cnt) : gote,
+    sente:
+        piece.side == Side.sente ? sente.remove(piece.role, cnt: cnt) : sente,
+  );
 
   @useResult
   Hands store(Piece piece, {int cnt = 1}) => Hands(
-      gote: piece.side == Side.gote ? gote.store(piece.role, cnt: cnt) : gote,
-      sente: piece.side == Side.sente ? sente.store(piece.role, cnt: cnt) : sente);
+    gote: piece.side == Side.gote ? gote.store(piece.role, cnt: cnt) : gote,
+    sente: piece.side == Side.sente ? sente.store(piece.role, cnt: cnt) : sente,
+  );
 
   Hand side(Side side) => side == Side.sente ? sente : gote;
 
@@ -95,7 +101,8 @@ class Hands {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other is Hands && other.sente == sente && other.gote == gote);
+    return identical(this, other) ||
+        (other is Hands && other.sente == sente && other.gote == gote);
   }
 
   @override

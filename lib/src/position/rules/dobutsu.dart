@@ -42,11 +42,11 @@ abstract class Dobutsu extends Position {
 
   @override
   PositionValidation get validation => const PositionValidation(
-        doublePawn: false,
-        oppositeCheck: false,
-        unpromotedForcedPromotion: false,
-        maxNumberOfRoyalPieces: 1,
-      );
+    doublePawn: false,
+    oppositeCheck: false,
+    unpromotedForcedPromotion: false,
+    maxNumberOfRoyalPieces: 1,
+  );
 
   @override
   SquareSet squareAttackers(Square square, Side attacker, SquareSet occupied) {
@@ -93,10 +93,14 @@ class _Dobutsu extends Dobutsu {
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest: lastDest == uniqueObjectInstance ? this.lastDest : lastDest as Square?,
-      lastLionCapture: lastLionCapture == uniqueObjectInstance
-          ? this.lastLionCapture
-          : lastLionCapture as Square?,
+      lastDest:
+          lastDest == uniqueObjectInstance
+              ? this.lastDest
+              : lastDest as Square?,
+      lastLionCapture:
+          lastLionCapture == uniqueObjectInstance
+              ? this.lastLionCapture
+              : lastLionCapture as Square?,
     );
   }
 }

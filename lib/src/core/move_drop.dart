@@ -5,16 +5,16 @@ import './square.dart';
 
 @immutable
 sealed class MoveOrDrop {
-  const MoveOrDrop({
-    required this.to,
-  });
+  const MoveOrDrop({required this.to});
 
   final Square to;
 
   String get usi;
 
   static final RegExp _usiDropRegex = RegExp(r'^([PLNSGBRT])\*(\d\d?[a-p])$');
-  static final RegExp _usiMoveRegex = RegExp(r'^(\d\d?[a-p])(\d\d?[a-p])?(\d\d?[a-p])(\+|=|\?)?$');
+  static final RegExp _usiMoveRegex = RegExp(
+    r'^(\d\d?[a-p])(\d\d?[a-p])?(\d\d?[a-p])(\+|=|\?)?$',
+  );
 
   static MoveOrDrop? parse(String str) {
     final dropMatch = _usiDropRegex.firstMatch(str);
@@ -25,10 +25,7 @@ sealed class MoveOrDrop {
       final to = g2 != null ? Square.parse(g2) : null;
 
       if (role != null && to != null) {
-        return DropMove(
-          role: role,
-          to: to,
-        );
+        return DropMove(role: role, to: to);
       }
     }
 
@@ -70,19 +67,26 @@ sealed class MoveOrDrop {
 
 @immutable
 class NormalMove extends MoveOrDrop {
-  const NormalMove({required this.from, required super.to, this.promotion = false, this.midStep});
+  const NormalMove({
+    required this.from,
+    required super.to,
+    this.promotion = false,
+    this.midStep,
+  });
 
   final Square from;
   final bool promotion;
   final Square? midStep;
 
   @override
-  bool hasSquare(Square square) => square == from || square == to || square == midStep;
+  bool hasSquare(Square square) =>
+      square == from || square == to || square == midStep;
 
   @override
   Iterable<Square> get squares => [from, to];
 
-  NormalMove withPromotion(bool promotion) => NormalMove(from: from, to: to, promotion: promotion);
+  NormalMove withPromotion(bool promotion) =>
+      NormalMove(from: from, to: to, promotion: promotion);
 
   NormalMove withMidStep(Square? sq) =>
       NormalMove(from: from, to: to, promotion: promotion, midStep: sq);
@@ -110,22 +114,19 @@ class NormalMove extends MoveOrDrop {
 
 @immutable
 class DropMove extends MoveOrDrop {
-  const DropMove({
-    required super.to,
-    required this.role,
-  });
+  const DropMove({required super.to, required this.role});
 
   static Role? _parseUsiDropRole(String ch) => switch (ch.toUpperCase()) {
-        'P' => Role.pawn,
-        'L' => Role.lance,
-        'N' => Role.knight,
-        'S' => Role.silver,
-        'G' => Role.gold,
-        'B' => Role.bishop,
-        'R' => Role.rook,
-        'T' => Role.tokin,
-        _ => null,
-      };
+    'P' => Role.pawn,
+    'L' => Role.lance,
+    'N' => Role.knight,
+    'S' => Role.silver,
+    'G' => Role.gold,
+    'B' => Role.bishop,
+    'R' => Role.rook,
+    'T' => Role.tokin,
+    _ => null,
+  };
 
   static String makeUsiDropRole(Role role) {
     return role == Role.knight ? 'N' : role.name[0].toUpperCase();
@@ -144,7 +145,8 @@ class DropMove extends MoveOrDrop {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || other.runtimeType == runtimeType && hashCode == other.hashCode;
+    return identical(this, other) ||
+        other.runtimeType == runtimeType && hashCode == other.hashCode;
   }
 
   @override

@@ -130,14 +130,8 @@ void main() {
 
     group('equality', () {
       test('equal when both sides match', () {
-        final a = Hands(
-          sente: Hand.empty.store(Role.pawn),
-          gote: Hand.empty,
-        );
-        final b = Hands(
-          sente: Hand.empty.store(Role.pawn),
-          gote: Hand.empty,
-        );
+        final a = Hands(sente: Hand.empty.store(Role.pawn), gote: Hand.empty);
+        final b = Hands(sente: Hand.empty.store(Role.pawn), gote: Hand.empty);
         expect(a, b);
       });
 

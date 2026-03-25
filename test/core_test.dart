@@ -35,9 +35,18 @@ void main() {
 
   group('Square', () {
     test('fromCoords', () {
-      expect(Square.fromCoords(const File(0), const Rank(0)), Square.parse('1a'));
-      expect(Square.fromCoords(const File(2), const Rank(5)), Square.parse('3f'));
-      expect(Square.fromCoords(const File(15), const Rank(15)), Square.parse('16p'));
+      expect(
+        Square.fromCoords(const File(0), const Rank(0)),
+        Square.parse('1a'),
+      );
+      expect(
+        Square.fromCoords(const File(2), const Rank(5)),
+        Square.parse('3f'),
+      );
+      expect(
+        Square.fromCoords(const File(15), const Rank(15)),
+        Square.parse('16p'),
+      );
     });
 
     test('parse', () {
@@ -70,25 +79,46 @@ void main() {
   group('Move', () {
     test('parse', () {
       expect(
-          MoveOrDrop.parse('1a1b'), NormalMove(from: Square.parse('1a')!, to: Square.parse('1b')!));
-      expect(MoveOrDrop.parse('7g7f+'),
-          NormalMove(from: Square.parse('7g')!, to: Square.parse('7f')!, promotion: true));
-      expect(MoveOrDrop.parse('P*3c'), DropMove(role: Role.pawn, to: Square.parse('3c')!));
+        MoveOrDrop.parse('1a1b'),
+        NormalMove(from: Square.parse('1a')!, to: Square.parse('1b')!),
+      );
+      expect(
+        MoveOrDrop.parse('7g7f+'),
+        NormalMove(
+          from: Square.parse('7g')!,
+          to: Square.parse('7f')!,
+          promotion: true,
+        ),
+      );
+      expect(
+        MoveOrDrop.parse('P*3c'),
+        DropMove(role: Role.pawn, to: Square.parse('3c')!),
+      );
     });
 
     test('usi', () {
       expect(DropMove(role: Role.bishop, to: Square.parse('3c')!).usi, 'B*3c');
-      expect(NormalMove(from: Square.parse('7g')!, to: Square.parse('7f')!).usi, '7g7f');
-      expect(NormalMove(from: Square.parse('7g')!, to: Square.parse('7f')!, promotion: true).usi,
-          '7g7f+');
       expect(
-          NormalMove(
-                  from: Square.parse('7g')!,
-                  midStep: Square.parse('7f'),
-                  to: Square.parse('7g')!,
-                  promotion: true)
-              .usi,
-          '7g7f7g+');
+        NormalMove(from: Square.parse('7g')!, to: Square.parse('7f')!).usi,
+        '7g7f',
+      );
+      expect(
+        NormalMove(
+          from: Square.parse('7g')!,
+          to: Square.parse('7f')!,
+          promotion: true,
+        ).usi,
+        '7g7f+',
+      );
+      expect(
+        NormalMove(
+          from: Square.parse('7g')!,
+          midStep: Square.parse('7f'),
+          to: Square.parse('7g')!,
+          promotion: true,
+        ).usi,
+        '7g7f7g+',
+      );
     });
   });
 }

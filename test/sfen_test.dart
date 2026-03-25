@@ -21,7 +21,12 @@ void main() {
   });
 
   test('parse initial sfen', () {
-    final pos = parseSfen(Rule.shogi, initialSfen(Rule.shogi), strict: true).getOrThrow();
+    final pos =
+        parseSfen(
+          Rule.shogi,
+          initialSfen(Rule.shogi),
+          strict: true,
+        ).getOrThrow();
     expect(pos.hands, equals(Hands.empty));
     expect(pos.turn, equals(Side.sente));
     expect(pos.moveNumber, equals(1));
@@ -36,7 +41,11 @@ void main() {
     expect(pos.turn, equals(Side.sente));
     expect(pos.moveNumber, equals(1));
     expect(
-      () => parseSfen(Rule.shogi, 'lnsgkgsnl/9/9/9/9/9/9/9/LNSGKGSNL b - ', strict: true),
+      () => parseSfen(
+        Rule.shogi,
+        'lnsgkgsnl/9/9/9/9/9/9/9/LNSGKGSNL b - ',
+        strict: true,
+      ),
       returnsNormally,
     );
   });
@@ -74,24 +83,34 @@ void main() {
   }
 
   test('minishogi sfen', () {
-    final pos = parseSfen(Rule.minishogi, 'rbsgk/4p/5/P4/KGSBR b - 1', strict: true).getOrThrow();
-    expect(makeBoardSfen(Rule.minishogi, pos.board), equals('rbsgk/4p/5/P4/KGSBR'));
+    final pos =
+        parseSfen(
+          Rule.minishogi,
+          'rbsgk/4p/5/P4/KGSBR b - 1',
+          strict: true,
+        ).getOrThrow();
+    expect(
+      makeBoardSfen(Rule.minishogi, pos.board),
+      equals('rbsgk/4p/5/P4/KGSBR'),
+    );
     expect(makeSfen(pos), equals(initialSfen(Rule.minishogi)));
   });
 
   test('chushogi sfen', () {
-    final pos = parseSfen(
-      Rule.chushogi,
-      'lfcsgekgscfl/a1b1txot1b1a/mvrhdqndhrvm/pppppppppppp/3i4i3/12/12/3I4I3/PPPPPPPPPPPP/MVRHDNQDHRVM/A1B1TOXT1B1A/LFCSGKEGSCFL b 5e 1',
-      strict: true,
-    ).getOrThrow();
+    final pos =
+        parseSfen(
+          Rule.chushogi,
+          'lfcsgekgscfl/a1b1txot1b1a/mvrhdqndhrvm/pppppppppppp/3i4i3/12/12/3I4I3/PPPPPPPPPPPP/MVRHDNQDHRVM/A1B1TOXT1B1A/LFCSGKEGSCFL b 5e 1',
+          strict: true,
+        ).getOrThrow();
     expect(pos.lastLionCapture, equals(Square.parse('5e')));
 
-    final pos2 = parseSfen(
-      Rule.chushogi,
-      '+l+f+c+s+g+ek+g+s+c+f+l/+a1+b1+t+x+o+t1+b1+a/+m+v+r+h+dqn+d+h+r+v+m/+p+p+p+p+p+p+p+p+p+p+p+p/3+i4+i3/12/12/3+I4+I3/+P+P+P+P+P+P+P+P+P+P+P+P/+M+V+R+H+DNQ+D+H+R+V+M/+A1+B1+T+O+X+T1+B1+A/+L+F+C+S+GK+E+G+S+C+F+L b - 1',
-      strict: true,
-    ).getOrThrow();
+    final pos2 =
+        parseSfen(
+          Rule.chushogi,
+          '+l+f+c+s+g+ek+g+s+c+f+l/+a1+b1+t+x+o+t1+b1+a/+m+v+r+h+dqn+d+h+r+v+m/+p+p+p+p+p+p+p+p+p+p+p+p/3+i4+i3/12/12/3+I4+I3/+P+P+P+P+P+P+P+P+P+P+P+P/+M+V+R+H+DNQ+D+H+R+V+M/+A1+B1+T+O+X+T1+B1+A/+L+F+C+S+GK+E+G+S+C+F+L b - 1',
+          strict: true,
+        ).getOrThrow();
     expect(
       makeSfen(pos2),
       equals(
@@ -100,19 +119,21 @@ void main() {
     );
 
     expect(
-        parseSfen(
-          Rule.chushogi,
-          '12/12/7k3p/12/7K4/12/12/9+E2/12/3X8/12/12 b',
-          strict: true,
-        ),
-        isA<Success>());
+      parseSfen(
+        Rule.chushogi,
+        '12/12/7k3p/12/7K4/12/12/9+E2/12/3X8/12/12 b',
+        strict: true,
+      ),
+      isA<Success>(),
+    );
     expect(
-        parseSfen(
-          Rule.chushogi,
-          '12/12/7k3p/12/7K4/12/12/9K2/12/3X3+E4/12/12 b',
-          strict: true,
-        ),
-        const Failure(PositionSetupException(IllegalSetupCause.kings)));
+      parseSfen(
+        Rule.chushogi,
+        '12/12/7k3p/12/7K4/12/12/9K2/12/3X3+E4/12/12 b',
+        strict: true,
+      ),
+      const Failure(PositionSetupException(IllegalSetupCause.kings)),
+    );
   });
 
   test('kyotoshogi fairy-stockfish', () {
@@ -121,16 +142,33 @@ void main() {
       isA<Success>(),
     );
     final pos2Fairy =
-        parseSfen(Rule.kyotoshogi, '+L1L2/+S1S1k/5/+N1N1K/+P1P2 b PNLS', strict: true).getOrThrow();
+        parseSfen(
+          Rule.kyotoshogi,
+          '+L1L2/+S1S1k/5/+N1N1K/+P1P2 b PNLS',
+          strict: true,
+        ).getOrThrow();
     final pos2Lishogi =
-        parseSfen(Rule.kyotoshogi, 'T1L2/B1S1k/5/G1N1K/R1P2 b TGSP 1', strict: true).getOrThrow();
+        parseSfen(
+          Rule.kyotoshogi,
+          'T1L2/B1S1k/5/G1N1K/R1P2 b TGSP 1',
+          strict: true,
+        ).getOrThrow();
     expect(makeSfen(pos2Fairy), equals(makeSfen(pos2Lishogi)));
   });
 
   test('dobutsu fairy-stockfish', () {
-    final posFairy = parseSfen(Rule.dobutsu, 'gle/1c1/1C+C/ELG b CEG 1', strict: true).getOrThrow();
+    final posFairy =
+        parseSfen(
+          Rule.dobutsu,
+          'gle/1c1/1C+C/ELG b CEG 1',
+          strict: true,
+        ).getOrThrow();
     final posLishogi =
-        parseSfen(Rule.dobutsu, 'rkb/1p1/1P+P/BKR b RBP 1', strict: true).getOrThrow();
+        parseSfen(
+          Rule.dobutsu,
+          'rkb/1p1/1P+P/BKR b RBP 1',
+          strict: true,
+        ).getOrThrow();
     expect(makeSfen(posFairy), equals(makeSfen(posLishogi)));
   });
 }

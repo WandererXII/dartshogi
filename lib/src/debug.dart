@@ -68,7 +68,8 @@ int perft(
     final dests = entry.value;
 
     // In some variants a piece dropped onto the board can itself be promoted.
-    final promotions = promotableOnDrop(pos.rule, piece) ? [false, true] : [false];
+    final promotions =
+        promotableOnDrop(pos.rule, piece) ? [false, true] : [false];
 
     for (final prom in promotions) {
       final role = prom ? promote(pos.rule, piece.role)! : piece.role;

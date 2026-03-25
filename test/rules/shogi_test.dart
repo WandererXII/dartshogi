@@ -139,22 +139,39 @@ const _random = [
 void main() {
   test('test promotions', () {
     final initial = parseSfen(Rule.shogi, initialSfen(Rule.shogi)).getOrThrow();
-    final pos = parseSfen(Rule.shogi, '4k4/9/7S1/1+PG3NS1/9/9/9/9/4K3L b - 1').getOrThrow();
+    final pos =
+        parseSfen(
+          Rule.shogi,
+          '4k4/9/7S1/1+PG3NS1/9/9/9/9/4K3L b - 1',
+        ).getOrThrow();
 
-    expect(initial.isLegal(const NormalMove(from: Square(20), to: Square(29), promotion: true)),
-        isFalse); // promoting outside promotion zone
+    expect(
+      initial.isLegal(
+        const NormalMove(from: Square(20), to: Square(29), promotion: true),
+      ),
+      isFalse,
+    ); // promoting outside promotion zone
     expect(pos.isLegal(MoveOrDrop.parse('8d8c+')!), isFalse); // promoting tokin
     expect(pos.isLegal(MoveOrDrop.parse('7d7c+')!), isFalse); // promoting gold
-    expect(pos.isLegal(MoveOrDrop.parse('1i1a')!), isFalse); // not promoting lance on last rank
+    expect(
+      pos.isLegal(MoveOrDrop.parse('1i1a')!),
+      isFalse,
+    ); // not promoting lance on last rank
     expect(pos.isLegal(MoveOrDrop.parse('1i1a+')!), isTrue);
-    expect(pos.isLegal(MoveOrDrop.parse('3d2b')!),
-        isFalse); // not promoting knight on second last rank
+    expect(
+      pos.isLegal(MoveOrDrop.parse('3d2b')!),
+      isFalse,
+    ); // not promoting knight on second last rank
     expect(pos.isLegal(MoveOrDrop.parse('3d2b+')!), isTrue);
-    expect(pos.isLegal(MoveOrDrop.parse('2c1d+')!),
-        isTrue); // promoting while leaving the promotion zone
+    expect(
+      pos.isLegal(MoveOrDrop.parse('2c1d+')!),
+      isTrue,
+    ); // promoting while leaving the promotion zone
     expect(pos.isLegal(MoveOrDrop.parse('2c1d')!), isTrue);
-    expect(pos.isLegal(MoveOrDrop.parse('2d1c+')!),
-        isTrue); // promoting while entering the promotion zone
+    expect(
+      pos.isLegal(MoveOrDrop.parse('2d1c+')!),
+      isTrue,
+    ); // promoting while entering the promotion zone
     expect(pos.isLegal(MoveOrDrop.parse('2d1c')!), isTrue);
   });
 
@@ -170,14 +187,17 @@ void main() {
   });
 
   test('blockers perft', () {
-    final posLance = parseSfen(Rule.shogi, '4k4/4g4/9/4L4/9/9/9/4K4/9 w - 1').getOrThrow();
-    final posRook = parseSfen(Rule.shogi, '4k4/4g4/9/4R4/9/9/9/4K4/9 w - 1').getOrThrow();
+    final posLance =
+        parseSfen(Rule.shogi, '4k4/4g4/9/4L4/9/9/9/4K4/9 w - 1').getOrThrow();
+    final posRook =
+        parseSfen(Rule.shogi, '4k4/4g4/9/4R4/9/9/9/4K4/9 w - 1').getOrThrow();
     expect(perft(posLance, 1), equals(5));
     expect(perft(posRook, 1), equals(5));
   });
 
   test('capturing', () {
-    final pos = parseSfen(Rule.shogi, '4k4/9/3g5/3K5/9/9/9/9/9 b - 1').getOrThrow();
+    final pos =
+        parseSfen(Rule.shogi, '4k4/9/3g5/3K5/9/9/9/9/9 b - 1').getOrThrow();
     final pos2 = pos.play(MoveOrDrop.parse('6d6c')!).getOrThrow();
     final pos3 = pos2.play(MoveOrDrop.parse('5a4a')!).getOrThrow();
     expect(pos3.isLegal(MoveOrDrop.parse('G*5e')!), isTrue);
@@ -185,20 +205,27 @@ void main() {
 
   test('promotion', () {
     final pos = parseSfen(Rule.shogi, initialSfen(Rule.shogi)).getOrThrow();
-    expect(makeSfen(pos.play(MoveOrDrop.parse('1i1h')!).getOrThrow()),
-        equals('lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5RL/LNSGKGSN1 w - 2'));
+    expect(
+      makeSfen(pos.play(MoveOrDrop.parse('1i1h')!).getOrThrow()),
+      equals('lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5RL/LNSGKGSN1 w - 2'),
+    );
 
-    final pos2 = parseSfen(
-      Rule.shogi,
-      'lnsgkgsn1/1r5b1/pppppp1p1/6p2/8L/9/PPPPPPPP1/1B5R1/LNSGKGSN1 b LPp 9',
-    ).getOrThrow();
+    final pos2 =
+        parseSfen(
+          Rule.shogi,
+          'lnsgkgsn1/1r5b1/pppppp1p1/6p2/8L/9/PPPPPPPP1/1B5R1/LNSGKGSN1 b LPp 9',
+        ).getOrThrow();
     expect(
       makeSfen(pos2.playUnchecked(MoveOrDrop.parse('1e1a')!)),
-      equals('lnsgkgsn+L/1r5b1/pppppp1p1/6p2/9/9/PPPPPPPP1/1B5R1/LNSGKGSN1 w LPp 10'),
+      equals(
+        'lnsgkgsn+L/1r5b1/pppppp1p1/6p2/9/9/PPPPPPPP1/1B5R1/LNSGKGSN1 w LPp 10',
+      ),
     );
     expect(
       makeSfen(pos2.play(MoveOrDrop.parse('1e1a+')!).getOrThrow()),
-      equals('lnsgkgsn+L/1r5b1/pppppp1p1/6p2/9/9/PPPPPPPP1/1B5R1/LNSGKGSN1 w LPp 10'),
+      equals(
+        'lnsgkgsn+L/1r5b1/pppppp1p1/6p2/9/9/PPPPPPPP1/1B5R1/LNSGKGSN1 w LPp 10',
+      ),
     );
   });
 
@@ -211,18 +238,27 @@ void main() {
   }
 
   test('pawn checkmate legality', () {
-    final pos = parseSfen(Rule.shogi, '3rkr3/9/8p/4N4/1B7/9/1SG6/1KS6/9 b LPp 1').getOrThrow();
+    final pos =
+        parseSfen(
+          Rule.shogi,
+          '3rkr3/9/8p/4N4/1B7/9/1SG6/1KS6/9 b LPp 1',
+        ).getOrThrow();
     expect(pos.isLegal(MoveOrDrop.parse('L*5b')!), isTrue);
     expect(pos.isLegal(MoveOrDrop.parse('P*5b')!), isFalse);
 
     // Single king
-    final skPos = parseSfen(Rule.shogi, '3rkr3/9/8p/4N4/1B7/9/1SG6/2S6/9 b LPp 1').getOrThrow();
+    final skPos =
+        parseSfen(
+          Rule.shogi,
+          '3rkr3/9/8p/4N4/1B7/9/1SG6/2S6/9 b LPp 1',
+        ).getOrThrow();
     expect(skPos.isLegal(MoveOrDrop.parse('L*5b')!), isTrue);
     expect(skPos.isLegal(MoveOrDrop.parse('P*5b')!), isFalse);
   });
 
   test('multiple checkers', () {
-    final pos = parseSfen(Rule.shogi, '9/9/2B3B2/9/4k4/9/2B3B2/9/8K w').getOrThrow();
+    final pos =
+        parseSfen(Rule.shogi, '9/9/2B3B2/9/4k4/9/2B3B2/9/8K w').getOrThrow();
     expect(pos.isLegal(MoveOrDrop.parse('5e5d')!), isTrue);
     expect(pos.isLegal(MoveOrDrop.parse('5e5f')!), isTrue);
     expect(pos.isLegal(MoveOrDrop.parse('5e4e')!), isTrue);
@@ -244,7 +280,8 @@ void main() {
 
   test('prod 500 usi', () {
     for (final usis in usiFixture) {
-      Position pos = parseSfen(Rule.shogi, initialSfen(Rule.shogi)).getOrThrow();
+      Position pos =
+          parseSfen(Rule.shogi, initialSfen(Rule.shogi)).getOrThrow();
       for (final usi in usis.split(' ')) {
         final md = MoveOrDrop.parse(usi)!;
         expect(pos.isLegal(md), isTrue);

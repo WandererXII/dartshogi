@@ -42,11 +42,11 @@ abstract class Kyotoshogi extends Position {
 
   @override
   PositionValidation get validation => const PositionValidation(
-        doublePawn: false,
-        oppositeCheck: true,
-        unpromotedForcedPromotion: false,
-        maxNumberOfRoyalPieces: 1,
-      );
+    doublePawn: false,
+    oppositeCheck: true,
+    unpromotedForcedPromotion: false,
+    maxNumberOfRoyalPieces: 1,
+  );
 
   @override
   SquareSet squareAttackers(Square square, Side attacker, SquareSet occupied) {
@@ -93,10 +93,14 @@ class _Kyotoshogi extends Kyotoshogi {
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest: lastDest == uniqueObjectInstance ? this.lastDest : lastDest as Square?,
-      lastLionCapture: lastLionCapture == uniqueObjectInstance
-          ? this.lastLionCapture
-          : lastLionCapture as Square?,
+      lastDest:
+          lastDest == uniqueObjectInstance
+              ? this.lastDest
+              : lastDest as Square?,
+      lastLionCapture:
+          lastLionCapture == uniqueObjectInstance
+              ? this.lastLionCapture
+              : lastLionCapture as Square?,
     );
   }
 }

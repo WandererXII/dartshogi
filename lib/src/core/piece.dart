@@ -5,22 +5,13 @@ import './side.dart';
 
 @immutable
 class Piece {
-  const Piece({
-    required this.side,
-    required this.role,
-  });
+  const Piece({required this.side, required this.role});
 
   final Side side;
   final Role role;
 
-  Piece copyWith({
-    Side? side,
-    Role? role,
-  }) {
-    return Piece(
-      side: side ?? this.side,
-      role: role ?? this.role,
-    );
+  Piece copyWith({Side? side, Role? role}) {
+    return Piece(side: side ?? this.side, role: role ?? this.role);
   }
 
   @override

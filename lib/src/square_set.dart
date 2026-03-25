@@ -38,7 +38,16 @@ extension type const SquareSet(Uint32List value) {
   }
 
   factory SquareSet.fromRank(int rank) {
-    return SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]).shl256(16 * rank);
+    return SquareSet.fromList([
+      0xffff,
+      0x0,
+      0x0,
+      0x0,
+      0x0,
+      0x0,
+      0x0,
+      0x0,
+    ]).shl256(16 * rank);
   }
 
   factory SquareSet.fromFile(int file) {
@@ -75,8 +84,16 @@ extension type const SquareSet(Uint32List value) {
     0x20001000,
     0x80004000,
   ]);
-  static final antidiagonal = SquareSet.fromList(
-      [0x40008000, 0x10002000, 0x4000800, 0x1000200, 0x400080, 0x100020, 0x40008, 0x10002]);
+  static final antidiagonal = SquareSet.fromList([
+    0x40008000,
+    0x10002000,
+    0x4000800,
+    0x1000200,
+    0x400080,
+    0x100020,
+    0x40008,
+    0x10002,
+  ]);
 
   // right and up
   SquareSet shr256(int shift) {
@@ -119,39 +136,39 @@ extension type const SquareSet(Uint32List value) {
   }
 
   SquareSet xor(SquareSet other) => SquareSet.fromList([
-        value[0] ^ other.value[0],
-        value[1] ^ other.value[1],
-        value[2] ^ other.value[2],
-        value[3] ^ other.value[3],
-        value[4] ^ other.value[4],
-        value[5] ^ other.value[5],
-        value[6] ^ other.value[6],
-        value[7] ^ other.value[7],
-      ]);
+    value[0] ^ other.value[0],
+    value[1] ^ other.value[1],
+    value[2] ^ other.value[2],
+    value[3] ^ other.value[3],
+    value[4] ^ other.value[4],
+    value[5] ^ other.value[5],
+    value[6] ^ other.value[6],
+    value[7] ^ other.value[7],
+  ]);
   SquareSet operator ^(SquareSet other) => xor(other);
 
   SquareSet union(SquareSet other) => SquareSet.fromList([
-        value[0] | other.value[0],
-        value[1] | other.value[1],
-        value[2] | other.value[2],
-        value[3] | other.value[3],
-        value[4] | other.value[4],
-        value[5] | other.value[5],
-        value[6] | other.value[6],
-        value[7] | other.value[7],
-      ]);
+    value[0] | other.value[0],
+    value[1] | other.value[1],
+    value[2] | other.value[2],
+    value[3] | other.value[3],
+    value[4] | other.value[4],
+    value[5] | other.value[5],
+    value[6] | other.value[6],
+    value[7] | other.value[7],
+  ]);
   SquareSet operator |(SquareSet other) => union(other);
 
   SquareSet intersect(SquareSet other) => SquareSet.fromList([
-        value[0] & other.value[0],
-        value[1] & other.value[1],
-        value[2] & other.value[2],
-        value[3] & other.value[3],
-        value[4] & other.value[4],
-        value[5] & other.value[5],
-        value[6] & other.value[6],
-        value[7] & other.value[7],
-      ]);
+    value[0] & other.value[0],
+    value[1] & other.value[1],
+    value[2] & other.value[2],
+    value[3] & other.value[3],
+    value[4] & other.value[4],
+    value[5] & other.value[5],
+    value[6] & other.value[6],
+    value[7] & other.value[7],
+  ]);
   SquareSet operator &(SquareSet other) => intersect(other);
 
   SquareSet minus256(SquareSet other) {
@@ -161,7 +178,11 @@ extension type const SquareSet(Uint32List value) {
     for (int i = 0; i < 8; i++) {
       final otherWithC = _toUint32(other.value[i] + c);
       newRows[i] = _toUint32(newRows[i] - otherWithC);
-      c = ((newRows[i] & otherWithC & 1) + (otherWithC >>> 1) + (newRows[i] >>> 1)) >>> 31;
+      c =
+          ((newRows[i] & otherWithC & 1) +
+              (otherWithC >>> 1) +
+              (newRows[i] >>> 1)) >>>
+          31;
     }
     return SquareSet.fromList(newRows);
   }
