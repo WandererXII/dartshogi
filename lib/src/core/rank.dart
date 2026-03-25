@@ -1,6 +1,4 @@
-/// A rank of the board.
 extension type const Rank._(int value) implements int {
-  /// Gets the board [Rank] from a rank index between 0 and 15.
   const Rank(this.value) : assert(value >= 0 && value < 16);
 
   static const rankA = Rank(0);
@@ -20,7 +18,6 @@ extension type const Rank._(int value) implements int {
   static const rankO = Rank(14);
   static const rankP = Rank(15);
 
-  /// All ranks in ascending order.
   static const values = [
     rankA,
     rankB,
@@ -62,9 +59,6 @@ extension type const Rank._(int value) implements int {
   /// The name of the rank, such as 'a', 'b', 'c', etc.
   String get name => _names[value];
 
-  /// Returns the rank offset by [delta].
-  ///
-  /// Returns `null` if the resulting rank is out of bounds.
   Rank? offset(int delta) {
     assert(delta >= -15 && delta <= 15);
     final newRank = value + delta;

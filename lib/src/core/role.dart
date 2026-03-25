@@ -1,6 +1,5 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-/// Piece role, such as pawn, knight, etc. Includes all variants
 enum Role {
   lance,
   knight,
@@ -46,6 +45,8 @@ enum Role {
   falcon,
   eagle,
   dragonpromoted;
+
+  static Set<Role> lionRoles = {Role.lion, Role.lionpromoted};
 }
 
 typedef ByRole<T> = IMap<Role, T>;

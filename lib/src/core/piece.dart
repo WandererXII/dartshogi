@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
+
 import './role.dart';
 import './side.dart';
 
-/// Describes a shogi piece by its side and role.
 @immutable
 class Piece {
   const Piece({

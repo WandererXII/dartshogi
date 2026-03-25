@@ -1,4 +1,3 @@
-/// Represents the different possible rules of chess and its variants
 enum Rule {
   shogi,
   minishogi,

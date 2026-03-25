@@ -1,31 +1,21 @@
 import 'package:meta/meta.dart';
-import './square.dart';
-import './role.dart';
 
-/// Base class for a shogi move.
-///
-/// A [MoveOrDrop] can be either a [NormalMove] or a [DropMove].
+import './role.dart';
+import './square.dart';
+
 @immutable
 sealed class MoveOrDrop {
   const MoveOrDrop({
     required this.to,
   });
 
-  /// The target square of this move.
   final Square to;
 
-  /// Gets the USI notation of this move.
   String get usi;
 
   static final RegExp _usiDropRegex = RegExp(r'^([PLNSGBRT])\*(\d\d?[a-p])$');
-  static final RegExp _usiMoveRegex =
-      RegExp(r'^(\d\d?[a-p])(\d\d?[a-p])?(\d\d?[a-p])(\+|=|\?)?$');
+  static final RegExp _usiMoveRegex = RegExp(r'^(\d\d?[a-p])(\d\d?[a-p])?(\d\d?[a-p])(\+|=|\?)?$');
 
-  /// Parses a USI string into a move.
-  ///
-  /// Will return a [NormalMove] or a [DropMove] depending on the USI string.
-  ///
-  /// Returns `null` if USI string is not valid.
   static MoveOrDrop? parse(String str) {
     final dropMatch = _usiDropRegex.firstMatch(str);
     if (dropMatch != null) {
@@ -42,7 +32,6 @@ sealed class MoveOrDrop {
       }
     }
 
-    // 2. Try Move Match
     final moveMatch = _usiMoveRegex.firstMatch(str);
     if (moveMatch != null) {
       final g1 = moveMatch.group(1);
@@ -69,10 +58,8 @@ sealed class MoveOrDrop {
     return null;
   }
 
-  /// Returns `true` if [square] is a square of this move.
   bool hasSquare(Square square);
 
-  /// Returns an iterable of all squares involved in this move.
   Iterable<Square> get squares;
 
   @override
@@ -81,40 +68,25 @@ sealed class MoveOrDrop {
   }
 }
 
-/// Represents a chess move, which is possibly a promotion.
 @immutable
 class NormalMove extends MoveOrDrop {
-  const NormalMove(
-      {required this.from,
-      required super.to,
-      this.promotion = false,
-      this.midStep});
+  const NormalMove({required this.from, required super.to, this.promotion = false, this.midStep});
 
-  /// The origin square of this move.
   final Square from;
-
-  /// Is the piece being promoted.
   final bool promotion;
-
-  /// Square reached between [from] and [to] - used for lion in chushogi.
   final Square? midStep;
 
   @override
-  bool hasSquare(Square square) =>
-      square == from || square == to || square == midStep;
+  bool hasSquare(Square square) => square == from || square == to || square == midStep;
 
   @override
   Iterable<Square> get squares => [from, to];
 
-  /// Returns a copy of this move with a [promotion] role.
-  NormalMove withPromotion(bool promotion) =>
-      NormalMove(from: from, to: to, promotion: promotion);
+  NormalMove withPromotion(bool promotion) => NormalMove(from: from, to: to, promotion: promotion);
 
-  /// Returns a copy of this move with a [promotion] role.
   NormalMove withMidStep(Square? sq) =>
       NormalMove(from: from, to: to, promotion: promotion, midStep: sq);
 
-  /// Gets USI notation, like `7g7f+`.
   @override
   String get usi {
     final base = "${from.name}${midStep?.name ?? ''}${to.name}";
@@ -136,10 +108,8 @@ class NormalMove extends MoveOrDrop {
   int get hashCode => Object.hash(from, to, promotion, midStep);
 }
 
-/// Represents a drop move.
 @immutable
 class DropMove extends MoveOrDrop {
-  /// Constructs a [DropMove] from a target square and a role.
   const DropMove({
     required super.to,
     required this.role,
@@ -161,7 +131,6 @@ class DropMove extends MoveOrDrop {
     return role == Role.knight ? 'N' : role.name[0].toUpperCase();
   }
 
-  /// The [Role] of the dropped piece.
   final Role role;
 
   @override
@@ -170,14 +139,12 @@ class DropMove extends MoveOrDrop {
   @override
   Iterable<Square> get squares => [to];
 
-  /// Gets USI notation of the drop, like `P*7f`.
   @override
   String get usi => '${makeUsiDropRole(role)}*${to.name}';
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) ||
-        other.runtimeType == runtimeType && hashCode == other.hashCode;
+    return identical(this, other) || other.runtimeType == runtimeType && hashCode == other.hashCode;
   }
 
   @override

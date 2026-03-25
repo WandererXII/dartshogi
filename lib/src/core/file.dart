@@ -1,6 +1,4 @@
-/// A file of the board.
 extension type const File._(int value) implements int {
-  /// Gets the board [File] from a file index between 0 and 15.
   const File(this.value) : assert(value >= 0 && value < 16);
 
   static const file1 = File(0);
@@ -20,7 +18,6 @@ extension type const File._(int value) implements int {
   static const file15 = File(14);
   static const file16 = File(15);
 
-  /// All files in ascending order.
   static const values = [
     file1,
     file2,
@@ -62,9 +59,6 @@ extension type const File._(int value) implements int {
   /// The name of the file, such as '1', '2', '3', etc.
   String get name => _names[value];
 
-  /// Returns the file offset by [delta].
-  ///
-  /// Returns `null` if the resulting file is out of bounds.
   File? offset(int delta) {
     assert(delta >= -15 && delta <= 15);
     final newFile = value + delta;
