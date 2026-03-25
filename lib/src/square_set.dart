@@ -1,14 +1,12 @@
 import 'dart:typed_data';
+
 import './core/square.dart';
 
-/// A finite set of all squares on a board.
+/// Bitboard represantion of the shogi board.
 ///
-/// All the squares are represented by 8 32-bit integers, where each bit
-/// corresponds to a square, using a little-endian rank-file mapping.
-/// See also [Square].
-///
-/// The set operations are implemented as bitwise operations on the integer.
-
+/// Coordination system starts at top right.
+/// Assumes POV of sente player - up is smaller rank, down is greater rank, left is smaller file, right is greater file.
+/// Each element represents two ranks - board max size 16x16.
 extension type const SquareSet(Uint32List value) {
   SquareSet._internal(Uint32List dRows) : value = dRows;
 
@@ -20,7 +18,6 @@ extension type const SquareSet(Uint32List value) {
     return SquareSet._internal(list);
   }
 
-  /// Creates a [SquareSet] with a single [Square].
   factory SquareSet.fromSquare(int square) {
     if (square >= 256 || square < 0) return SquareSet.empty;
     final newRows = List<int>.filled(8, 0);
@@ -29,7 +26,6 @@ extension type const SquareSet(Uint32List value) {
     return SquareSet.fromList(newRows);
   }
 
-  /// Creates a [SquareSet] from several [Square]s.
   factory SquareSet.fromSquares(List<int> squares) {
     final newRows = List<int>.filled(8, 0);
     for (final square in squares) {
@@ -41,24 +37,19 @@ extension type const SquareSet(Uint32List value) {
     return SquareSet.fromList(newRows);
   }
 
-  /// Create a [SquareSet] containing all squares of the given rank.
   factory SquareSet.fromRank(int rank) {
-    return SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])
-        .shl256(16 * rank);
+    return SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]).shl256(16 * rank);
   }
 
-  /// Create a [SquareSet] containing all squares of the given file.
   factory SquareSet.fromFile(int file) {
     final val = 0x10001 << file;
     return SquareSet.fromList([val, val, val, val, val, val, val, val]);
   }
 
-  /// Create a [SquareSet] containing all ranks from [rank] above.
   static SquareSet ranksAbove(int rank) {
     return SquareSet.full.shr256(16 * (16 - rank));
   }
 
-  /// Create a [SquareSet] containing all ranks from [rank] below.
   static SquareSet ranksBelow(int rank) {
     return SquareSet.full.shl256(16 * (rank + 1));
   }
@@ -84,18 +75,10 @@ extension type const SquareSet(Uint32List value) {
     0x20001000,
     0x80004000,
   ]);
-  static final antidiagonal = SquareSet.fromList([
-    0x40008000,
-    0x10002000,
-    0x4000800,
-    0x1000200,
-    0x400080,
-    0x100020,
-    0x40008,
-    0x10002
-  ]);
+  static final antidiagonal = SquareSet.fromList(
+      [0x40008000, 0x10002000, 0x4000800, 0x1000200, 0x400080, 0x100020, 0x40008, 0x10002]);
 
-  /// Bitwise right shift
+  // right and up
   SquareSet shr256(int shift) {
     if (shift >= 256) return SquareSet.empty;
     if (shift > 0) {
@@ -115,7 +98,7 @@ extension type const SquareSet(Uint32List value) {
     return this;
   }
 
-  /// Bitwise left shift
+  // left and down
   SquareSet shl256(int shift) {
     if (shift >= 256) return SquareSet.empty;
     if (shift > 0) {
@@ -135,7 +118,6 @@ extension type const SquareSet(Uint32List value) {
     return this;
   }
 
-  /// Returns a new [SquareSet] with a bitwise XOR of this set and [other].
   SquareSet xor(SquareSet other) => SquareSet.fromList([
         value[0] ^ other.value[0],
         value[1] ^ other.value[1],
@@ -148,7 +130,6 @@ extension type const SquareSet(Uint32List value) {
       ]);
   SquareSet operator ^(SquareSet other) => xor(other);
 
-  /// Returns a new [SquareSet] with the squares that are in either this set or [other].
   SquareSet union(SquareSet other) => SquareSet.fromList([
         value[0] | other.value[0],
         value[1] | other.value[1],
@@ -161,7 +142,6 @@ extension type const SquareSet(Uint32List value) {
       ]);
   SquareSet operator |(SquareSet other) => union(other);
 
-  /// Returns a new [SquareSet] with the squares that are in both this set and [other].
   SquareSet intersect(SquareSet other) => SquareSet.fromList([
         value[0] & other.value[0],
         value[1] & other.value[1],
@@ -174,7 +154,6 @@ extension type const SquareSet(Uint32List value) {
       ]);
   SquareSet operator &(SquareSet other) => intersect(other);
 
-  /// Returns a new [SquareSet] with the [other] squares removed from this set.
   SquareSet minus256(SquareSet other) {
     int c = 0;
     final newRows = List<int>.from(value);
@@ -182,17 +161,13 @@ extension type const SquareSet(Uint32List value) {
     for (int i = 0; i < 8; i++) {
       final otherWithC = _toUint32(other.value[i] + c);
       newRows[i] = _toUint32(newRows[i] - otherWithC);
-      c = ((newRows[i] & otherWithC & 1) +
-              (otherWithC >>> 1) +
-              (newRows[i] >>> 1)) >>>
-          31;
+      c = ((newRows[i] & otherWithC & 1) + (otherWithC >>> 1) + (newRows[i] >>> 1)) >>> 31;
     }
     return SquareSet.fromList(newRows);
   }
 
   SquareSet operator -(SquareSet other) => minus256(other);
 
-  /// Returns the set complement of this set.
   SquareSet complement() {
     return SquareSet.fromList([
       ~value[0],
@@ -206,7 +181,6 @@ extension type const SquareSet(Uint32List value) {
     ]);
   }
 
-  /// Returns the set difference of this set and [other].
   SquareSet diff(SquareSet other) {
     return SquareSet.fromList([
       value[0] & ~other.value[0],
@@ -220,7 +194,6 @@ extension type const SquareSet(Uint32List value) {
     ]);
   }
 
-  /// Flips the set vertically.
   SquareSet rowSwap256() {
     return SquareSet.fromList([
       _rowSwap32(value[7]),
@@ -234,7 +207,6 @@ extension type const SquareSet(Uint32List value) {
     ]);
   }
 
-  /// Flips the set horizontally.
   SquareSet rbit256() {
     return SquareSet.fromList([
       _rbit32(value[7]),
@@ -248,7 +220,6 @@ extension type const SquareSet(Uint32List value) {
     ]);
   }
 
-  /// Returns the number of squares in the set.
   int get size {
     int count = 0;
     for (int i = 0; i < 8; i++) {
@@ -257,7 +228,6 @@ extension type const SquareSet(Uint32List value) {
     return count;
   }
 
-  /// Returns true if the set is empty.
   bool get isEmpty {
     for (int i = 0; i < 8; i++) {
       if (value[i] != 0) return false;
@@ -265,7 +235,6 @@ extension type const SquareSet(Uint32List value) {
     return true;
   }
 
-  /// Returns true if the set is not empty.
   bool get isNotEmpty {
     for (int i = 0; i < 8; i++) {
       if (value[i] != 0) return true;
@@ -273,7 +242,6 @@ extension type const SquareSet(Uint32List value) {
     return false;
   }
 
-  /// Returns the first square in the set, or null if the set is empty.
   Square? first() {
     for (int i = 0; i < 8; i++) {
       if (value[i] != 0) {
@@ -283,7 +251,6 @@ extension type const SquareSet(Uint32List value) {
     return null;
   }
 
-  /// Returns the last square in the set, or null if the set is empty.
   Square? last() {
     for (int i = 7; i >= 0; i--) {
       if (value[i] != 0) {
@@ -293,13 +260,10 @@ extension type const SquareSet(Uint32List value) {
     return null;
   }
 
-  /// Returns the squares in the set as an iterable.
   Iterable<Square> get squares => _iterateSquares();
 
-  /// Returns the squares in the set as an iterable in reverse order.
   Iterable<Square> get squaresReversed => _iterateSquaresReversed();
 
-  /// Returns true if the set contains more than one square.
   bool moreThanOne() {
     final occ = <int>[];
     for (int i = 0; i < 8; i++) {
@@ -309,7 +273,6 @@ extension type const SquareSet(Uint32List value) {
     return occ.any((r) => (r & (r - 1)) != 0);
   }
 
-  /// Returns square if it is single, otherwise returns null.
   Square? singleSquare() {
     return moreThanOne() ? null : last();
   }
@@ -318,20 +281,16 @@ extension type const SquareSet(Uint32List value) {
     return isNotEmpty && !moreThanOne();
   }
 
-  /// Returns true if the [SquareSet] contains the given [square].
   bool has(int square) {
     if (square >= 256 || square < 0) return false;
     final index = square >>> 5;
     return (value[index] & (1 << (square - 32 * index))) != 0;
   }
 
-  /// Returns true if the square set has any square in the [other] square set.
   bool isIntersected(SquareSet other) => intersect(other).isNotEmpty;
 
-  /// Returns true if the square set is disjoint from the [other] square set.
   bool isDisjoint(SquareSet other) => intersect(other).isEmpty;
 
-  /// Returns a new [SquareSet] with the given [square] added.
   SquareSet withSquare(int square) {
     if (square >= 256 || square < 0) return this;
     final index = square >>> 5;
@@ -340,7 +299,6 @@ extension type const SquareSet(Uint32List value) {
     return SquareSet.fromList(newDRows);
   }
 
-  /// Returns a new [SquareSet] with all the given [squares] added.
   SquareSet withMany(List<int> squares) {
     final newDRows = List<int>.from(value);
     for (final square in squares) {
@@ -352,7 +310,6 @@ extension type const SquareSet(Uint32List value) {
     return SquareSet.fromList(newDRows);
   }
 
-  /// Returns a new [SquareSet] with the given [square] removed.
   SquareSet withoutSquare(int square) {
     if (square >= 256 || square < 0) return this;
     final index = square >>> 5;
@@ -372,7 +329,6 @@ extension type const SquareSet(Uint32List value) {
     return SquareSet.fromList(newDRows);
   }
 
-  /// Returns a new [SquareSet] with its first [Square] removed.
   SquareSet withoutFirst() {
     final newDRows = List<int>.from(value);
     for (int i = 0; i < 8; i++) {
@@ -384,7 +340,6 @@ extension type const SquareSet(Uint32List value) {
     return this;
   }
 
-  /// Returns the hexadecimal string representation of the bitboard value.
   String hex() {
     final parts = <String>[];
     for (int i = 0; i < 8; i++) {

@@ -1,15 +1,13 @@
-import './core/square.dart';
-import './square_set.dart';
 import './core/piece.dart';
 import './core/role.dart';
 import './core/side.dart';
+import './core/square.dart';
+import './square_set.dart';
 
-/// Gets squares attacked or defended by a king on [Square].
 SquareSet kingAttacks(Square square) {
   return _neighbors[square];
 }
 
-/// Gets squares attacked or defended by a knight on [Square].
 SquareSet knightAttacks(Square square, Side side) {
   if (side == Side.sente) {
     return _computeRange(square, [-31, -33]);
@@ -20,11 +18,9 @@ SquareSet knightAttacks(Square square, Side side) {
 
 SquareSet silverAttacks(Square square, Side side) {
   if (side == Side.sente) {
-    return _neighbors[square]
-        .withoutMany([square + 16, square - 1, square + 1]);
+    return _neighbors[square].withoutMany([square + 16, square - 1, square + 1]);
   } else {
-    return _neighbors[square]
-        .withoutMany([square - 16, square - 1, square + 1]);
+    return _neighbors[square].withoutMany([square - 16, square - 1, square + 1]);
   }
 }
 
@@ -81,8 +77,7 @@ SquareSet chariotAttacks(Square square, SquareSet occupied) {
 }
 
 SquareSet sideMoverAttacks(Square square, SquareSet occupied) {
-  return _rankAttacks(square, occupied)
-      .union(SquareSet.fromSquares([square - 16, square + 16]));
+  return _rankAttacks(square, occupied).union(SquareSet.fromSquares([square - 16, square + 16]));
 }
 
 SquareSet verticalMoverAttacks(Square square, SquareSet occupied) {
@@ -91,11 +86,9 @@ SquareSet verticalMoverAttacks(Square square, SquareSet occupied) {
 
 SquareSet copperAttacks(Square square, Side side) {
   if (side == Side.sente) {
-    return _neighbors[square]
-        .withoutMany([square + 17, square + 15, square + 1, square - 1]);
+    return _neighbors[square].withoutMany([square + 17, square + 15, square + 1, square - 1]);
   } else {
-    return _neighbors[square]
-        .withoutMany([square - 17, square - 15, square - 1, square + 1]);
+    return _neighbors[square].withoutMany([square - 17, square - 15, square - 1, square + 1]);
   }
 }
 
@@ -116,15 +109,13 @@ SquareSet elephantAttacks(Square square, Side side) {
 }
 
 SquareSet kirinAttacks(Square square) {
-  return _neighbors[square]
-      .withoutMany([square + 1, square - 1, square + 16, square - 16]).union(
-          _computeRange(square, [32, -32, -2, 2]));
+  return _neighbors[square].withoutMany([square + 1, square - 1, square + 16, square - 16]).union(
+      _computeRange(square, [32, -32, -2, 2]));
 }
 
 SquareSet phoenixAttacks(Square square) {
-  return _neighbors[square]
-      .withoutMany([square - 15, square - 17, square + 15, square + 17]).union(
-          _computeRange(square, [30, 34, -30, -34]));
+  return _neighbors[square].withoutMany([square - 15, square - 17, square + 15, square + 17]).union(
+      _computeRange(square, [30, 34, -30, -34]));
 }
 
 SquareSet queenAttacks(Square square, SquareSet occupied) {
@@ -145,11 +136,11 @@ SquareSet boarAttacks(Square square, SquareSet occupied) {
 
 SquareSet whaleAttacks(Square square, Side side, SquareSet occupied) {
   if (side == Side.sente) {
-    return _fileAttacks(square, occupied).union(
-        bishopAttacks(square, occupied).intersect(_backRanks[square.rank]));
+    return _fileAttacks(square, occupied)
+        .union(bishopAttacks(square, occupied).intersect(_backRanks[square.rank]));
   } else {
-    return _fileAttacks(square, occupied).union(
-        bishopAttacks(square, occupied).intersect(_forwRanks[square.rank]));
+    return _fileAttacks(square, occupied)
+        .union(bishopAttacks(square, occupied).intersect(_forwRanks[square.rank]));
   }
 }
 
@@ -169,14 +160,12 @@ SquareSet falconAttacks(Square square, Side side, SquareSet occupied) {
   if (side == Side.sente) {
     return bishopAttacks(square, occupied)
         .union(_rankAttacks(square, occupied))
-        .union(
-            _fileAttacks(square, occupied).intersect(_backRanks[square.rank]))
+        .union(_fileAttacks(square, occupied).intersect(_backRanks[square.rank]))
         .union(falconLionAttacks(square, side));
   } else {
     return bishopAttacks(square, occupied)
         .union(_rankAttacks(square, occupied))
-        .union(
-            _fileAttacks(square, occupied).intersect(_forwRanks[square.rank]))
+        .union(_fileAttacks(square, occupied).intersect(_forwRanks[square.rank]))
         .union(falconLionAttacks(square, side));
   }
 }
@@ -192,20 +181,18 @@ SquareSet eagleLionAttacks(Square square, Side side) {
 SquareSet eagleAttacks(Square square, Side side, SquareSet occupied) {
   if (side == Side.sente) {
     return rookAttacks(square, occupied)
-        .union(
-            bishopAttacks(square, occupied).intersect(_backRanks[square.rank]))
+        .union(bishopAttacks(square, occupied).intersect(_backRanks[square.rank]))
         .union(eagleLionAttacks(square, side));
   } else {
     return rookAttacks(square, occupied)
-        .union(
-            bishopAttacks(square, occupied).intersect(_forwRanks[square.rank]))
+        .union(bishopAttacks(square, occupied).intersect(_forwRanks[square.rank]))
         .union(eagleLionAttacks(square, side));
   }
 }
 
 SquareSet lionAttacks(Square square) {
-  return _neighbors[square].union(_computeRange(square,
-      [-34, -33, -32, -31, -30, -18, -14, -2, 2, 14, 18, 30, 31, 32, 33, 34]));
+  return _neighbors[square].union(_computeRange(
+      square, [-34, -33, -32, -31, -30, -18, -14, -2, 2, 14, 18, 30, 31, 32, 33, 34]));
 }
 
 /// Gets squares attacked or defended by a `piece` on `square`, given
@@ -310,9 +297,7 @@ SquareSet ray(Square a, Square b) {
 /// Gets all squares between `a` and `b` (bounds not included), or an empty set
 /// if they are not on the same rank, file or diagonal.
 SquareSet between(Square a, Square b) {
-  return ray(a, b)
-      .intersect(SquareSet.full.shl256(a).xor(SquareSet.full.shl256(b)))
-      .withoutFirst();
+  return ray(a, b).intersect(SquareSet.full.shl256(a).xor(SquareSet.full.shl256(b))).withoutFirst();
 }
 
 SquareSet _computeRange(Square square, List<int> deltas) {
@@ -343,14 +328,11 @@ List<SquareSet> _tabulateRanks(SquareSet Function(int) f) {
 final _forwRanks = _tabulateRanks((rank) => SquareSet.ranksAbove(rank));
 final _backRanks = _tabulateRanks((rank) => SquareSet.ranksBelow(rank));
 
-final _neighbors = _tabulateSquares(
-    (sq) => _computeRange(sq, [-17, -16, -15, -1, 1, 15, 16, 17]));
+final _neighbors = _tabulateSquares((sq) => _computeRange(sq, [-17, -16, -15, -1, 1, 15, 16, 17]));
 
-final _fileRange =
-    _tabulateSquares((sq) => SquareSet.fromFile(sq.file).withoutSquare(sq));
+final _fileRange = _tabulateSquares((sq) => SquareSet.fromFile(sq.file).withoutSquare(sq));
 
-final _rankRange =
-    _tabulateSquares((sq) => SquareSet.fromRank(sq.rank).withoutSquare(sq));
+final _rankRange = _tabulateSquares((sq) => SquareSet.fromRank(sq.rank).withoutSquare(sq));
 
 final _diagRange = _tabulateSquares((sq) {
   final diag = SquareSet.fromList([
@@ -364,8 +346,7 @@ final _diagRange = _tabulateSquares((sq) {
     0x80004000,
   ]);
   final shift = 16 * (sq.rank - sq.file);
-  return (shift >= 0 ? diag.shl256(shift) : diag.shr256(-shift))
-      .withoutSquare(sq);
+  return (shift >= 0 ? diag.shl256(shift) : diag.shr256(-shift)).withoutSquare(sq);
 });
 final _antiDiagRange = _tabulateSquares((sq) {
   final diag = SquareSet.fromList([
@@ -379,8 +360,7 @@ final _antiDiagRange = _tabulateSquares((sq) {
     0x10002,
   ]);
   final shift = 16 * (sq.rank + sq.file - 15);
-  return (shift >= 0 ? diag.shl256(shift) : diag.shr256(-shift))
-      .withoutSquare(sq);
+  return (shift >= 0 ? diag.shl256(shift) : diag.shr256(-shift)).withoutSquare(sq);
 });
 
 SquareSet _hyperbola(SquareSet bit, SquareSet range, SquareSet occupied) {
