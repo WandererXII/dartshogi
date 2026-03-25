@@ -20,10 +20,7 @@ void main() {
       final n = SquareSet.fromList(arr);
       arr[0] = 0;
       arr[2] = 7;
-      expect(
-          n,
-          equals(
-              SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(n, equals(SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
 
       final n2 = SquareSet.fromList(arr);
       expect(n2, isNot(equals(n)));
@@ -31,17 +28,14 @@ void main() {
 
     test('fromSquare', () {
       for (int square = 0; square < 256; square++) {
-        expect(SquareSet.empty.withSquare(square),
-            equals(SquareSet.fromSquare(square)));
+        expect(SquareSet.empty.withSquare(square), equals(SquareSet.fromSquare(square)));
       }
     });
 
     test('fromSquares', () {
       expect(SquareSet.fromSquares([]), equals(SquareSet.empty));
-      expect(
-          SquareSet.fromSquares([-1, -2, 256, 257]), equals(SquareSet.empty));
-      expect(SquareSet.fromSquares([128]),
-          equals(SquareSet.empty.withSquare(128)));
+      expect(SquareSet.fromSquares([-1, -2, 256, 257]), equals(SquareSet.empty));
+      expect(SquareSet.fromSquares([128]), equals(SquareSet.empty.withSquare(128)));
       expect(
         SquareSet.fromSquares(List.generate(256, (i) => i)),
         equals(SquareSet.full),
@@ -49,169 +43,73 @@ void main() {
     });
 
     test('fromRank', () {
-      expect(
-          SquareSet.fromRank(0),
-          equals(
-              SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(1),
-          equals(SquareSet.fromList(
-              [0xffff0000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(2),
-          equals(
-              SquareSet.fromList([0x0, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(3),
-          equals(SquareSet.fromList(
-              [0x0, 0xffff0000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(4),
-          equals(
-              SquareSet.fromList([0x0, 0x0, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(5),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0xffff0000, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(6),
-          equals(
-              SquareSet.fromList([0x0, 0x0, 0x0, 0xffff, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(7),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0xffff0000, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(8),
-          equals(
-              SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0xffff, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(9),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0xffff0000, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(10),
-          equals(
-              SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0xffff, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(11),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000, 0x0, 0x0])));
-      expect(
-          SquareSet.fromRank(12),
-          equals(
-              SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff, 0x0])));
-      expect(
-          SquareSet.fromRank(13),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000, 0x0])));
-      expect(
-          SquareSet.fromRank(14),
-          equals(
-              SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff])));
-      expect(
-          SquareSet.fromRank(15),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000])));
+      expect(SquareSet.fromRank(0),
+          equals(SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(1),
+          equals(SquareSet.fromList([0xffff0000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(2),
+          equals(SquareSet.fromList([0x0, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(3),
+          equals(SquareSet.fromList([0x0, 0xffff0000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(4),
+          equals(SquareSet.fromList([0x0, 0x0, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(5),
+          equals(SquareSet.fromList([0x0, 0x0, 0xffff0000, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(6),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0xffff, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(7),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0xffff0000, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(8),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0xffff, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(9),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0xffff0000, 0x0, 0x0, 0x0])));
+      expect(SquareSet.fromRank(10),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0xffff, 0x0, 0x0])));
+      expect(SquareSet.fromRank(11),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000, 0x0, 0x0])));
+      expect(SquareSet.fromRank(12),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff, 0x0])));
+      expect(SquareSet.fromRank(13),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000, 0x0])));
+      expect(SquareSet.fromRank(14),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff])));
+      expect(SquareSet.fromRank(15),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000])));
     });
 
     test('fromFile', () {
       expect(
           SquareSet.fromFile(0),
-          equals(SquareSet.fromList([
-            0x10001,
-            0x10001,
-            0x10001,
-            0x10001,
-            0x10001,
-            0x10001,
-            0x10001,
-            0x10001
-          ])));
+          equals(SquareSet.fromList(
+              [0x10001, 0x10001, 0x10001, 0x10001, 0x10001, 0x10001, 0x10001, 0x10001])));
       expect(
           SquareSet.fromFile(1),
-          equals(SquareSet.fromList([
-            0x20002,
-            0x20002,
-            0x20002,
-            0x20002,
-            0x20002,
-            0x20002,
-            0x20002,
-            0x20002
-          ])));
+          equals(SquareSet.fromList(
+              [0x20002, 0x20002, 0x20002, 0x20002, 0x20002, 0x20002, 0x20002, 0x20002])));
       expect(
           SquareSet.fromFile(2),
-          equals(SquareSet.fromList([
-            0x40004,
-            0x40004,
-            0x40004,
-            0x40004,
-            0x40004,
-            0x40004,
-            0x40004,
-            0x40004
-          ])));
+          equals(SquareSet.fromList(
+              [0x40004, 0x40004, 0x40004, 0x40004, 0x40004, 0x40004, 0x40004, 0x40004])));
       expect(
           SquareSet.fromFile(3),
-          equals(SquareSet.fromList([
-            0x80008,
-            0x80008,
-            0x80008,
-            0x80008,
-            0x80008,
-            0x80008,
-            0x80008,
-            0x80008
-          ])));
+          equals(SquareSet.fromList(
+              [0x80008, 0x80008, 0x80008, 0x80008, 0x80008, 0x80008, 0x80008, 0x80008])));
       expect(
           SquareSet.fromFile(4),
-          equals(SquareSet.fromList([
-            0x100010,
-            0x100010,
-            0x100010,
-            0x100010,
-            0x100010,
-            0x100010,
-            0x100010,
-            0x100010
-          ])));
+          equals(SquareSet.fromList(
+              [0x100010, 0x100010, 0x100010, 0x100010, 0x100010, 0x100010, 0x100010, 0x100010])));
       expect(
           SquareSet.fromFile(5),
-          equals(SquareSet.fromList([
-            0x200020,
-            0x200020,
-            0x200020,
-            0x200020,
-            0x200020,
-            0x200020,
-            0x200020,
-            0x200020
-          ])));
+          equals(SquareSet.fromList(
+              [0x200020, 0x200020, 0x200020, 0x200020, 0x200020, 0x200020, 0x200020, 0x200020])));
       expect(
           SquareSet.fromFile(6),
-          equals(SquareSet.fromList([
-            0x400040,
-            0x400040,
-            0x400040,
-            0x400040,
-            0x400040,
-            0x400040,
-            0x400040,
-            0x400040
-          ])));
+          equals(SquareSet.fromList(
+              [0x400040, 0x400040, 0x400040, 0x400040, 0x400040, 0x400040, 0x400040, 0x400040])));
       expect(
           SquareSet.fromFile(7),
-          equals(SquareSet.fromList([
-            0x800080,
-            0x800080,
-            0x800080,
-            0x800080,
-            0x800080,
-            0x800080,
-            0x800080,
-            0x800080
-          ])));
+          equals(SquareSet.fromList(
+              [0x800080, 0x800080, 0x800080, 0x800080, 0x800080, 0x800080, 0x800080, 0x800080])));
       expect(
           SquareSet.fromFile(8),
           equals(SquareSet.fromList([
@@ -313,102 +211,44 @@ void main() {
     test('ranksAbove', () {
       expect(SquareSet.ranksAbove(0),
           equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.ranksAbove(1),
-          equals(
-              SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.ranksAbove(2),
-          equals(SquareSet.fromList(
-              [0xffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.ranksAbove(3),
-          equals(SquareSet.fromList(
-              [0xffffffff, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.ranksAbove(4),
-          equals(SquareSet.fromList(
-              [0xffffffff, 0xffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
-      expect(
-          SquareSet.ranksAbove(5),
-          equals(SquareSet.fromList(
-              [0xffffffff, 0xffffffff, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.ranksAbove(1),
+          equals(SquareSet.fromList([0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.ranksAbove(2),
+          equals(SquareSet.fromList([0xffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.ranksAbove(3),
+          equals(SquareSet.fromList([0xffffffff, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.ranksAbove(4),
+          equals(SquareSet.fromList([0xffffffff, 0xffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
+      expect(SquareSet.ranksAbove(5),
+          equals(SquareSet.fromList([0xffffffff, 0xffffffff, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x0])));
       expect(
           SquareSet.ranksAbove(6),
-          equals(SquareSet.fromList(
-              [0xffffffff, 0xffffffff, 0xffffffff, 0x0, 0x0, 0x0, 0x0, 0x0])));
+          equals(
+              SquareSet.fromList([0xffffffff, 0xffffffff, 0xffffffff, 0x0, 0x0, 0x0, 0x0, 0x0])));
       expect(
           SquareSet.ranksAbove(7),
-          equals(SquareSet.fromList([
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffff,
-            0x0,
-            0x0,
-            0x0,
-            0x0
-          ])));
+          equals(SquareSet.fromList(
+              [0xffffffff, 0xffffffff, 0xffffffff, 0xffff, 0x0, 0x0, 0x0, 0x0])));
       expect(
           SquareSet.ranksAbove(8),
-          equals(SquareSet.fromList([
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0x0,
-            0x0,
-            0x0,
-            0x0
-          ])));
+          equals(SquareSet.fromList(
+              [0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0x0, 0x0, 0x0, 0x0])));
       expect(
           SquareSet.ranksAbove(9),
-          equals(SquareSet.fromList([
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffff,
-            0x0,
-            0x0,
-            0x0
-          ])));
+          equals(SquareSet.fromList(
+              [0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffff, 0x0, 0x0, 0x0])));
       expect(
           SquareSet.ranksAbove(10),
-          equals(SquareSet.fromList([
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0x0,
-            0x0,
-            0x0
-          ])));
+          equals(SquareSet.fromList(
+              [0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0x0, 0x0, 0x0])));
       expect(
           SquareSet.ranksAbove(11),
-          equals(SquareSet.fromList([
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffff,
-            0x0,
-            0x0
-          ])));
+          equals(SquareSet.fromList(
+              [0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffff, 0x0, 0x0])));
       expect(
           SquareSet.ranksAbove(12),
-          equals(SquareSet.fromList([
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0x0,
-            0x0
-          ])));
+          equals(SquareSet.fromList(
+              [0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0x0, 0x0])));
       expect(
           SquareSet.ranksAbove(13),
           equals(SquareSet.fromList([
@@ -486,100 +326,44 @@ void main() {
           ])));
       expect(
           SquareSet.ranksBelow(3),
-          equals(SquareSet.fromList([
-            0x0,
-            0x0,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff
-          ])));
+          equals(SquareSet.fromList(
+              [0x0, 0x0, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff])));
       expect(
           SquareSet.ranksBelow(4),
-          equals(SquareSet.fromList([
-            0x0,
-            0x0,
-            0xffff0000,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff
-          ])));
+          equals(SquareSet.fromList(
+              [0x0, 0x0, 0xffff0000, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff])));
       expect(
           SquareSet.ranksBelow(5),
-          equals(SquareSet.fromList([
-            0x0,
-            0x0,
-            0x0,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff
-          ])));
+          equals(SquareSet.fromList(
+              [0x0, 0x0, 0x0, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff])));
       expect(
           SquareSet.ranksBelow(6),
-          equals(SquareSet.fromList([
-            0x0,
-            0x0,
-            0x0,
-            0xffff0000,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff
-          ])));
+          equals(SquareSet.fromList(
+              [0x0, 0x0, 0x0, 0xffff0000, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff])));
       expect(
           SquareSet.ranksBelow(7),
-          equals(SquareSet.fromList([
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff
-          ])));
+          equals(SquareSet.fromList(
+              [0x0, 0x0, 0x0, 0x0, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff])));
       expect(
           SquareSet.ranksBelow(8),
-          equals(SquareSet.fromList([
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0xffff0000,
-            0xffffffff,
-            0xffffffff,
-            0xffffffff
-          ])));
+          equals(SquareSet.fromList(
+              [0x0, 0x0, 0x0, 0x0, 0xffff0000, 0xffffffff, 0xffffffff, 0xffffffff])));
       expect(
           SquareSet.ranksBelow(9),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0xffffffff, 0xffffffff, 0xffffffff])));
+          equals(
+              SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0xffffffff, 0xffffffff, 0xffffffff])));
       expect(
           SquareSet.ranksBelow(10),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000, 0xffffffff, 0xffffffff])));
-      expect(
-          SquareSet.ranksBelow(11),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffffffff, 0xffffffff])));
-      expect(
-          SquareSet.ranksBelow(12),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000, 0xffffffff])));
-      expect(
-          SquareSet.ranksBelow(13),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffffffff])));
-      expect(
-          SquareSet.ranksBelow(14),
-          equals(SquareSet.fromList(
-              [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000])));
+          equals(
+              SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000, 0xffffffff, 0xffffffff])));
+      expect(SquareSet.ranksBelow(11),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffffffff, 0xffffffff])));
+      expect(SquareSet.ranksBelow(12),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000, 0xffffffff])));
+      expect(SquareSet.ranksBelow(13),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffffffff])));
+      expect(SquareSet.ranksBelow(14),
+          equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xffff0000])));
       expect(SquareSet.ranksBelow(15),
           equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])));
     });
@@ -591,8 +375,7 @@ void main() {
       expect(SquareSet.full.xor(SquareSet.full), equals(SquareSet.empty));
       expect(SquareSet.full.union(SquareSet.empty), equals(SquareSet.full));
       expect(SquareSet.full.intersect(SquareSet.full), equals(SquareSet.full));
-      expect(
-          SquareSet.full.intersect(SquareSet.empty), equals(SquareSet.empty));
+      expect(SquareSet.full.intersect(SquareSet.empty), equals(SquareSet.empty));
 
       for (int square = 0; square < 256; square++) {
         expect(
@@ -603,71 +386,37 @@ void main() {
     });
 
     test('shr256', () {
-      final r = SquareSet.fromList(
-          [0x180, 0x180, 0x180, 0x0, 0x0, 0x180, 0x180, 0x180]);
+      final r = SquareSet.fromList([0x180, 0x180, 0x180, 0x0, 0x0, 0x180, 0x180, 0x180]);
       expect(r.shr256(0), equals(r));
       expect(
-          r.shr256(1),
-          equals(SquareSet.fromList(
-              [0xc0, 0xc0, 0xc0, 0x0, 0x0, 0xc0, 0xc0, 0xc0])));
+          r.shr256(1), equals(SquareSet.fromList([0xc0, 0xc0, 0xc0, 0x0, 0x0, 0xc0, 0xc0, 0xc0])));
 
-      final bigS = SquareSet.fromList([
-        0x42003c0,
-        0x8100810,
-        0x4000800,
-        0x1000200,
-        0x400080,
-        0x100020,
-        0x8100010,
-        0x3c00420
-      ]);
+      final bigS = SquareSet.fromList(
+          [0x42003c0, 0x8100810, 0x4000800, 0x1000200, 0x400080, 0x100020, 0x8100010, 0x3c00420]);
       expect(
           bigS.shr256(32),
-          equals(SquareSet.fromList([
-            0x8100810,
-            0x4000800,
-            0x1000200,
-            0x400080,
-            0x100020,
-            0x8100010,
-            0x3c00420,
-            0x0
-          ])));
+          equals(SquareSet.fromList(
+              [0x8100810, 0x4000800, 0x1000200, 0x400080, 0x100020, 0x8100010, 0x3c00420, 0x0])));
 
-      final s =
-          SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80000000]);
+      final s = SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80000000]);
       for (int i = 0; i < 256; i++) {
         expect(s.shr256(i), equals(SquareSet.empty.withSquare(255 - i)));
       }
     });
 
     test('shl256', () {
-      final r = SquareSet.fromList(
-          [0x180, 0x180, 0x180, 0x0, 0x0, 0x180, 0x180, 0x180]);
+      final r = SquareSet.fromList([0x180, 0x180, 0x180, 0x0, 0x0, 0x180, 0x180, 0x180]);
       expect(r.shl256(0), equals(r));
-      expect(
-          r.shl256(1),
-          equals(SquareSet.fromList(
-              [0x300, 0x300, 0x300, 0x0, 0x0, 0x300, 0x300, 0x300])));
+      expect(r.shl256(1),
+          equals(SquareSet.fromList([0x300, 0x300, 0x300, 0x0, 0x0, 0x300, 0x300, 0x300])));
 
       expect(
-        SquareSet.fromList(
-                [0x1, 0x8000, 0x10000, 0x80000000, 0x0, 0x0, 0x0, 0x80000000])
-            .shl256(1),
-        equals(SquareSet.fromList(
-            [0x2, 0x10000, 0x20000, 0x0, 0x1, 0x0, 0x0, 0x0])),
+        SquareSet.fromList([0x1, 0x8000, 0x10000, 0x80000000, 0x0, 0x0, 0x0, 0x80000000]).shl256(1),
+        equals(SquareSet.fromList([0x2, 0x10000, 0x20000, 0x0, 0x1, 0x0, 0x0, 0x0])),
       );
 
-      final bigS = SquareSet.fromList([
-        0x42003c0,
-        0x8100810,
-        0x4000800,
-        0x1000200,
-        0x400080,
-        0x100020,
-        0x8100010,
-        0x3c00420
-      ]);
+      final bigS = SquareSet.fromList(
+          [0x42003c0, 0x8100810, 0x4000800, 0x1000200, 0x400080, 0x100020, 0x8100010, 0x3c00420]);
 
       expect(
         bigS.shl256(1),
@@ -684,16 +433,8 @@ void main() {
       );
       expect(
           bigS.shl256(32),
-          equals(SquareSet.fromList([
-            0x0,
-            0x42003c0,
-            0x8100810,
-            0x4000800,
-            0x1000200,
-            0x400080,
-            0x100020,
-            0x8100010
-          ])));
+          equals(SquareSet.fromList(
+              [0x0, 0x42003c0, 0x8100810, 0x4000800, 0x1000200, 0x400080, 0x100020, 0x8100010])));
       expect(bigS.shl256(255), equals(SquareSet.empty));
 
       final s = SquareSet.fromList([0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]);
@@ -706,10 +447,8 @@ void main() {
       expect(SquareSet.full.rowSwap256(), equals(SquareSet.full));
       expect(SquareSet.empty.rowSwap256(), equals(SquareSet.empty));
       expect(
-        SquareSet.fromList(
-            [0xffff, 0xffff0000, 0x0, 0xf000, 0x0, 0x0, 0x0, 0x0]).rowSwap256(),
-        equals(SquareSet.fromList(
-            [0x0, 0x0, 0x0, 0x0, 0xf0000000, 0x0, 0xffff, 0xffff0000])),
+        SquareSet.fromList([0xffff, 0xffff0000, 0x0, 0xf000, 0x0, 0x0, 0x0, 0x0]).rowSwap256(),
+        equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0xf0000000, 0x0, 0xffff, 0xffff0000])),
       );
     });
 
@@ -732,8 +471,7 @@ void main() {
         final reversedBinary = binary.split('').reversed.join('');
         return int.parse(reversedBinary, radix: 2);
       }).toList();
-      expect(SquareSet.fromList(random1).rbit256(),
-          equals(SquareSet.fromList(reversed1)));
+      expect(SquareSet.fromList(random1).rbit256(), equals(SquareSet.fromList(reversed1)));
 
       final random2 = [
         0x83b5bee6,
@@ -750,17 +488,13 @@ void main() {
         final reversedBinary = binary.split('').reversed.join('');
         return int.parse(reversedBinary, radix: 2);
       }).toList();
-      expect(SquareSet.fromList(random2).rbit256(),
-          equals(SquareSet.fromList(reversed2)));
+      expect(SquareSet.fromList(random2).rbit256(), equals(SquareSet.fromList(reversed2)));
     });
 
     test('minus256', () {
-      final s1 = SquareSet.fromList(
-          [0xc8866bcd, 0x1ec29f93, 0xf5ddebe3, 0, 0, 0, 0, 0]);
-      final s2 = SquareSet.fromList(
-          [0x83b5bee6, 0x19bf9b6c, 0x0e6c109c, 0, 0, 0, 0, 0]);
-      final res = SquareSet.fromList(
-          [0x44d0ace7, 0x05030427, 0xe771db47, 0, 0, 0, 0, 0]);
+      final s1 = SquareSet.fromList([0xc8866bcd, 0x1ec29f93, 0xf5ddebe3, 0, 0, 0, 0, 0]);
+      final s2 = SquareSet.fromList([0x83b5bee6, 0x19bf9b6c, 0x0e6c109c, 0, 0, 0, 0, 0]);
+      final res = SquareSet.fromList([0x44d0ace7, 0x05030427, 0xe771db47, 0, 0, 0, 0, 0]);
       expect(s1.minus256(s2), equals(res));
 
       final t1 = SquareSet.fromList([
@@ -799,8 +533,7 @@ void main() {
     test('equals', () {
       expect(
         SquareSet.fromList([3017171219, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]),
-        equals(SquareSet.fromList(
-            [-1277796077, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])),
+        equals(SquareSet.fromList([-1277796077, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])),
       );
     });
 
@@ -826,17 +559,10 @@ void main() {
     test('with/without many', () {
       expect(SquareSet.empty.withMany([0, 1, 2]),
           equals(SquareSet.empty.withSquare(0).withSquare(1).withSquare(2)));
-      expect(
-          SquareSet.empty
-              .withSquare(0)
-              .withSquare(1)
-              .withSquare(2)
-              .withoutMany([0, 1, 2]),
+      expect(SquareSet.empty.withSquare(0).withSquare(1).withSquare(2).withoutMany([0, 1, 2]),
           equals(SquareSet.empty));
-      expect(SquareSet.full.withoutMany(List.generate(256, (i) => i)),
-          equals(SquareSet.empty));
-      expect(SquareSet.empty.withMany(List.generate(256, (i) => i)),
-          equals(SquareSet.full));
+      expect(SquareSet.full.withoutMany(List.generate(256, (i) => i)), equals(SquareSet.empty));
+      expect(SquareSet.empty.withMany(List.generate(256, (i) => i)), equals(SquareSet.full));
     });
 
     test('first/last', () {
@@ -859,90 +585,54 @@ void main() {
 
     test('without first', () {
       expect(
-        SquareSet.fromList([0x08, 0x0, 0x0, 0x0, 0x0, 0x0, 0x01, 0x0])
-            .withoutFirst(),
+        SquareSet.fromList([0x08, 0x0, 0x0, 0x0, 0x0, 0x0, 0x01, 0x0]).withoutFirst(),
         equals(SquareSet.fromList([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x01, 0x0])),
       );
       expect(
-        SquareSet.fromList([0x0, 0x7, 0x0, 0x0, 0x0, 0x0, 0x01, 0x0])
-            .withoutFirst(),
+        SquareSet.fromList([0x0, 0x7, 0x0, 0x0, 0x0, 0x0, 0x01, 0x0]).withoutFirst(),
         equals(SquareSet.fromList([0x0, 0x6, 0x0, 0x0, 0x0, 0x0, 0x01, 0x0])),
       );
     });
 
     test('more than one', () {
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
 
-      expect(
-          SquareSet.fromList([1, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 1, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 1, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 1, 0, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 1, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 0, 1, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 0, 0, 1, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 0, 0, 0, 1]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([1, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 1, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 1, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 1, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 1, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 0, 1, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 0, 0, 1, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 0, 0, 0, 1]).moreThanOne(), isFalse);
 
-      expect(
-          SquareSet.fromList([2, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 4, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 8, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 16, 0, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 2, 0, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 0, 4, 0, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 0, 0, 8, 0]).moreThanOne(), isFalse);
-      expect(
-          SquareSet.fromList([0, 0, 0, 0, 0, 0, 0, 16]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([2, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 4, 0, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 8, 0, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 16, 0, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 2, 0, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 0, 4, 0, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 0, 0, 8, 0]).moreThanOne(), isFalse);
+      expect(SquareSet.fromList([0, 0, 0, 0, 0, 0, 0, 16]).moreThanOne(), isFalse);
 
-      expect(
-          SquareSet.fromList([1, 0, 0, 0, 1, 0, 0, 0]).moreThanOne(), isTrue);
-      expect(
-          SquareSet.fromList([2, 0, 0, 0, 1, 0, 0, 0]).moreThanOne(), isTrue);
-      expect(
-          SquareSet.fromList([2, 0, 0, 0, 0, 0, 0, 16]).moreThanOne(), isTrue);
-      expect(
-          SquareSet.fromList([7, 0, 0, 0, 0, 0, 0, 1]).moreThanOne(), isTrue);
-      expect(
-          SquareSet.fromList([7, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isTrue);
-      expect(
-          SquareSet.fromList([123, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isTrue);
+      expect(SquareSet.fromList([1, 0, 0, 0, 1, 0, 0, 0]).moreThanOne(), isTrue);
+      expect(SquareSet.fromList([2, 0, 0, 0, 1, 0, 0, 0]).moreThanOne(), isTrue);
+      expect(SquareSet.fromList([2, 0, 0, 0, 0, 0, 0, 16]).moreThanOne(), isTrue);
+      expect(SquareSet.fromList([7, 0, 0, 0, 0, 0, 0, 1]).moreThanOne(), isTrue);
+      expect(SquareSet.fromList([7, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isTrue);
+      expect(SquareSet.fromList([123, 0, 0, 0, 0, 0, 0, 0]).moreThanOne(), isTrue);
     });
 
     test('single square', () {
       expect(
-          SquareSet.fromList([0x08, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])
-              .isSingleSquare(),
-          isTrue);
+          SquareSet.fromList([0x08, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]).isSingleSquare(), isTrue);
       expect(
-          SquareSet.fromList([0x01, 0x0, 0x0, 0x0, 0x01, 0x0, 0x0, 0x0])
-              .isSingleSquare(),
-          isFalse);
+          SquareSet.fromList([0x01, 0x0, 0x0, 0x0, 0x01, 0x0, 0x0, 0x0]).isSingleSquare(), isFalse);
       expect(
-          SquareSet.fromList([0x07, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])
-              .isSingleSquare(),
-          isFalse);
+          SquareSet.fromList([0x07, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]).isSingleSquare(), isFalse);
       expect(
-          SquareSet.fromList([0x01, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])
-              .singleSquare(),
-          equals(0));
-      expect(
-          SquareSet.fromList([0x07, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0])
-              .singleSquare(),
-          isNull);
+          SquareSet.fromList([0x01, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]).singleSquare(), equals(0));
+      expect(SquareSet.fromList([0x07, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]).singleSquare(), isNull);
     });
 
     test('iterators', () {

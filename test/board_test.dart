@@ -1,9 +1,9 @@
+import 'package:dartshogi/src/board.dart';
 import 'package:dartshogi/src/core/piece.dart';
+import 'package:dartshogi/src/core/role.dart';
 import 'package:dartshogi/src/core/side.dart';
 import 'package:dartshogi/src/core/square.dart';
-import 'package:dartshogi/src/core/role.dart';
 import 'package:dartshogi/src/square_set.dart';
-import 'package:dartshogi/src/board.dart';
 import 'package:test/test.dart';
 
 void main() {
