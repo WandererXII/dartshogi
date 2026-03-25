@@ -18,7 +18,7 @@ export './src/core/setup.dart';
 export './src/core/side.dart';
 export './src/core/square.dart';
 export './src/debug.dart';
-export './src/handicaps.dart';
+export './src/handicap.dart';
 export './src/hands.dart';
 export './src/position/position.dart';
 export './src/position/rules/annanshogi.dart';
