@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import './file.dart';
 import './rank.dart';
 
@@ -40,5 +42,13 @@ extension type const Square._(int value) implements int {
       return null;
     }
     return Square(newSquare);
+  }
+
+  int dist(Square other) {
+    final x1 = file.value;
+    final x2 = other.file.value;
+    final y1 = rank.value;
+    final y2 = other.rank.value;
+    return max((x1 - x2).abs(), (y1 - y2).abs());
   }
 }
