@@ -26,6 +26,8 @@ linter:
     directives_ordering: true
     always_use_package_imports: false
     prefer_single_quotes: true
+    prefer_relative_imports: true
+    avoid_redundant_argument_values: false
 
 formatter:
   page_width: 100
