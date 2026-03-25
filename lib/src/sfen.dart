@@ -15,7 +15,7 @@ import './position/position.dart';
 import './position/setup.dart';
 import './position/utils.dart';
 
-String initialSfen(Rule rules) => switch (rules) {
+String initialSfen(Rule rule) => switch (rule) {
   Rule.chushogi =>
     'lfcsgekgscfl/a1b1txot1b1a/mvrhdqndhrvm/pppppppppppp/3i4i3/12/12/3I4I3/PPPPPPPPPPPP/MVRHDNQDHRVM/A1B1TOXT1B1A/LFCSGKEGSCFL b - 1',
   Rule.minishogi => 'rbsgk/4p/5/P4/KGSBR b - 1',
@@ -26,7 +26,7 @@ String initialSfen(Rule rules) => switch (rules) {
   _ => 'lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1',
 };
 
-String? Function(Role) roleToForsyth(Rule rules) => switch (rules) {
+String? Function(Role) roleToForsyth(Rule rule) => switch (rule) {
   Rule.chushogi => _chushogiRoleToForsyth,
   Rule.minishogi => _minishogiRoleToForsyth,
   Rule.kyotoshogi => _kyotoshogiRoleToForsyth,
@@ -34,7 +34,7 @@ String? Function(Role) roleToForsyth(Rule rules) => switch (rules) {
   _ => _standardRoleToForsyth,
 };
 
-Role? Function(String) forsythToRole(Rule rules) => switch (rules) {
+Role? Function(String) forsythToRole(Rule rule) => switch (rule) {
   Rule.chushogi => _chushogiForsythToRole,
   Rule.minishogi => _minishogiForsythToRole,
   Rule.kyotoshogi => _kyotoshogiForsythToRole,
@@ -42,9 +42,9 @@ Role? Function(String) forsythToRole(Rule rules) => switch (rules) {
   _ => _standardForsythToRole,
 };
 
-String? Function(Piece) pieceToForsyth(Rule rules) {
+String? Function(Piece) pieceToForsyth(Rule rule) {
   return (piece) {
-    final r = roleToForsyth(rules)(piece.role);
+    final r = roleToForsyth(rule)(piece.role);
     if (r != null && piece.side == Side.sente) {
       return r.toUpperCase();
     }
@@ -52,9 +52,9 @@ String? Function(Piece) pieceToForsyth(Rule rules) {
   };
 }
 
-Piece? Function(String) forsythToPiece(Rule rules) {
+Piece? Function(String) forsythToPiece(Rule rule) {
   return (s) {
-    final role = forsythToRole(rules)(s);
+    final role = forsythToRole(rule)(s);
     if (role != null) {
       return Piece(
         role: role,
