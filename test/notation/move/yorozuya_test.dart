@@ -1,9 +1,4 @@
-import 'package:dartshogi/src/core/move_drop.dart';
-import 'package:dartshogi/src/core/rule.dart';
-import 'package:dartshogi/src/core/square.dart';
-import 'package:dartshogi/src/notation/move/yorozuya.dart';
-import 'package:dartshogi/src/notation/utils.dart';
-import 'package:dartshogi/src/sfen.dart';
+import 'package:dartshogi/dartshogi.dart';
 import 'package:test/test.dart';
 
 void main() {

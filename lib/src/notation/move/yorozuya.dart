@@ -1,7 +1,7 @@
 import '../../core/move_drop.dart';
 import '../../core/square.dart';
 import '../../position/position.dart';
-import 'japanese.dart';
+import './japanese.dart';
 
 const _dizhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 
