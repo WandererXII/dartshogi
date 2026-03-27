@@ -1,4 +1,4 @@
-import 'package:dartshogi/src/square_set.dart';
+import 'package:dartshogi/dartshogi.dart';
 import 'package:test/test.dart';
 
 void main() {

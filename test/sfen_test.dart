@@ -1,10 +1,4 @@
-import 'package:dartshogi/src/board.dart';
-import 'package:dartshogi/src/core/exceptions.dart';
-import 'package:dartshogi/src/core/rule.dart';
-import 'package:dartshogi/src/core/side.dart';
-import 'package:dartshogi/src/core/square.dart';
-import 'package:dartshogi/src/hands.dart';
-import 'package:dartshogi/src/sfen.dart';
+import 'package:dartshogi/dartshogi.dart';
 import 'package:result_dart/result_dart.dart';
 import 'package:test/test.dart';
 

@@ -1,8 +1,4 @@
-import 'package:dartshogi/src/core/file.dart';
-import 'package:dartshogi/src/core/move_drop.dart';
-import 'package:dartshogi/src/core/rank.dart';
-import 'package:dartshogi/src/core/role.dart';
-import 'package:dartshogi/src/core/square.dart';
+import 'package:dartshogi/dartshogi.dart';
 import 'package:test/test.dart';
 
 void main() {

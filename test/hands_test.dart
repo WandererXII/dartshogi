@@ -1,5 +1,4 @@
-import 'package:dartshogi/src/core/role.dart';
-import 'package:dartshogi/src/hands.dart';
+import 'package:dartshogi/dartshogi.dart';
 import 'package:test/test.dart';
 
 void main() {
