@@ -351,7 +351,7 @@ abstract class Position {
     if (isLegal(md)) {
       return Success(playUnchecked(md));
     } else {
-      return Failure(PlayException('Invalid move $md'));
+      return Failure(PlayException('Invalid move/drop: ${md.usi}'));
     }
   }
 

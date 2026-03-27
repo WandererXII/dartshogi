@@ -1,17 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:result_dart/result_dart.dart';
 
-import '../../board.dart';
-import '../../core/piece.dart';
-import '../../core/rule.dart';
-import '../../core/setup.dart';
-import '../../core/side.dart';
-import '../../core/square.dart';
-import '../../hands.dart';
-import '../../square_set.dart';
-import '../../utils.dart';
-import '../position.dart';
-import './shogi.dart';
+import '../../../dartshogi.dart';
 
 @immutable
 abstract class Minishogi extends Position {
@@ -42,12 +32,55 @@ abstract class Minishogi extends Position {
 
   @override
   SquareSet squareAttackers(Square square, Side attacker, SquareSet occupied) {
-    return standardSquareAttackers(square, attacker, board, occupied);
+    final defender = attacker.opposite;
+    return board
+        .bySide(attacker)
+        .intersect(
+          rookAttacks(square, occupied)
+              .intersect(board.byRoles([Role.rook, Role.dragon]))
+              .union(
+                bishopAttacks(
+                  square,
+                  occupied,
+                ).intersect(board.byRoles([Role.bishop, Role.horse])),
+              )
+              .union(
+                goldAttacks(square, defender).intersect(
+                  board.byRoles([Role.gold, Role.tokin, Role.promotedsilver]),
+                ),
+              )
+              .union(
+                silverAttacks(
+                  square,
+                  defender,
+                ).intersect(board.byRole(Role.silver)),
+              )
+              .union(
+                pawnAttacks(
+                  square,
+                  defender,
+                ).intersect(board.byRole(Role.pawn)),
+              )
+              .union(
+                kingAttacks(square).intersect(
+                  board.byRoles([Role.king, Role.dragon, Role.horse]),
+                ),
+              ),
+        );
   }
 
   @override
   SquareSet squareSnipers(Square square, Side attacker) {
-    return standardSquareSnipers(square, attacker, board);
+    final empty = SquareSet.empty;
+    return rookAttacks(square, empty)
+        .intersect(board.byRoles([Role.rook, Role.dragon]))
+        .union(
+          bishopAttacks(
+            square,
+            empty,
+          ).intersect(board.byRoles([Role.bishop, Role.horse])),
+        )
+        .intersect(board.bySide(attacker));
   }
 
   @override
