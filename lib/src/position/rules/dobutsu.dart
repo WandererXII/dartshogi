@@ -1,8 +1,12 @@
 import 'package:meta/meta.dart';
 import 'package:result_dart/result_dart.dart';
 
+import '../../attacks.dart';
 import '../../board.dart';
+import '../../core/game_result.dart';
+import '../../core/outcome.dart';
 import '../../core/piece.dart';
+import '../../core/role.dart';
 import '../../core/rule.dart';
 import '../../core/setup.dart';
 import '../../core/side.dart';
@@ -11,7 +15,7 @@ import '../../hands.dart';
 import '../../square_set.dart';
 import '../../utils.dart';
 import '../position.dart';
-import './shogi.dart';
+import '../utils.dart';
 
 @immutable
 abstract class Dobutsu extends Position {
@@ -50,24 +54,102 @@ abstract class Dobutsu extends Position {
 
   @override
   SquareSet squareAttackers(Square square, Side attacker, SquareSet occupied) {
-    return standardSquareAttackers(square, attacker, board, occupied);
+    final defender = attacker.opposite;
+    return board
+        .bySide(attacker)
+        .intersect(
+          _limitedAttacks(Piece(role: Role.rook, side: attacker), square)
+              .intersect(board.byRole(Role.rook))
+              .union(
+                _limitedAttacks(
+                  Piece(role: Role.bishop, side: attacker),
+                  square,
+                ).intersect(board.byRole(Role.bishop)),
+              )
+              .union(
+                goldAttacks(
+                  square,
+                  defender,
+                ).intersect(board.byRole(Role.tokin)),
+              )
+              .union(
+                pawnAttacks(
+                  square,
+                  defender,
+                ).intersect(board.byRole(Role.pawn)),
+              )
+              .union(kingAttacks(square).intersect(board.byRole(Role.king))),
+        );
   }
 
   @override
-  SquareSet squareSnipers(Square square, Side attacker) {
-    return standardSquareSnipers(square, attacker, board);
-  }
+  SquareSet squareSnipers(Square square, Side attacker) => SquareSet.empty;
 
   @override
   SquareSet moveDests(Square square, [Context? ctx]) {
-    return standardMoveDests(this, square, ctx);
+    ctx ??= makeCtx();
+
+    final piece = board.pieceAt(square);
+    if (piece == null || piece.side != ctx.side) return SquareSet.empty;
+
+    var pseudo = _limitedAttacks(piece, square).intersect(fullSquareSet(rule));
+    pseudo = pseudo.diff(board.bySide(ctx.side));
+
+    return pseudo.intersect(fullSquareSet(rule));
   }
 
   @override
   SquareSet dropDests(Piece piece, [Context? ctx]) {
-    return standardDropDests(this, piece, ctx);
+    ctx ??= makeCtx();
+
+    if (piece.side != ctx.side) return SquareSet.empty;
+    return board.occupied.complement().intersect(fullSquareSet(rule));
+  }
+
+  @override
+  Outcome? outcome([Context? ctx]) {
+    ctx ??= makeCtx();
+
+    if (kingsOf(ctx.side).isEmpty) {
+      return Outcome(result: GameResult.kingsLost, winner: ctx.side.opposite);
+    }
+
+    bool isTryRule(Side side) {
+      final king = kingsOf(side).singleSquare();
+      return king != null &&
+          promotionZone(rule, side).has(king) &&
+          !isCheck(side);
+    }
+
+    final senteTryRule = isTryRule(Side.sente);
+    final goteTryRule = isTryRule(Side.gote);
+
+    if (senteTryRule && goteTryRule) {
+      return const Outcome(result: GameResult.draw, winner: null);
+    }
+    if (senteTryRule) {
+      return const Outcome(result: GameResult.tryRule, winner: Side.sente);
+    }
+    if (goteTryRule) {
+      return const Outcome(result: GameResult.tryRule, winner: Side.gote);
+    }
+    if (!hasDests()) {
+      return Outcome(result: GameResult.stalemate, winner: ctx.side.opposite);
+    }
+
+    return null;
   }
 }
+
+SquareSet _limitedAttacks(Piece piece, Square square) => switch (piece.role) {
+  Role.bishop => kingAttacks(
+    square,
+  ).withoutMany([square - 16, square + 16, square - 1, square + 1]),
+  Role.rook => kingAttacks(
+    square,
+  ).withoutMany([square - 15, square - 17, square + 15, square + 17]),
+  _ => attacks(piece, square, SquareSet.empty),
+};
 
 class _Dobutsu extends Dobutsu {
   const _Dobutsu({
