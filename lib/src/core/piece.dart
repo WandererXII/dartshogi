@@ -10,6 +10,7 @@ class Piece {
   final Side side;
   final Role role;
 
+  @useResult
   Piece copyWith({Side? side, Role? role}) {
     return Piece(side: side ?? this.side, role: role ?? this.role);
   }

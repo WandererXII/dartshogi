@@ -1,10 +1,4 @@
-import 'package:dartshogi/src/core/game_result.dart';
-import 'package:dartshogi/src/core/move_drop.dart';
-import 'package:dartshogi/src/core/rule.dart';
-import 'package:dartshogi/src/core/square.dart';
-import 'package:dartshogi/src/debug.dart';
-import 'package:dartshogi/src/position/position.dart';
-import 'package:dartshogi/src/sfen.dart';
+import 'package:dartshogi/dartshogi.dart';
 import 'package:test/test.dart';
 
 import '../fixtures/shogi.dart';

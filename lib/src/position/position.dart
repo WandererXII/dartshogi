@@ -102,6 +102,7 @@ abstract class Position {
     return pos.validate(strict: strict).map((_) => pos);
   }
 
+  @useResult
   Position copyWith({
     Board? board,
     Hands? hands,
