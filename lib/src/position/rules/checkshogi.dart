@@ -2,6 +2,8 @@ import 'package:meta/meta.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../board.dart';
+import '../../core/game_result.dart';
+import '../../core/outcome.dart';
 import '../../core/piece.dart';
 import '../../core/rule.dart';
 import '../../core/setup.dart';
@@ -58,6 +60,17 @@ abstract class Checkshogi extends Position {
   @override
   SquareSet dropDests(Piece piece, [Context? ctx]) {
     return standardDropDests(this, piece, ctx);
+  }
+
+  @override
+  Outcome? outcome([Context? ctx]) {
+    ctx ??= makeCtx();
+
+    if (ctx.checkers.isNotEmpty) {
+      return Outcome(result: GameResult.check, winner: ctx.side.opposite);
+    } else {
+      return super.outcome();
+    }
   }
 }
 
