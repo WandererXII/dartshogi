@@ -1,8 +1,11 @@
 import 'package:meta/meta.dart';
 import 'package:result_dart/result_dart.dart';
 
+import '../../attacks.dart';
 import '../../board.dart';
+import '../../core/move_drop.dart';
 import '../../core/piece.dart';
+import '../../core/role.dart';
 import '../../core/rule.dart';
 import '../../core/setup.dart';
 import '../../core/side.dart';
@@ -11,6 +14,7 @@ import '../../hands.dart';
 import '../../square_set.dart';
 import '../../utils.dart';
 import '../position.dart';
+import '../utils.dart';
 import './shogi.dart';
 
 @immutable
@@ -50,12 +54,69 @@ abstract class Kyotoshogi extends Position {
 
   @override
   SquareSet squareAttackers(Square square, Side attacker, SquareSet occupied) {
-    return standardSquareAttackers(square, attacker, board, occupied);
+    final defender = attacker.opposite;
+    return board
+        .bySide(attacker)
+        .intersect(
+          rookAttacks(square, occupied)
+              .intersect(board.byRole(Role.rook))
+              .union(
+                bishopAttacks(
+                  square,
+                  occupied,
+                ).intersect(board.byRole(Role.bishop)),
+              )
+              .union(
+                lanceAttacks(
+                  square,
+                  defender,
+                  occupied,
+                ).intersect(board.byRole(Role.lance)),
+              )
+              .union(
+                knightAttacks(
+                  square,
+                  defender,
+                ).intersect(board.byRole(Role.knight)),
+              )
+              .union(
+                goldAttacks(
+                  square,
+                  defender,
+                ).intersect(board.byRoles([Role.gold, Role.tokin])),
+              )
+              .union(
+                silverAttacks(
+                  square,
+                  defender,
+                ).intersect(board.byRole(Role.silver)),
+              )
+              .union(
+                pawnAttacks(
+                  square,
+                  defender,
+                ).intersect(board.byRole(Role.pawn)),
+              )
+              .union(kingAttacks(square).intersect(board.byRole(Role.king))),
+        );
   }
 
   @override
   SquareSet squareSnipers(Square square, Side attacker) {
-    return standardSquareSnipers(square, attacker, board);
+    final empty = SquareSet.empty;
+    return rookAttacks(square, empty)
+        .intersect(board.byRole(Role.rook))
+        .union(
+          bishopAttacks(square, empty).intersect(board.byRole(Role.bishop)),
+        )
+        .union(
+          lanceAttacks(
+            square,
+            attacker.opposite,
+            empty,
+          ).intersect(board.byRole(Role.lance)),
+        )
+        .intersect(board.bySide(attacker));
   }
 
   @override
@@ -65,7 +126,39 @@ abstract class Kyotoshogi extends Position {
 
   @override
   SquareSet dropDests(Piece piece, [Context? ctx]) {
-    return standardDropDests(this, piece, ctx);
+    ctx ??= makeCtx();
+    if (piece.side != ctx.side) return SquareSet.empty;
+
+    var mask = board.occupied.complement();
+
+    if (ctx.king != null && ctx.checkers.isNotEmpty) {
+      final checker = ctx.checkers.singleSquare();
+      if (checker == null) return SquareSet.empty;
+      mask = mask.intersect(between(checker, ctx.king!));
+    }
+
+    return mask.intersect(fullSquareSet(rule));
+  }
+
+  @override
+  bool isLegal(MoveOrDrop md, [Context? ctx]) {
+    if (md is DropMove) {
+      final side = ctx?.side ?? turn;
+
+      final roleInHand =
+          !handRoles(rule).contains(md.role)
+              ? unpromote(rule, md.role)
+              : md.role;
+      if (roleInHand == null ||
+          !handRoles(rule).contains(roleInHand) ||
+          (hands.side(side).countOf(roleInHand)) <= 0) {
+        return false;
+      }
+
+      return dropDests(Piece(side: turn, role: md.role), ctx).has(md.to);
+    } else {
+      return super.isLegal(md, ctx);
+    }
   }
 }
 
