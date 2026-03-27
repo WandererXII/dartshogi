@@ -1,8 +1,10 @@
 import './core/move_drop.dart';
+import './core/role.dart';
 import './position/position.dart';
+import './position/rules/chushogi.dart';
 import './position/utils.dart';
 
-// const _lionPowerRoles = [Role.lion, Role.lionpromoted, Role.eagle, Role.falcon];
+const _lionPowerRoles = [Role.lion, Role.lionpromoted, Role.eagle, Role.falcon];
 
 /// Counts legal move paths of a given length.
 ///
@@ -50,16 +52,16 @@ int perft(
       }
 
       // Chushogi: lion-power pieces can make a two-step move.
-      // if (_lionPowerRoles.contains(piece.role)) {
-      //   final secondDests = secondLionStepDests(pos as Chushogi, from, to);
-      //   for (final mid in secondDests.squares) {
-      //     final move = NormalMove(from: from, to: to, midStep: mid);
-      //     final child = pos.clone()..play(move);
-      //     final children = perft(child, depth - 1, ignoreEnd: ignoreEnd);
-      //     if (shouldLog) logs.add('${move.usi} $children');
-      //     nodes += children;
-      //   }
-      // }
+      if (_lionPowerRoles.contains(piece.role)) {
+        final secondDests = (pos as Chushogi).secondLionStepDests(from, to);
+        for (final mid in secondDests.squares) {
+          final move = NormalMove(from: from, to: mid, midStep: to);
+          final child = pos.play(move).getOrThrow();
+          final children = perft(child, depth - 1, ignoreEnd: ignoreEnd);
+          if (shouldLog) logs.add('${move.usi} $children');
+          nodes += children;
+        }
+      }
     }
   }
 
