@@ -14,6 +14,7 @@ import './hands.dart';
 import './position/position.dart';
 import './position/setup.dart';
 import './position/utils.dart';
+import 'history.dart';
 
 String initialSfen(Rule rule) => switch (rule) {
   Rule.chushogi =>
@@ -210,6 +211,7 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
     Setup(
       board: board.getOrThrow(),
       hands: hands.getOrThrow(),
+      history: History.empty,
       turn: turn,
       lastDest: lastDest,
       lastLionCapture: lastLionCapture,

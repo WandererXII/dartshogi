@@ -13,6 +13,7 @@ import '../../core/setup.dart';
 import '../../core/side.dart';
 import '../../core/square.dart';
 import '../../hands.dart';
+import '../../history.dart';
 import '../../square_set.dart';
 import '../../utils.dart';
 import '../position.dart';
@@ -24,6 +25,7 @@ abstract class Chushogi extends Position {
     required Board board,
     required Hands hands,
     required Side turn,
+    required History history,
     required int moveNumber,
     Square? lastDest,
     Square? lastLionCapture,
@@ -33,6 +35,7 @@ abstract class Chushogi extends Position {
     required super.board,
     required super.hands,
     required super.turn,
+    required super.history,
     required super.moveNumber,
     super.lastDest,
     super.lastLionCapture,
@@ -447,6 +450,7 @@ class _Chushogi extends Chushogi {
   const _Chushogi({
     required super.board,
     required super.turn,
+    required super.history,
     required super.hands,
     required super.moveNumber,
     super.lastDest,
@@ -466,6 +470,7 @@ class _Chushogi extends Chushogi {
       board: board ?? this.board,
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
+      history: history,
       moveNumber: moveNumber ?? this.moveNumber,
       lastDest:
           lastDest == uniqueObjectInstance

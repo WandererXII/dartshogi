@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../board.dart';
 import '../hands.dart';
+import '../history.dart';
 import './side.dart';
 import './square.dart';
 
@@ -11,6 +12,7 @@ class Setup {
     required this.board,
     required this.hands,
     required this.turn,
+    required this.history,
     this.lastDest,
     this.lastLionCapture,
     required this.moveNumber,
@@ -18,6 +20,7 @@ class Setup {
 
   final Board board;
   final Hands hands;
+  final History history;
   final Side turn;
   final Square? lastDest;
   final Square? lastLionCapture;

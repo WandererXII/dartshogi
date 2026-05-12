@@ -15,6 +15,7 @@ import '../core/setup.dart';
 import '../core/side.dart';
 import '../core/square.dart';
 import '../hands.dart';
+import '../history.dart';
 import '../square_set.dart';
 import '../utils.dart';
 import './utils.dart';
@@ -54,6 +55,7 @@ typedef PositionBuilder<T> =
       required Board board,
       required Hands hands,
       required Side turn,
+      required History history,
       required int moveNumber,
       required Square? lastDest,
       required Square? lastLionCapture,
@@ -66,6 +68,7 @@ abstract class Position {
     required this.hands,
     required this.turn,
     required this.moveNumber,
+    required this.history,
     this.lastDest,
     this.lastLionCapture,
   });
@@ -74,6 +77,7 @@ abstract class Position {
   final Hands hands;
   final Side turn;
   final int moveNumber;
+  final History history;
 
   /// The destination of the last move/drop played.
   final Square? lastDest;
@@ -94,6 +98,7 @@ abstract class Position {
       board: s.board,
       hands: s.hands,
       turn: s.turn,
+      history: s.history,
       moveNumber: s.moveNumber,
       lastDest: s.lastDest,
       lastLionCapture: s.lastLionCapture,

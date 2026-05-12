@@ -2,12 +2,14 @@ import 'package:meta/meta.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../dartshogi.dart';
+import '../../history.dart';
 
 @immutable
 abstract class Minishogi extends Position {
   const factory Minishogi({
     required Board board,
     required Hands hands,
+    required History history,
     required Side turn,
     required int moveNumber,
     Square? lastDest,
@@ -18,6 +20,7 @@ abstract class Minishogi extends Position {
     required super.board,
     required super.hands,
     required super.turn,
+    required super.history,
     required super.moveNumber,
     super.lastDest,
     super.lastLionCapture,
@@ -99,6 +102,7 @@ class _Minishogi extends Minishogi {
     required super.board,
     required super.turn,
     required super.hands,
+    required super.history,
     required super.moveNumber,
     super.lastDest,
     super.lastLionCapture,
@@ -116,6 +120,7 @@ class _Minishogi extends Minishogi {
     return Minishogi(
       board: board ?? this.board,
       hands: hands ?? this.hands,
+      history: history,
       turn: turn ?? this.turn,
       moveNumber: moveNumber ?? this.moveNumber,
       lastDest:
