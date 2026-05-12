@@ -164,6 +164,7 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
   // Board
   final boardPart = parts.removeAt(0);
   final board = parseBoardSfen(rule, boardPart);
+  final history = History.empty.addPosition(boardPart);
   if (board.isError()) return Failure(board.exceptionOrNull()!);
 
   // Turn
@@ -211,7 +212,7 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
     Setup(
       board: board.getOrThrow(),
       hands: hands.getOrThrow(),
-      history: History.empty,
+      history: history,
       turn: turn,
       lastDest: lastDest,
       lastLionCapture: lastLionCapture,

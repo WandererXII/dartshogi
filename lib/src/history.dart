@@ -30,7 +30,8 @@ class History {
   }
 
   History addPosition(String position) {
-    return copyWith(positions: [...positions, position]);
+    final newPositions = [...positions, position];
+    return copyWith(positions: newPositions);
   }
 
   bool isRepetition(int times) {
