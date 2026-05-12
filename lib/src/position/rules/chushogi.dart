@@ -462,6 +462,7 @@ class _Chushogi extends Chushogi {
     Board? board,
     Hands? hands,
     Side? turn,
+    History? history,
     int? moveNumber,
     Object? lastDest = uniqueObjectInstance,
     Object? lastLionCapture = uniqueObjectInstance,
@@ -470,7 +471,7 @@ class _Chushogi extends Chushogi {
       board: board ?? this.board,
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
-      history: history,
+      history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
       lastDest:
           lastDest == uniqueObjectInstance

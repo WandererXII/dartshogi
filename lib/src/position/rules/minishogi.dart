@@ -113,6 +113,7 @@ class _Minishogi extends Minishogi {
     Board? board,
     Hands? hands,
     Side? turn,
+    History? history,
     int? moveNumber,
     Object? lastDest = uniqueObjectInstance,
     Object? lastLionCapture = uniqueObjectInstance,
@@ -120,7 +121,7 @@ class _Minishogi extends Minishogi {
     return Minishogi(
       board: board ?? this.board,
       hands: hands ?? this.hands,
-      history: history,
+      history: history ?? this.history,
       turn: turn ?? this.turn,
       moveNumber: moveNumber ?? this.moveNumber,
       lastDest:

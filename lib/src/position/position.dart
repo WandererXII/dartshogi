@@ -16,6 +16,7 @@ import '../core/side.dart';
 import '../core/square.dart';
 import '../hands.dart';
 import '../history.dart';
+import '../sfen.dart';
 import '../square_set.dart';
 import '../utils.dart';
 import './utils.dart';
@@ -112,6 +113,7 @@ abstract class Position {
     Board? board,
     Hands? hands,
     Side? turn,
+    History? history,
     int? moveNumber,
     Object? lastDest = uniqueObjectInstance,
     Object? lastLionCapture = uniqueObjectInstance,
@@ -370,6 +372,7 @@ abstract class Position {
     if (md is DropMove) {
       return copyWith(
         board: board.setPieceAt(md.to, Piece(role: md.role, side: turn)),
+        history: history.addPosition(makeBoardSfen(rule, board)),
         hands: hands.remove(
           Piece(side: turn, role: unpromoteForHand(rule, md.role) ?? md.role),
         ),
@@ -433,6 +436,7 @@ abstract class Position {
 
     return copyWith(
       board: newBoard,
+      history: history.addPosition(makeBoardSfen(rule, newBoard)),
       hands: newHands,
       turn: turn.opposite,
       moveNumber: moveNumber + 1,

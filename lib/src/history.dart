@@ -29,6 +29,10 @@ class History {
     return result;
   }
 
+  History addPosition(String position) {
+    return copyWith(positions: [...positions, position]);
+  }
+
   bool isRepetition(int times) {
     final requiredLength = (times - 1) * 4 + 1;
 
@@ -44,10 +48,7 @@ class History {
 
     final current = currentPositions.first;
 
-    final count =
-        currentPositions
-            .where((p) => p == current)
-            .length;
+    final count = currentPositions.where((p) => p == current).length;
 
     return count >= times;
   }
@@ -55,8 +56,7 @@ class History {
   /// number of moves/drops each player made
   /// since the repeated position first occurred
   int? get firstRepetitionDistance {
-    final currentPositions =
-        _currentTurnPositions;
+    final currentPositions = _currentTurnPositions;
 
     if (currentPositions.isEmpty) {
       return null;
@@ -66,11 +66,7 @@ class History {
 
     int lastIndex = -1;
 
-    for (
-      int i = currentPositions.length - 1;
-      i >= 0;
-      i--
-    ) {
+    for (int i = currentPositions.length - 1; i >= 0; i--) {
       if (currentPositions[i] == current) {
         lastIndex = i;
         break;
@@ -87,13 +83,9 @@ class History {
       return null;
     }
 
-    final senteAttacks =
-        consecutiveAttacks(Side.sente) >=
-        dist;
+    final senteAttacks = consecutiveAttacks(Side.sente) >= dist;
 
-    final goteAttacks =
-        consecutiveAttacks(Side.gote) >=
-        dist;
+    final goteAttacks = consecutiveAttacks(Side.gote) >= dist;
 
     if (senteAttacks && goteAttacks) {
       return null;
@@ -110,35 +102,23 @@ class History {
     return null;
   }
 
-  bool get threefoldRepetition =>
-      isRepetition(3);
+  bool get threefoldRepetition => isRepetition(3);
 
-  bool get fourfoldRepetition =>
-      isRepetition(4);
+  bool get fourfoldRepetition => isRepetition(4);
 
   History withLastUsi(String usi) {
     return copyWith(lastUsi: usi);
   }
 
-  History withLastLionCapture(
-    Position? position,
-  ) {
-    return copyWith(
-      lastLionCapture: position,
-    );
+  History withLastLionCapture(Position? position) {
+    return copyWith(lastLionCapture: position);
   }
 
-  History withConsecutiveAttacks(
-    ConsecutiveAttacks attacks,
-  ) {
-    return copyWith(
-      consecutiveAttacks: attacks,
-    );
+  History withConsecutiveAttacks(ConsecutiveAttacks attacks) {
+    return copyWith(consecutiveAttacks: attacks);
   }
 
-  History withPositions(
-    List<String> positions,
-  ) {
+  History withPositions(List<String> positions) {
     return copyWith(positions: positions);
   }
 
@@ -155,16 +135,10 @@ class History {
   }) {
     return History(
       lastUsi: lastUsi ?? this.lastUsi,
-      lastLionCapture:
-          lastLionCapture ??
-          this.lastLionCapture,
-      consecutiveAttacks:
-          consecutiveAttacks ??
-          this.consecutiveAttacks,
-      positions:
-          positions ?? this.positions,
-      initialSfen:
-          initialSfen ?? this.initialSfen,
+      lastLionCapture: lastLionCapture ?? this.lastLionCapture,
+      consecutiveAttacks: consecutiveAttacks ?? this.consecutiveAttacks,
+      positions: positions ?? this.positions,
+      initialSfen: initialSfen ?? this.initialSfen,
     );
   }
 
@@ -180,8 +154,7 @@ class History {
   static const empty = History(
     lastUsi: null,
     lastLionCapture: null,
-    consecutiveAttacks:
-        ConsecutiveAttacks.empty,
+    consecutiveAttacks: ConsecutiveAttacks.empty,
     positions: [],
     initialSfen: null,
   );
@@ -189,50 +162,32 @@ class History {
 
 /// attacks made in a row
 class ConsecutiveAttacks {
-  const ConsecutiveAttacks(
-    this.sente,
-    this.gote,
-  );
+  const ConsecutiveAttacks(this.sente, this.gote);
 
   final int sente;
   final int gote;
 
   ConsecutiveAttacks add(Side side) {
     if (side == Side.sente) {
-      return ConsecutiveAttacks(
-        sente + 1,
-        gote,
-      );
+      return ConsecutiveAttacks(sente + 1, gote);
     }
 
-    return ConsecutiveAttacks(
-      sente,
-      gote + 1,
-    );
+    return ConsecutiveAttacks(sente, gote + 1);
   }
 
   ConsecutiveAttacks reset(Side side) {
     if (side == Side.sente) {
-      return ConsecutiveAttacks(
-        0,
-        gote,
-      );
+      return ConsecutiveAttacks(0, gote);
     }
 
-    return ConsecutiveAttacks(
-      sente,
-      0,
-    );
+    return ConsecutiveAttacks(sente, 0);
   }
 
   int call(Side side) {
-    return side == Side.sente
-        ? sente
-        : gote;
+    return side == Side.sente ? sente : gote;
   }
 
-  bool get nonEmpty =>
-      sente > 0 || gote > 0;
+  bool get nonEmpty => sente > 0 || gote > 0;
 
   bool get isEmpty => !nonEmpty;
 
@@ -241,6 +196,5 @@ class ConsecutiveAttacks {
     return '($sente, $gote)';
   }
 
-  static const empty =
-      ConsecutiveAttacks(0, 0);
+  static const empty = ConsecutiveAttacks(0, 0);
 }

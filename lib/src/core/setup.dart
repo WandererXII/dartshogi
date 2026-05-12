@@ -33,6 +33,7 @@ class Setup {
           board == other.board &&
           hands == other.hands &&
           turn == other.turn &&
+          history == other.history &&
           lastDest == other.lastDest &&
           lastLionCapture == other.lastLionCapture &&
           moveNumber == other.moveNumber);
