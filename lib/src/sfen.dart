@@ -164,8 +164,12 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
   // Board
   final boardPart = parts.removeAt(0);
   final board = parseBoardSfen(rule, boardPart);
-  final history = History.empty.addPosition(boardPart);
   if (board.isError()) return Failure(board.exceptionOrNull()!);
+
+  //History
+  final history = History.empty
+    .addPosition(boardPart)
+    .copyWith(initialSfen: boardPart);
 
   // Turn
   final turnPart = parts.isNotEmpty ? parts.removeAt(0) : null;

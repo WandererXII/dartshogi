@@ -79,41 +79,39 @@ void main() {
         expect(isImpasse(result.getOrThrow()), false);
       }
     });
-    // test('21 points for gote (uwate) plus 1 piece handicap', () {
-    //   final result = parseSfen(
-    //     Rule.shogi,
-    //     '9/9/9/9/9/9/3p1lllg/+P+P2kssgr/K+P4ssg w r 2',
-    //   );
-    //   if (result.isSuccess()) {
-    //     final points = missingImpassePoints(parseSfen(Rule.shogi, 'lnsgkgsnl/7b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - 1').getOrThrow());
-
-    //     expect(isImpasse(result.getOrThrow()), false);
-    //   }
-    // });
-    // "21 points for gote (uwate) plus 1 piece handicap" in {
-    //   val g = sfenToGame(Sfen("9/9/9/9/9/9/3p1lllg/+P+P2kssgr/K+P4ssg w r 2"), Standard)
-    //   g must beValid.like { case game =>
-    //     val handicapGame = game.withHistory(
-    //       game.situation.history.withInitialSfen(
-    //         Sfen("lnsgkgsnl/7b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - 1"),
-    //       ),
-    //     )
-    //     handicapGame.situation.status.contains(Status.Impasse27) must beFalse
-    //     handicapGame.situation.winner must beNone
-    //   }
-    // }
-    // "17 points for gote (uwate) and pieces in opponent hand - not missing" in {
-    //   val g = sfenToGame(Sfen("9/9/9/9/9/9/3p1lllg/+P+P2kssgg/K+P4ssg w r 2"), Standard)
-    //   g must beValid.like { case game =>
-    //     val handicapGame = game.withHistory(
-    //       game.situation.history.withInitialSfen(
-    //         Sfen("lnsgkgsnl/9/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w RB 1"),
-    //       ),
-    //     )
-    //     handicapGame.situation.status.contains(Status.Impasse27) must beFalse
-    //     handicapGame.situation.winner must beNone
-    //   }
-    // }
+    test('21 points for gote (uwate) plus 1 piece handicap', () {
+      final result = parseSfen(
+        Rule.shogi,
+        '9/9/9/9/9/9/3p1lllg/+P+P2kssgr/K+P4ssg w r 2',
+      );
+      if (result.isSuccess()) {
+        final position = result.getOrThrow().copyWith(
+          history: result.getOrThrow().history.copyWith(
+            initialSfen:
+                'lnsgkgsnl/7b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - 1',
+          ),
+        );
+        expect(isImpasse(position), false);
+      }
+    });
+    test(
+      '17 points for gote (uwate) and pieces in opponent hand - not missing',
+      () {
+        final result = parseSfen(
+          Rule.shogi,
+          '9/9/9/9/9/9/3p1lllg/+P+P2kssgg/K+P4ssg w r 2',
+        );
+        if (result.isSuccess()) {
+          final position = result.getOrThrow().copyWith(
+            history: result.getOrThrow().history.copyWith(
+              initialSfen:
+                  'lnsgkgsnl/9/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w RB 1',
+            ),
+          );
+          expect(isImpasse(position), false);
+        }
+      },
+    );
     test('27 points for sente', () {
       final result = parseSfen(
         Rule.shogi,
@@ -123,18 +121,38 @@ void main() {
         expect(isImpasse(result.getOrThrow()), false);
       }
     });
+    test(
+      '17 points for gote (uwate), but 2 piece handicap',
+      () {
+        final result = parseSfen(
+          Rule.shogi,
+          '9/9/9/9/9/9/3p1lllg/+P+P2kssgg/K+P4ssg w r 2',
+        );
+        if (result.isSuccess()) {
+          final position = result.getOrThrow().copyWith(
+            history: result.getOrThrow().history.copyWith(
+              initialSfen:
+                  'lnsgkgsnl/9/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - 1',
+            ),
+          );
+          expect(isImpasse(position), true);
+        }
+      },
+    );
 
-    // test('all pieces on the board', () {
-    //   final result = parseSfen(
-    //     Rule.shogi,
-    //     '2SGS4/+B+RGKGLLRB/3G5/9/7pp/8k/9/9/9 b - 1',
-    //   );
-    //   if (result.isSuccess()) {
-    //     expect(isImpasse(result.getOrThrow()), true);
-    //     final pos = result.getOrThrow();
-    //     final winner = pos.outcome()!.winner;
-    //     expect(winner, Side.sente);
-    //   }
-    // });
+    // "17 points for gote (uwate), but 2 piece handicap" in {
+    //         val g = sfenToGame(Sfen("9/9/9/9/9/9/3p1lllg/+P+P2kssgg/K+P4ssg w r 2"), Standard)
+    //         g must beValid.like { case game =>
+    //           val handicapGame = game.withHistory(
+    //             game.situation.history.withInitialSfen(
+    //               Sfen("lnsgkgsnl/9/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - 1"),
+    //             ),
+    //           )
+    //           handicapGame.situation.status.contains(Status.Impasse27) must beTrue
+    //           handicapGame.situation.winner must beSome.like { case color =>
+    //             color.gote
+    //           }
+    //         }
+    //       }
   });
 }

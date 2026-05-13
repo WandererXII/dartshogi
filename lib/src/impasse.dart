@@ -12,21 +12,27 @@ bool isImpasse(Position position) {
 
   final color = position.turn;
 
-  final ranks = promotionZone(position.rule, position.turn);
+  final ranks = promotionZone(position.rule, color);
+  final enteredRoles = position.board.pieces
+      .where((x) => x.$2.side == color && ranks.has(x.$1))
+      .map((x) => x.$2.role)
+      .toList();
 
-  final enteredRoles =
-      position.board.pieces
-          .where((x) => x.$2.side == color && ranks.has(x.$1.rank))
-          .map((x) => x.$2.role)
-          .toList();
+  final boardPoints = enteredRoles.fold(
+    0,
+    (sum, r) => sum + impasseValueOf(r),
+  );
 
-  final impassePoints =
-      enteredRoles.fold(0, (sum, r) => sum + impasseValueOf(r)) +
-      position.hands
-          .side(color)
-          .handMap
-          .keys
-          .fold(0, (sum, r) => sum + impasseValueOf(r));
+  final handPoints = position.hands
+      .side(color)
+      .handMap
+      .entries
+      .fold(
+        0,
+        (sum, e) => sum + impasseValueOf(e.key) * e.value,
+      );
+
+  final impassePoints = boardPoints + handPoints;
 
   return enteredRoles.length > necessaryEnteredPieces &&
       enteredRoles.contains(Role.king) &&
@@ -53,23 +59,24 @@ int impasseValueOf(Role role) {
 }
 
 int missingImpassePoints(Position position) {
-  final positionSfen = makeSfen(position);
-  if (!Handicap.isHandicap(rule: position.rule, sfen: positionSfen)) {
+  final initialSfen = position.history.initialSfen;
+  final newPosition = parseSfen(Rule.shogi, initialSfen!).getOrThrow();
+
+  if (!Handicap.isHandicap(sfen: initialSfen, rule: position.rule)) {
     return 0;
   }
-
   final totalPoints =
-      position.board.pieces.fold(
+      newPosition.board.pieces.fold(
         0,
         (sum, entry) => sum + impasseValueOf(entry.$2.role),
       ) +
-      position.hands.sente.handMap.keys.fold(
+      newPosition.hands.sente.handMap.entries.fold(
         0,
-        (sum, r) => sum + impasseValueOf(r),
+        (sum, r) => sum + impasseValueOf(r.key) * r.value,
       ) +
-      position.hands.gote.handMap.keys.fold(
+      newPosition.hands.gote.handMap.entries.fold(
         0,
-        (sum, r) => sum + impasseValueOf(r),
+        (sum, r) => sum + impasseValueOf(r.key) * r.value,
       );
 
   return math.max(0, ((necessaryGoteScore * 2) - totalPoints).toInt());
