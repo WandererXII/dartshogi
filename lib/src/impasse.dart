@@ -6,7 +6,7 @@ const int necessarySenteScore = 28;
 const int necessaryGoteScore = 27;
 
 bool isImpasse(Position position) {
-  if (position.rule != Rule.shogi || position.isCheck()) {
+  if ((position.rule != Rule.shogi && position.rule != Rule.annanshogi && position.rule != Rule.checkshogi) || position.isCheck()) {
     return false;
   }
 
