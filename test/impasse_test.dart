@@ -121,9 +121,7 @@ void main() {
         expect(isImpasse(result.getOrThrow()), false);
       }
     });
-    test(
-      '17 points for gote (uwate), but 2 piece handicap',
-      () {
+    test('17 points for gote (uwate), but 2 piece handicap',() {
         final result = parseSfen(
           Rule.shogi,
           '9/9/9/9/9/9/3p1lllg/+P+P2kssgg/K+P4ssg w r 2',
@@ -140,19 +138,5 @@ void main() {
       },
     );
 
-    // "17 points for gote (uwate), but 2 piece handicap" in {
-    //         val g = sfenToGame(Sfen("9/9/9/9/9/9/3p1lllg/+P+P2kssgg/K+P4ssg w r 2"), Standard)
-    //         g must beValid.like { case game =>
-    //           val handicapGame = game.withHistory(
-    //             game.situation.history.withInitialSfen(
-    //               Sfen("lnsgkgsnl/9/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - 1"),
-    //             ),
-    //           )
-    //           handicapGame.situation.status.contains(Status.Impasse27) must beTrue
-    //           handicapGame.situation.winner must beSome.like { case color =>
-    //             color.gote
-    //           }
-    //         }
-    //       }
   });
 }
