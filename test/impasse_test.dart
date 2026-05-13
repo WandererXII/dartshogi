@@ -133,7 +133,7 @@ void main() {
           if (result.isSuccess()) {
             final pos = result.getOrThrow();
             expect(isImpasse(pos), true);
-            //TODO Update the code to check the winner
+            expect(pos.outcome()!.winner, Side.sente);
           }
         });
 
@@ -145,7 +145,7 @@ void main() {
           if (result.isSuccess()) {
             final pos = result.getOrThrow();
             expect(isImpasse(pos), true);
-            //TODO Update the code to check the winner
+            expect(pos.outcome()!.winner, Side.sente);
           }
         });
         test('after moves', () {
@@ -159,9 +159,9 @@ void main() {
             final move2 = MoveOrDrop.parse('2e2f')!;
             final resultAfterMove1 = position.play(move1);
             final resultAfterMove2 = resultAfterMove1.getOrThrow().play(move2);
-
-            expect(isImpasse(resultAfterMove2.getOrThrow()), true);
-            //TODO Update the code to check the winner
+            final posAfterMove2 = resultAfterMove2.getOrThrow();
+            expect(isImpasse(posAfterMove2), true);
+            expect(posAfterMove2.outcome()!.winner, Side.sente);
           }
         });
 
@@ -171,8 +171,9 @@ void main() {
             '9/9/9/9/9/9/3r1llll/+P+P1+bkssgg/K+P3ssgg w r 2',
           );
           if (result.isSuccess()) {
-            expect(isImpasse(result.getOrThrow()), true);
-            //TODO Update the code to check the winner
+            final pos = result.getOrThrow();
+            expect(isImpasse(pos), true);
+            expect(pos.outcome()!.winner, Side.gote);
           }
         });
 
@@ -189,7 +190,7 @@ void main() {
               ),
             );
             expect(isImpasse(position), true);
-            //TODO Update the code to check the winner
+            expect(position.outcome()!.winner, Side.gote);
           }
         });
 
@@ -199,8 +200,9 @@ void main() {
             'G3+R3S/GG2P2SS/GLPBKBPLS/9/9/7+p+p/7+pk/7+p+p/9 b - 1',
           );
           if (result.isSuccess()) {
-            expect(isImpasse(result.getOrThrow()), true);
-            //TODO Update the code to check the winner
+            final pos = result.getOrThrow();
+            expect(isImpasse(pos), true);
+            expect(pos.outcome()!.winner, Side.sente);
           }
         });
       });
@@ -215,7 +217,7 @@ void main() {
           if (result.isSuccess()) {
             final position = result.getOrThrow();
             expect(isImpasse(position), true);
-            //TODO Update the code to check the winner
+            expect(position.outcome()!.winner, Side.sente);
           }
         });
         test('some from hand', () {
@@ -226,7 +228,7 @@ void main() {
           if (result.isSuccess()) {
             final position = result.getOrThrow();
             expect(isImpasse(position), true);
-            //TODO Update the code to check the winner
+            expect(position.outcome()!.winner, Side.sente);
           }
         });
 
@@ -243,7 +245,7 @@ void main() {
               ),
             );
             expect(isImpasse(position), true);
-            //TODO Update the code to check the winner
+            expect(position.outcome()!.winner, Side.gote);
           }
         });
       });
@@ -309,7 +311,7 @@ void main() {
           if (result.isSuccess()) {
             final position = result.getOrThrow();
             expect(isImpasse(position), true);
-            //TODO Update the code to check the winner
+            expect(position.outcome()!.winner, Side.sente);
           }
         });
       });

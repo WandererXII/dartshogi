@@ -16,6 +16,7 @@ import '../core/side.dart';
 import '../core/square.dart';
 import '../hands.dart';
 import '../history.dart';
+import '../impasse.dart';
 import '../sfen.dart';
 import '../square_set.dart';
 import '../utils.dart';
@@ -296,6 +297,11 @@ abstract class Position {
     if (totalSente < 2 && totalGote < 2) {
       return const Outcome(result: GameResult.draw, winner: null);
     }
+
+    if (isImpasse(this)){
+      return Outcome(result: GameResult.tryRule, winner: turn);
+    }
+
     return null;
   }
 
