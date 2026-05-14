@@ -299,7 +299,7 @@ abstract class Position {
     }
 
     if (isImpasse(this)){
-      return Outcome(result: GameResult.tryRule, winner: turn);
+      return Outcome(result: GameResult.impasse, winner: turn);
     }
 
     return null;
