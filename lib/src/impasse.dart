@@ -6,31 +6,28 @@ const int necessarySenteScore = 28;
 const int necessaryGoteScore = 27;
 
 bool isImpasse(Position position) {
-  if ((position.rule != Rule.shogi && position.rule != Rule.annanshogi && position.rule != Rule.checkshogi) || position.isCheck()) {
+  final impassableRules = {Rule.shogi, Rule.annanshogi, Rule.checkshogi};
+
+  if (!impassableRules.contains(position.rule) || position.isCheck()){
     return false;
   }
 
   final color = position.turn;
 
   final ranks = promotionZone(position.rule, color);
-  final enteredRoles = position.board.pieces
-      .where((x) => x.$2.side == color && ranks.has(x.$1))
-      .map((x) => x.$2.role)
-      .toList();
+  final enteredRoles =
+      position.board.pieces
+          .where((x) => x.$2.side == color && ranks.has(x.$1))
+          .map((x) => x.$2.role)
+          .toList();
 
-  final boardPoints = enteredRoles.fold(
-    0,
-    (sum, r) => sum + impasseValueOf(r),
-  );
+  final boardPoints = enteredRoles.fold(0, (sum, r) => sum + impasseValueOf(r));
 
   final handPoints = position.hands
       .side(color)
       .handMap
       .entries
-      .fold(
-        0,
-        (sum, e) => sum + impasseValueOf(e.key) * e.value,
-      );
+      .fold(0, (sum, e) => sum + impasseValueOf(e.key) * e.value);
 
   final impassePoints = boardPoints + handPoints;
 
