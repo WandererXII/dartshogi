@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import '../dartshogi.dart';
 
 class History {
@@ -29,6 +30,7 @@ class History {
     return result;
   }
 
+  @useResult
   History addPosition(String position) {
     final newPositions = [...positions, position];
     return copyWith(positions: newPositions);
