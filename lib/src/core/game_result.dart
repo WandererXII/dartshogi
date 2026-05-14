@@ -5,6 +5,6 @@ enum GameResult {
   bareKing,
   kingsLost,
   tryRule,
-  impasse,
+  Impasse27,
   check,
 }
