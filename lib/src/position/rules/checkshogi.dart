@@ -24,8 +24,6 @@ abstract class Checkshogi extends Position {
     required Side turn,
     required History history,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Checkshogi;
 
   const Checkshogi._({
@@ -34,8 +32,6 @@ abstract class Checkshogi extends Position {
     required super.turn,
     required super.history,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -84,8 +80,6 @@ class _Checkshogi extends Checkshogi {
     required super.history,
     required super.hands,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -95,8 +89,6 @@ class _Checkshogi extends Checkshogi {
     Side? turn,
     History? history,
     int? moveNumber,
-    Object? lastDest = uniqueObjectInstance,
-    Object? lastLionCapture = uniqueObjectInstance,
   }) {
     return Checkshogi(
       board: board ?? this.board,
@@ -104,14 +96,6 @@ class _Checkshogi extends Checkshogi {
       turn: turn ?? this.turn,
       history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

@@ -27,8 +27,6 @@ abstract class Chushogi extends Position {
     required Side turn,
     required History history,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Chushogi;
 
   const Chushogi._({
@@ -37,8 +35,6 @@ abstract class Chushogi extends Position {
     required super.turn,
     required super.history,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -255,10 +251,10 @@ abstract class Chushogi extends Position {
           pseudo = pseudo.withoutSquare(lion);
         }
       }
-    } else if (lastLionCapture != null) {
+    } else if (history.lastLionCapture != null) {
       // Can't recapture a different lion on the very next move.
       for (final lion in oppLions.intersect(pseudo).squares) {
-        if (lion != lastLionCapture) pseudo = pseudo.withoutSquare(lion);
+        if (lion != history.lastLionCapture) pseudo = pseudo.withoutSquare(lion);
       }
     }
 
@@ -405,7 +401,7 @@ abstract class Chushogi extends Position {
           .diff(board.bySide(turn).withoutSquare(initialSq))
           .intersect(fullSquareSet(rule));
 
-      if (lastLionCapture != null) {
+      if (history.lastLionCapture != null) {
         pseudoDests = _removeLions(pseudoDests);
       }
       return pseudoDests;
@@ -423,7 +419,7 @@ abstract class Chushogi extends Position {
           .intersect(kingAttacks(midSq))
           .intersect(fullSquareSet(rule));
 
-      if (lastLionCapture != null) {
+      if (history.lastLionCapture != null) {
         pseudoDests = _removeLions(pseudoDests);
       }
       return pseudoDests;
@@ -440,7 +436,7 @@ abstract class Chushogi extends Position {
         .intersect(dests);
     var result = dests;
     for (final lion in oppLions.squares) {
-      if (lion != lastLionCapture) result = result.withoutSquare(lion);
+      if (lion != history.lastLionCapture) result = result.withoutSquare(lion);
     }
     return result;
   }
@@ -453,8 +449,6 @@ class _Chushogi extends Chushogi {
     required super.history,
     required super.hands,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -464,8 +458,6 @@ class _Chushogi extends Chushogi {
     Side? turn,
     History? history,
     int? moveNumber,
-    Object? lastDest = uniqueObjectInstance,
-    Object? lastLionCapture = uniqueObjectInstance,
   }) {
     return Chushogi(
       board: board ?? this.board,
@@ -473,14 +465,6 @@ class _Chushogi extends Chushogi {
       turn: turn ?? this.turn,
       history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

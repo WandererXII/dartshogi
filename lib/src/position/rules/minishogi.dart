@@ -12,8 +12,6 @@ abstract class Minishogi extends Position {
     required History history,
     required Side turn,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Minishogi;
 
   const Minishogi._({
@@ -22,8 +20,6 @@ abstract class Minishogi extends Position {
     required super.turn,
     required super.history,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -104,8 +100,6 @@ class _Minishogi extends Minishogi {
     required super.hands,
     required super.history,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -124,14 +118,6 @@ class _Minishogi extends Minishogi {
       history: history ?? this.history,
       turn: turn ?? this.turn,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

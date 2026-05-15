@@ -26,8 +26,6 @@ abstract class Kyotoshogi extends Position {
     required History history,
     required Side turn,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Kyotoshogi;
 
   const Kyotoshogi._({
@@ -36,8 +34,6 @@ abstract class Kyotoshogi extends Position {
     required super.history,
     required super.turn,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -172,8 +168,6 @@ class _Kyotoshogi extends Kyotoshogi {
     required super.history,
     required super.hands,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -192,14 +186,6 @@ class _Kyotoshogi extends Kyotoshogi {
       turn: turn ?? this.turn,
       history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

@@ -43,7 +43,7 @@ String? makeKitaoKawasakiMoveOrDrop(
       if (md.to == md.from) return '--';
       return '$roleStr$ambStr${midCapture != null ? 'x' : '-'}${makeNumberSquare(md.midStep!)}$actionStr${makeNumberSquare(md.to)}';
     } else {
-      final lastTo = lastDest ?? pos.lastDest;
+      final lastTo = lastDest ?? pos.history.lastDest;
       final destStr = lastTo == md.to ? '' : makeNumberSquare(md.to);
       final promStr =
           md.promotion

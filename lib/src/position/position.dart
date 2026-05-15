@@ -59,8 +59,6 @@ typedef PositionBuilder<T> =
       required Side turn,
       required History history,
       required int moveNumber,
-      required Square? lastDest,
-      required Square? lastLionCapture,
     });
 
 @immutable
@@ -71,8 +69,6 @@ abstract class Position {
     required this.turn,
     required this.moveNumber,
     required this.history,
-    this.lastDest,
-    this.lastLionCapture,
   });
 
   final Board board;
@@ -81,12 +77,7 @@ abstract class Position {
   final int moveNumber;
   final History history;
 
-  /// The destination of the last move/drop played.
-  final Square? lastDest;
 
-  /// Square of an enemy lion captured by a non-lion piece on the previous move.
-  /// Used for the Chushogi anti-recapture rule.
-  final Square? lastLionCapture;
 
   Rule get rule;
 
@@ -102,8 +93,6 @@ abstract class Position {
       turn: s.turn,
       history: s.history,
       moveNumber: s.moveNumber,
-      lastDest: s.lastDest,
-      lastLionCapture: s.lastLionCapture,
     );
 
     return pos.validate(strict: strict).map((_) => pos);
@@ -116,8 +105,6 @@ abstract class Position {
     Side? turn,
     History? history,
     int? moveNumber,
-    Object? lastDest = uniqueObjectInstance,
-    Object? lastLionCapture = uniqueObjectInstance,
   });
 
   PositionValidation get validation => const PositionValidation();
@@ -376,16 +363,21 @@ abstract class Position {
     Hands newHands = hands;
 
     if (md is DropMove) {
+
+      final newBoard = board.setPieceAt(md.to, Piece(role: md.role, side: turn));
+      final newHistory = history
+        .addPosition(makeBoardSfen(rule, newBoard))
+        .addLastDest(md.to)
+        .addLastLionCapture(null);
+
       return copyWith(
-        board: board.setPieceAt(md.to, Piece(role: md.role, side: turn)),
-        history: history.addPosition(makeBoardSfen(rule, board)),
+        board: newBoard,
+        history: newHistory,
         hands: hands.remove(
           Piece(side: turn, role: unpromoteForHand(rule, md.role) ?? md.role),
         ),
         turn: turn.opposite,
         moveNumber: moveNumber + 1,
-        lastDest: md.to,
-        lastLionCapture: null,
       );
     } else if (md is NormalMove) {
       final piece = board.pieceAt(md.from);
@@ -440,14 +432,17 @@ abstract class Position {
       }
     }
 
+    final newHistory = history
+      .addPosition(makeBoardSfen(rule, newBoard))
+      .addLastDest(md.to)
+      .addLastLionCapture(newLastLionCapture);
+
     return copyWith(
       board: newBoard,
-      history: history.addPosition(makeBoardSfen(rule, newBoard)),
+      history: newHistory,
       hands: newHands,
       turn: turn.opposite,
       moveNumber: moveNumber + 1,
-      lastDest: md.to,
-      lastLionCapture: newLastLionCapture,
     );
   }
 

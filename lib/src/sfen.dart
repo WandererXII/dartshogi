@@ -166,11 +166,6 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
   final board = parseBoardSfen(rule, boardPart);
   if (board.isError()) return Failure(board.exceptionOrNull()!);
 
-  //History
-  final history = History.empty
-    .addPosition(boardPart)
-    .copyWith(initialSfen: boardPart);
-
   // Turn
   final turnPart = parts.isNotEmpty ? parts.removeAt(0) : null;
   final turn = turnPart != null ? Side.fromLetter(turnPart) : Side.sente;
@@ -188,14 +183,19 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
     if (rule == Rule.chushogi) {
       final destSquare = Square.parse(handsPart);
       if (destSquare != null) {
-        lastLionCapture = destSquare;
-        lastLionCapture = destSquare;
-      }
+        lastLionCapture = destSquare;      }
     } else {
       hands = parseHandsSfen(rule, handsPart);
       if (hands.isError()) return Failure(hands.exceptionOrNull()!);
     }
   }
+
+    //History
+  final history = History.empty
+    .addPosition(boardPart)
+    .addLastDest(lastDest)
+    .addLastLionCapture(lastLionCapture)
+    .copyWith(initialSfen: boardPart);
 
   // Move number
   final moveNumberPart = parts.isNotEmpty ? parts.removeAt(0) : null;
@@ -218,8 +218,6 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
       hands: hands.getOrThrow(),
       history: history,
       turn: turn,
-      lastDest: lastDest,
-      lastLionCapture: lastLionCapture,
       moveNumber: moveNumber,
     ),
     strict: strict,
@@ -287,7 +285,7 @@ String makeSfen(Position pos) {
     makeBoardSfen(pos.rule, pos.board),
     pos.turn.letter,
     if (pos.rule == Rule.chushogi)
-      _lastLionCapture(pos.lastLionCapture)
+      _lastLionCapture(pos.history.lastLionCapture)
     else
       makeHandsSfen(pos.rule, pos.hands),
     pos.moveNumber.clamp(1, 9999).toString(),

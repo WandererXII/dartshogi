@@ -229,7 +229,7 @@ void main() {
     expect(pos7Alt.isLegal(MoveOrDrop.parse('6l3i')!), isFalse);
 
     final pos7Alt2 = pos7.play(MoveOrDrop.parse('7i8j+')!).getOrThrow();
-    expect(pos7Alt2.lastLionCapture, equals(Square.parse('8j')));
+    expect(pos7Alt2.history.lastLionCapture, equals(Square.parse('8j')));
     expect(pos7Alt2.isLegal(MoveOrDrop.parse('6l8j')!), isTrue);
     expect(pos7Alt2.isLegal(MoveOrDrop.parse('6l3i')!), isFalse);
 

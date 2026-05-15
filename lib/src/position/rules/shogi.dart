@@ -26,8 +26,6 @@ abstract class Shogi extends Position {
     required Side turn,
     required int moveNumber,
     required History history,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Shogi;
 
   const Shogi._({
@@ -36,8 +34,6 @@ abstract class Shogi extends Position {
     required super.turn,
     required super.moveNumber,
     required super.history,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -75,8 +71,6 @@ class _Shogi extends Shogi {
     required super.hands,
     required super.moveNumber,
     required super.history,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -95,14 +89,6 @@ class _Shogi extends Shogi {
       turn: turn ?? this.turn,
       history: history?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

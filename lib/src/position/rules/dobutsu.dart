@@ -26,8 +26,6 @@ abstract class Dobutsu extends Position {
     required History history,
     required Side turn,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Dobutsu;
 
   const Dobutsu._({
@@ -36,8 +34,6 @@ abstract class Dobutsu extends Position {
     required super.turn,
     required super.history,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -161,8 +157,6 @@ class _Dobutsu extends Dobutsu {
     required super.history,
     required super.hands,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -181,14 +175,6 @@ class _Dobutsu extends Dobutsu {
       turn: turn ?? this.turn,
       history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

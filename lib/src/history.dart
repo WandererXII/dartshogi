@@ -4,14 +4,22 @@ import '../dartshogi.dart';
 class History {
   const History({
     required this.lastUsi,
-    required this.lastLionCapture,
     required this.consecutiveAttacks,
     required this.positions,
     required this.initialSfen,
+    this.lastLionCapture,
+    this.lastDest,
   });
 
   final String? lastUsi;
-  final Position? lastLionCapture;
+
+  /// The destination of the last move/drop played.
+  final Square? lastDest;
+
+  /// Square of an enemy lion captured by a non-lion piece on the previous move.
+  /// Used for the Chushogi anti-recapture rule.
+  final Square? lastLionCapture;
+
   final ConsecutiveAttacks consecutiveAttacks;
 
   /// Full SFEN positions history.
@@ -34,6 +42,16 @@ class History {
   History addPosition(String position) {
     final newPositions = [...positions, position];
     return copyWith(positions: newPositions);
+  }
+
+  @useResult
+  History addLastDest(Square? lastDest) {
+    return copyWith(lastDest: lastDest);
+  }
+
+  @useResult
+  History addLastLionCapture(Square? lastLionCapture) {
+    return copyWith(lastLionCapture: lastLionCapture);
   }
 
   bool isRepetition(int times) {
@@ -113,10 +131,6 @@ class History {
     return copyWith(lastUsi: usi);
   }
 
-  History withLastLionCapture(Position? position) {
-    return copyWith(lastLionCapture: position);
-  }
-
   History withConsecutiveAttacks(ConsecutiveAttacks attacks) {
     return copyWith(consecutiveAttacks: attacks);
   }
@@ -131,10 +145,11 @@ class History {
 
   History copyWith({
     String? lastUsi,
-    Position? lastLionCapture,
     ConsecutiveAttacks? consecutiveAttacks,
     List<String>? positions,
     String? initialSfen,
+    Square? lastLionCapture,
+    Square? lastDest,
   }) {
     return History(
       lastUsi: lastUsi ?? this.lastUsi,
@@ -148,7 +163,7 @@ class History {
   @override
   String toString() {
     return '${lastUsi ?? "-"} '
-        '${lastLionCapture?.lastLionCapture ?? "-"} '
+        '${lastLionCapture ?? "-"} '
         '$consecutiveAttacks '
         '${positions.join(" ")} '
         '${initialSfen ?? "-"}';
