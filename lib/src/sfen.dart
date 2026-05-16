@@ -183,19 +183,20 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
     if (rule == Rule.chushogi) {
       final destSquare = Square.parse(handsPart);
       if (destSquare != null) {
-        lastLionCapture = destSquare;      }
+        lastLionCapture = destSquare;
+      }
     } else {
       hands = parseHandsSfen(rule, handsPart);
       if (hands.isError()) return Failure(hands.exceptionOrNull()!);
     }
   }
 
-    //History
+  //History
   final history = History.empty
-    .addPosition(boardPart)
-    .addLastDest(lastDest)
-    .addLastLionCapture(lastLionCapture)
-    .copyWith(initialSfen: boardPart);
+      .addPosition(boardPart)
+      .addLastDest(lastDest)
+      .addLastLionCapture(lastLionCapture)
+      .copyWith(initialSfen: boardPart);
 
   // Move number
   final moveNumberPart = parts.isNotEmpty ? parts.removeAt(0) : null;

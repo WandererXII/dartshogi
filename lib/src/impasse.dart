@@ -8,7 +8,7 @@ const int necessaryGoteScore = 27;
 bool isImpasse(Position position) {
   final impassableRules = {Rule.shogi, Rule.annanshogi, Rule.checkshogi};
 
-  if (!impassableRules.contains(position.rule) || position.isCheck()){
+  if (!impassableRules.contains(position.rule) || position.isCheck()) {
     return false;
   }
 

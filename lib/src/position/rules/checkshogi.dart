@@ -12,7 +12,6 @@ import '../../core/square.dart';
 import '../../hands.dart';
 import '../../history.dart';
 import '../../square_set.dart';
-import '../../utils.dart';
 import '../position.dart';
 import './shogi.dart';
 

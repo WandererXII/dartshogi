@@ -19,7 +19,6 @@ import '../history.dart';
 import '../impasse.dart';
 import '../sfen.dart';
 import '../square_set.dart';
-import '../utils.dart';
 import './utils.dart';
 
 @immutable
@@ -76,8 +75,6 @@ abstract class Position {
   final Side turn;
   final int moveNumber;
   final History history;
-
-
 
   Rule get rule;
 
@@ -285,7 +282,7 @@ abstract class Position {
       return const Outcome(result: GameResult.draw, winner: null);
     }
 
-    if (isImpasse(this)){
+    if (isImpasse(this)) {
       return Outcome(result: GameResult.Impasse27, winner: turn);
     }
 
@@ -363,12 +360,14 @@ abstract class Position {
     Hands newHands = hands;
 
     if (md is DropMove) {
-
-      final newBoard = board.setPieceAt(md.to, Piece(role: md.role, side: turn));
+      final newBoard = board.setPieceAt(
+        md.to,
+        Piece(role: md.role, side: turn),
+      );
       final newHistory = history
-        .addPosition(makeBoardSfen(rule, newBoard))
-        .addLastDest(md.to)
-        .addLastLionCapture(null);
+          .addPosition(makeBoardSfen(rule, newBoard))
+          .addLastDest(md.to)
+          .addLastLionCapture(null);
 
       return copyWith(
         board: newBoard,
@@ -433,9 +432,9 @@ abstract class Position {
     }
 
     final newHistory = history
-      .addPosition(makeBoardSfen(rule, newBoard))
-      .addLastDest(md.to)
-      .addLastLionCapture(newLastLionCapture);
+        .addPosition(makeBoardSfen(rule, newBoard))
+        .addLastDest(md.to)
+        .addLastLionCapture(newLastLionCapture);
 
     return copyWith(
       board: newBoard,

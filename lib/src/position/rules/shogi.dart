@@ -87,7 +87,7 @@ class _Shogi extends Shogi {
       board: board ?? this.board,
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
-      history: history?? this.history,
+      history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
     );
   }

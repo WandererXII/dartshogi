@@ -15,7 +15,6 @@ import '../../core/square.dart';
 import '../../hands.dart';
 import '../../history.dart';
 import '../../square_set.dart';
-import '../../utils.dart';
 import '../position.dart';
 import '../utils.dart';
 
@@ -254,7 +253,9 @@ abstract class Chushogi extends Position {
     } else if (history.lastLionCapture != null) {
       // Can't recapture a different lion on the very next move.
       for (final lion in oppLions.intersect(pseudo).squares) {
-        if (lion != history.lastLionCapture) pseudo = pseudo.withoutSquare(lion);
+        if (lion != history.lastLionCapture) {
+          pseudo = pseudo.withoutSquare(lion);
+        }
       }
     }
 
