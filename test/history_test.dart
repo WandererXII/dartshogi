@@ -1,3 +1,4 @@
+import 'package:dartshogi/dartshogi.dart';
 import 'package:dartshogi/src/history.dart';
 import 'package:test/test.dart';
 
@@ -25,6 +26,16 @@ void main() {
         History.empty.fourfoldRepetition,
         isFalse,
       );
+    });
+
+    test('addLastLionCapture nullable', () {
+      const original = History.empty;
+
+      final withValue = original.addLastLionCapture(const Square(0));
+      expect(withValue.lastLionCapture, equals(const Square(0)));
+
+      final cleared = withValue.addLastLionCapture(null);
+      expect(cleared.lastLionCapture, isNull);
     });
 
     test('not 4 same elements', () {

@@ -144,19 +144,32 @@ class History {
   }
 
   History copyWith({
-    String? lastUsi,
+    Object? lastUsi = _unset,
     ConsecutiveAttacks? consecutiveAttacks,
     List<String>? positions,
-    String? initialSfen,
-    Square? lastLionCapture,
-    Square? lastDest,
+    Object? initialSfen = _unset,
+    Object? lastLionCapture = _unset,
+    Object? lastDest = _unset,
   }) {
     return History(
-      lastUsi: lastUsi ?? this.lastUsi,
-      lastLionCapture: lastLionCapture ?? this.lastLionCapture,
+      lastUsi: identical(lastUsi, _unset) ? this.lastUsi : lastUsi as String?,
+
+      lastLionCapture:
+          identical(lastLionCapture, _unset)
+              ? this.lastLionCapture
+              : lastLionCapture as Square?,
+
+      lastDest:
+          identical(lastDest, _unset) ? this.lastDest : lastDest as Square?,
+
       consecutiveAttacks: consecutiveAttacks ?? this.consecutiveAttacks,
+
       positions: positions ?? this.positions,
-      initialSfen: initialSfen ?? this.initialSfen,
+
+      initialSfen:
+          identical(initialSfen, _unset)
+              ? this.initialSfen
+              : initialSfen as String?,
     );
   }
 
@@ -216,3 +229,9 @@ class ConsecutiveAttacks {
 
   static const empty = ConsecutiveAttacks(0, 0);
 }
+
+class _Unset {
+  const _Unset();
+}
+
+const _unset = _Unset();
