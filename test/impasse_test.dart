@@ -1,4 +1,5 @@
 import 'package:dartshogi/dartshogi.dart';
+import 'package:dartshogi/src/history.dart';
 import 'package:dartshogi/src/impasse.dart';
 import 'package:test/test.dart';
 
@@ -89,8 +90,10 @@ void main() {
           );
           if (result.isSuccess()) {
             final position = result.getOrThrow();
-            expect(isImpasse(position), false);
-            expect(position.outcome(), null);
+            final history = position.history.copyWith(initialSfen: '9/9/9/9/9/9/3r1lllg/+P+P1+bkssgg/K+P4ssg w r 2');
+            final newPosition = position.copyWith(history: history);
+            expect(isImpasse(newPosition), false);
+            expect(newPosition.outcome(), null);
           }
         });
         test('21 points for gote (uwate) plus 1 piece handicap', () {
@@ -188,8 +191,10 @@ void main() {
           );
           if (result.isSuccess()) {
             final pos = result.getOrThrow();
-            expect(isImpasse(pos), true);
-            expect(pos.outcome()!.winner, Side.gote);
+            final history = pos.history.copyWith(initialSfen: '9/9/9/9/9/9/3r1lllg/+P+P1+bkssgg/K+P4ssg w r 2');
+            final newPosition = pos.copyWith(history: history);
+            expect(isImpasse(newPosition), true);
+            expect(newPosition.outcome()!.winner, Side.gote);
           }
         });
 

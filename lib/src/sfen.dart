@@ -192,9 +192,10 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
   }
 
   //History
-final history = rule == Rule.chushogi
-    ? History.empty.addLastLionCapture(lastLionCapture).copyWith(initialSfen: sfenStr)
-    : History.empty.copyWith(initialSfen: sfenStr);
+  final history =
+      rule == Rule.chushogi
+          ? History.empty.addLastLionCapture(lastLionCapture)
+          : History.empty;
 
   // Move number
   final moveNumberPart = parts.isNotEmpty ? parts.removeAt(0) : null;
