@@ -364,20 +364,22 @@ abstract class Position {
         md.to,
         Piece(role: md.role, side: turn),
       );
-      final newHistory = history
-          .addPosition(makeBoardSfen(rule, newBoard))
-          .addLastDest(md.to)
-          .addLastLionCapture(null);
 
-      return copyWith(
+      final pos = copyWith(
         board: newBoard,
-        history: newHistory,
         hands: hands.remove(
           Piece(side: turn, role: unpromoteForHand(rule, md.role) ?? md.role),
         ),
         turn: turn.opposite,
         moveNumber: moveNumber + 1,
       );
+
+      final newHistory = history
+          .addPosition(makeSfen(pos))
+          .addLastDest(md.to)
+          .addLastLionCapture(null);
+
+      return pos.copyWith(history: newHistory);
     } else if (md is NormalMove) {
       final piece = board.pieceAt(md.from);
       // return the position thing for nonsense moves.
@@ -431,18 +433,19 @@ abstract class Position {
       }
     }
 
-    final newHistory = history
-        .addPosition(makeBoardSfen(rule, newBoard))
-        .addLastDest(md.to)
-        .addLastLionCapture(newLastLionCapture);
-
-    return copyWith(
+    final pos = copyWith(
       board: newBoard,
-      history: newHistory,
       hands: newHands,
       turn: turn.opposite,
       moveNumber: moveNumber + 1,
     );
+
+    final newHistory = history
+        .addPosition(makeSfen(pos))
+        .addLastDest(md.to)
+        .addLastLionCapture(newLastLionCapture);
+
+    return pos.copyWith(history: newHistory);
   }
 
   @useResult

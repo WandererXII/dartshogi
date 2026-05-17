@@ -193,10 +193,10 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
 
   //History
   final history = History.empty
-      .addPosition(boardPart)
+      .addPosition(sfenStr)
       .addLastDest(lastDest)
       .addLastLionCapture(lastLionCapture)
-      .copyWith(initialSfen: boardPart);
+      .copyWith(initialSfen: sfenStr);
 
   // Move number
   final moveNumberPart = parts.isNotEmpty ? parts.removeAt(0) : null;
