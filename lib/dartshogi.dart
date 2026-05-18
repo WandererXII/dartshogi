@@ -20,6 +20,8 @@ export './src/core/square.dart';
 export './src/debug.dart';
 export './src/handicap.dart';
 export './src/hands.dart';
+export './src/history.dart';
+export './src/impasse.dart';
 export './src/notation/game/csa.dart';
 export './src/notation/game/kif.dart';
 export './src/notation/move/japanese.dart';
