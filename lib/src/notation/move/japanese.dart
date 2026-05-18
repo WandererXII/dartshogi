@@ -70,7 +70,7 @@ String? makeJapaneseMoveOrDrop(
       if (md.to == md.from) return 'じっと';
       return '${makeJapaneseSquare(md.midStep!)}・${makeJapaneseSquare(md.to)}$roleStr$ambStr';
     } else {
-      final lastTo = lastDest ?? pos.lastDest;
+      final lastTo = lastDest ?? pos.history.lastDest;
       final destStr = lastTo == md.to ? '同　' : makeJapaneseSquare(md.to);
       final promStr =
           md.promotion

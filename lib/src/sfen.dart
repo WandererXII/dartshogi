@@ -14,6 +14,7 @@ import './hands.dart';
 import './position/position.dart';
 import './position/setup.dart';
 import './position/utils.dart';
+import 'history.dart';
 
 String initialSfen(Rule rule) => switch (rule) {
   Rule.chushogi =>
@@ -183,13 +184,18 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
       final destSquare = Square.parse(handsPart);
       if (destSquare != null) {
         lastLionCapture = destSquare;
-        lastLionCapture = destSquare;
       }
     } else {
       hands = parseHandsSfen(rule, handsPart);
       if (hands.isError()) return Failure(hands.exceptionOrNull()!);
     }
   }
+
+  //History
+  final history =
+      rule == Rule.chushogi
+          ? History.empty.addLastLionCapture(lastLionCapture)
+          : History.empty;
 
   // Move number
   final moveNumberPart = parts.isNotEmpty ? parts.removeAt(0) : null;
@@ -210,9 +216,8 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
     Setup(
       board: board.getOrThrow(),
       hands: hands.getOrThrow(),
+      history: history,
       turn: turn,
-      lastDest: lastDest,
-      lastLionCapture: lastLionCapture,
       moveNumber: moveNumber,
     ),
     strict: strict,
@@ -280,7 +285,7 @@ String makeSfen(Position pos) {
     makeBoardSfen(pos.rule, pos.board),
     pos.turn.letter,
     if (pos.rule == Rule.chushogi)
-      _lastLionCapture(pos.lastLionCapture)
+      _lastLionCapture(pos.history.lastLionCapture)
     else
       makeHandsSfen(pos.rule, pos.hands),
     pos.moveNumber.clamp(1, 9999).toString(),

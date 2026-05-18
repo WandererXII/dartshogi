@@ -12,6 +12,7 @@ import '../../core/setup.dart';
 import '../../core/side.dart';
 import '../../core/square.dart';
 import '../../hands.dart';
+import '../../history.dart';
 import '../../square_set.dart';
 import '../../utils.dart';
 import '../position.dart';
@@ -24,8 +25,7 @@ abstract class Shogi extends Position {
     required Hands hands,
     required Side turn,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
+    required History history,
   }) = _Shogi;
 
   const Shogi._({
@@ -33,8 +33,7 @@ abstract class Shogi extends Position {
     required super.hands,
     required super.turn,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
+    required super.history,
   });
 
   @override
@@ -71,8 +70,7 @@ class _Shogi extends Shogi {
     required super.turn,
     required super.hands,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
+    required super.history,
   }) : super._();
 
   @override
@@ -80,6 +78,7 @@ class _Shogi extends Shogi {
     Board? board,
     Hands? hands,
     Side? turn,
+    History? history,
     int? moveNumber,
     Object? lastDest = uniqueObjectInstance,
     Object? lastLionCapture = uniqueObjectInstance,
@@ -88,15 +87,8 @@ class _Shogi extends Shogi {
       board: board ?? this.board,
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
+      history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

@@ -12,6 +12,7 @@ import '../../core/setup.dart';
 import '../../core/side.dart';
 import '../../core/square.dart';
 import '../../hands.dart';
+import '../../history.dart';
 import '../../square_set.dart';
 import '../../utils.dart';
 import '../position.dart';
@@ -24,18 +25,16 @@ abstract class Annanshogi extends Position {
     required Board board,
     required Hands hands,
     required Side turn,
+    required History history,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Annanshogi;
 
   const Annanshogi._({
     required super.board,
     required super.hands,
     required super.turn,
+    required super.history,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -238,10 +237,9 @@ class _Annanshogi extends Annanshogi {
   const _Annanshogi({
     required super.board,
     required super.turn,
+    required super.history,
     required super.hands,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -249,6 +247,7 @@ class _Annanshogi extends Annanshogi {
     Board? board,
     Hands? hands,
     Side? turn,
+    History? history,
     int? moveNumber,
     Object? lastDest = uniqueObjectInstance,
     Object? lastLionCapture = uniqueObjectInstance,
@@ -257,15 +256,8 @@ class _Annanshogi extends Annanshogi {
       board: board ?? this.board,
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
+      history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

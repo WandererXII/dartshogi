@@ -97,7 +97,7 @@ void main() {
           'lfcsgekgscfl/a1b1txot1b1a/mvrhdqndhrvm/pppppppppppp/3i4i3/12/12/3I4I3/PPPPPPPPPPPP/MVRHDNQDHRVM/A1B1TOXT1B1A/LFCSGKEGSCFL b 5e 1',
           strict: true,
         ).getOrThrow();
-    expect(pos.lastLionCapture, equals(Square.parse('5e')));
+    expect(pos.history.lastLionCapture, equals(Square.parse('5e')));
 
     final pos2 =
         parseSfen(

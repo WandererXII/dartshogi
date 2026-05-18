@@ -2,25 +2,24 @@ import 'package:meta/meta.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../dartshogi.dart';
+import '../../history.dart';
 
 @immutable
 abstract class Minishogi extends Position {
   const factory Minishogi({
     required Board board,
     required Hands hands,
+    required History history,
     required Side turn,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Minishogi;
 
   const Minishogi._({
     required super.board,
     required super.hands,
     required super.turn,
+    required super.history,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -99,9 +98,8 @@ class _Minishogi extends Minishogi {
     required super.board,
     required super.turn,
     required super.hands,
+    required super.history,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -109,6 +107,7 @@ class _Minishogi extends Minishogi {
     Board? board,
     Hands? hands,
     Side? turn,
+    History? history,
     int? moveNumber,
     Object? lastDest = uniqueObjectInstance,
     Object? lastLionCapture = uniqueObjectInstance,
@@ -116,16 +115,9 @@ class _Minishogi extends Minishogi {
     return Minishogi(
       board: board ?? this.board,
       hands: hands ?? this.hands,
+      history: history ?? this.history,
       turn: turn ?? this.turn,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

@@ -11,6 +11,7 @@ import '../../core/setup.dart';
 import '../../core/side.dart';
 import '../../core/square.dart';
 import '../../hands.dart';
+import '../../history.dart';
 import '../../square_set.dart';
 import '../../utils.dart';
 import '../position.dart';
@@ -22,19 +23,17 @@ abstract class Kyotoshogi extends Position {
   const factory Kyotoshogi({
     required Board board,
     required Hands hands,
+    required History history,
     required Side turn,
     required int moveNumber,
-    Square? lastDest,
-    Square? lastLionCapture,
   }) = _Kyotoshogi;
 
   const Kyotoshogi._({
     required super.board,
     required super.hands,
+    required super.history,
     required super.turn,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   });
 
   @override
@@ -166,10 +165,9 @@ class _Kyotoshogi extends Kyotoshogi {
   const _Kyotoshogi({
     required super.board,
     required super.turn,
+    required super.history,
     required super.hands,
     required super.moveNumber,
-    super.lastDest,
-    super.lastLionCapture,
   }) : super._();
 
   @override
@@ -177,6 +175,7 @@ class _Kyotoshogi extends Kyotoshogi {
     Board? board,
     Hands? hands,
     Side? turn,
+    History? history,
     int? moveNumber,
     Object? lastDest = uniqueObjectInstance,
     Object? lastLionCapture = uniqueObjectInstance,
@@ -185,15 +184,8 @@ class _Kyotoshogi extends Kyotoshogi {
       board: board ?? this.board,
       hands: hands ?? this.hands,
       turn: turn ?? this.turn,
+      history: history ?? this.history,
       moveNumber: moveNumber ?? this.moveNumber,
-      lastDest:
-          lastDest == uniqueObjectInstance
-              ? this.lastDest
-              : lastDest as Square?,
-      lastLionCapture:
-          lastLionCapture == uniqueObjectInstance
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
     );
   }
 }

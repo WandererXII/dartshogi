@@ -15,8 +15,10 @@ import '../core/setup.dart';
 import '../core/side.dart';
 import '../core/square.dart';
 import '../hands.dart';
+import '../history.dart';
+import '../impasse.dart';
+import '../sfen.dart';
 import '../square_set.dart';
-import '../utils.dart';
 import './utils.dart';
 
 @immutable
@@ -54,9 +56,8 @@ typedef PositionBuilder<T> =
       required Board board,
       required Hands hands,
       required Side turn,
+      required History history,
       required int moveNumber,
-      required Square? lastDest,
-      required Square? lastLionCapture,
     });
 
 @immutable
@@ -66,21 +67,14 @@ abstract class Position {
     required this.hands,
     required this.turn,
     required this.moveNumber,
-    this.lastDest,
-    this.lastLionCapture,
+    required this.history,
   });
 
   final Board board;
   final Hands hands;
   final Side turn;
   final int moveNumber;
-
-  /// The destination of the last move/drop played.
-  final Square? lastDest;
-
-  /// Square of an enemy lion captured by a non-lion piece on the previous move.
-  /// Used for the Chushogi anti-recapture rule.
-  final Square? lastLionCapture;
+  final History history;
 
   Rule get rule;
 
@@ -94,9 +88,8 @@ abstract class Position {
       board: s.board,
       hands: s.hands,
       turn: s.turn,
+      history: s.history,
       moveNumber: s.moveNumber,
-      lastDest: s.lastDest,
-      lastLionCapture: s.lastLionCapture,
     );
 
     return pos.validate(strict: strict).map((_) => pos);
@@ -107,9 +100,8 @@ abstract class Position {
     Board? board,
     Hands? hands,
     Side? turn,
+    History? history,
     int? moveNumber,
-    Object? lastDest = uniqueObjectInstance,
-    Object? lastLionCapture = uniqueObjectInstance,
   });
 
   PositionValidation get validation => const PositionValidation();
@@ -289,6 +281,11 @@ abstract class Position {
     if (totalSente < 2 && totalGote < 2) {
       return const Outcome(result: GameResult.draw, winner: null);
     }
+
+    if (isImpasse(this)) {
+      return Outcome(result: GameResult.Impasse27, winner: turn);
+    }
+
     return null;
   }
 
@@ -363,16 +360,26 @@ abstract class Position {
     Hands newHands = hands;
 
     if (md is DropMove) {
-      return copyWith(
-        board: board.setPieceAt(md.to, Piece(role: md.role, side: turn)),
+      final newBoard = board.setPieceAt(
+        md.to,
+        Piece(role: md.role, side: turn),
+      );
+
+      final pos = copyWith(
+        board: newBoard,
         hands: hands.remove(
           Piece(side: turn, role: unpromoteForHand(rule, md.role) ?? md.role),
         ),
         turn: turn.opposite,
         moveNumber: moveNumber + 1,
-        lastDest: md.to,
-        lastLionCapture: null,
       );
+
+      final newHistory = history
+          .addPosition(makeSfen(pos))
+          .addLastDest(md.to)
+          .addLastLionCapture(null);
+
+      return pos.copyWith(history: newHistory);
     } else if (md is NormalMove) {
       final piece = board.pieceAt(md.from);
       // return the position thing for nonsense moves.
@@ -426,14 +433,19 @@ abstract class Position {
       }
     }
 
-    return copyWith(
+    final pos = copyWith(
       board: newBoard,
       hands: newHands,
       turn: turn.opposite,
       moveNumber: moveNumber + 1,
-      lastDest: md.to,
-      lastLionCapture: newLastLionCapture,
     );
+
+    final newHistory = history
+        .addPosition(makeSfen(pos))
+        .addLastDest(md.to)
+        .addLastLionCapture(newLastLionCapture);
+
+    return pos.copyWith(history: newHistory);
   }
 
   @useResult
