@@ -176,7 +176,6 @@ Result<Position> parseSfen(Rule rule, String sfen, {bool strict = false}) {
   // Hands
   final handsPart = parts.isNotEmpty ? parts.removeAt(0) : null;
   Result<Hands> hands = const Success(Hands.empty);
-  Square? lastDest;
   Square? lastLionCapture;
 
   if (handsPart != null) {

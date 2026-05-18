@@ -283,7 +283,7 @@ abstract class Position {
     }
 
     if (isImpasse(this)) {
-      return Outcome(result: GameResult.Impasse27, winner: turn);
+      return Outcome(result: GameResult.impasse27, winner: turn);
     }
 
     return null;
