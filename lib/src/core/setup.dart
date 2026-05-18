@@ -39,6 +39,13 @@ class Setup {
           moveNumber == other.moveNumber);
 
   @override
-  int get hashCode =>
-      Object.hash(board, hands, turn, lastDest, lastLionCapture, moveNumber);
+  int get hashCode => Object.hash(
+    board,
+    hands,
+    turn,
+    lastDest,
+    lastLionCapture,
+    history,
+    moveNumber,
+  );
 }
