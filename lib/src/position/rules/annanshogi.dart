@@ -14,7 +14,6 @@ import '../../core/square.dart';
 import '../../hands.dart';
 import '../../history.dart';
 import '../../square_set.dart';
-import '../../utils.dart';
 import '../position.dart';
 import '../utils.dart';
 import './shogi.dart';
@@ -249,8 +248,6 @@ class _Annanshogi extends Annanshogi {
     Side? turn,
     History? history,
     int? moveNumber,
-    Object? lastDest = uniqueObjectInstance,
-    Object? lastLionCapture = uniqueObjectInstance,
   }) {
     return Annanshogi(
       board: board ?? this.board,

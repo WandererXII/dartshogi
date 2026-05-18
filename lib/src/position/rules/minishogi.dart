@@ -109,8 +109,6 @@ class _Minishogi extends Minishogi {
     Side? turn,
     History? history,
     int? moveNumber,
-    Object? lastDest = uniqueObjectInstance,
-    Object? lastLionCapture = uniqueObjectInstance,
   }) {
     return Minishogi(
       board: board ?? this.board,

@@ -13,7 +13,6 @@ import '../../core/square.dart';
 import '../../hands.dart';
 import '../../history.dart';
 import '../../square_set.dart';
-import '../../utils.dart';
 import '../position.dart';
 import '../utils.dart';
 import './shogi.dart';
@@ -177,8 +176,6 @@ class _Kyotoshogi extends Kyotoshogi {
     Side? turn,
     History? history,
     int? moveNumber,
-    Object? lastDest = uniqueObjectInstance,
-    Object? lastLionCapture = uniqueObjectInstance,
   }) {
     return Kyotoshogi(
       board: board ?? this.board,

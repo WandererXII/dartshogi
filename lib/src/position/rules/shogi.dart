@@ -14,7 +14,6 @@ import '../../core/square.dart';
 import '../../hands.dart';
 import '../../history.dart';
 import '../../square_set.dart';
-import '../../utils.dart';
 import '../position.dart';
 import '../utils.dart';
 
@@ -80,8 +79,6 @@ class _Shogi extends Shogi {
     Side? turn,
     History? history,
     int? moveNumber,
-    Object? lastDest = uniqueObjectInstance,
-    Object? lastLionCapture = uniqueObjectInstance,
   }) {
     return Shogi(
       board: board ?? this.board,
