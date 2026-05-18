@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+
 import '../dartshogi.dart';
 
 class History {
@@ -144,30 +145,25 @@ class History {
   }
 
   History copyWith({
-    Object? lastUsi = _unset,
+    Object? lastUsi = sentinel,
     ConsecutiveAttacks? consecutiveAttacks,
     List<String>? positions,
-    Object? initialSfen = _unset,
-    Object? lastLionCapture = _unset,
-    Object? lastDest = _unset,
+    Object? initialSfen = sentinel,
+    Object? lastLionCapture = sentinel,
+    Object? lastDest = sentinel,
   }) {
     return History(
-      lastUsi: identical(lastUsi, _unset) ? this.lastUsi : lastUsi as String?,
-
+      lastUsi: identical(lastUsi, sentinel) ? this.lastUsi : lastUsi as String?,
       lastLionCapture:
-          identical(lastLionCapture, _unset)
+          identical(lastLionCapture, sentinel)
               ? this.lastLionCapture
               : lastLionCapture as Square?,
-
       lastDest:
-          identical(lastDest, _unset) ? this.lastDest : lastDest as Square?,
-
+          identical(lastDest, sentinel) ? this.lastDest : lastDest as Square?,
       consecutiveAttacks: consecutiveAttacks ?? this.consecutiveAttacks,
-
       positions: positions ?? this.positions,
-
       initialSfen:
-          identical(initialSfen, _unset)
+          identical(initialSfen, sentinel)
               ? this.initialSfen
               : initialSfen as String?,
     );
@@ -229,9 +225,3 @@ class ConsecutiveAttacks {
 
   static const empty = ConsecutiveAttacks(0, 0);
 }
-
-class _Unset {
-  const _Unset();
-}
-
-const _unset = _Unset();

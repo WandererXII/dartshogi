@@ -50,4 +50,4 @@ IMap<Square, ISet<Square>> makeSecondLionMoves(
 }
 
 // Unique object to use as a sentinel value in copyWith methods.
-const uniqueObjectInstance = Object();
+const sentinel = Object();
