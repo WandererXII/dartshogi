@@ -70,4 +70,11 @@ void main() {
       expect(history.firstRepetitionDistance, equals(6));
     });
   });
+
+  group('equality', () {
+    test('two histories are equal', () {
+      expect(History.empty, History.empty);
+      expect(History.empty.addPosition('a'), History.empty.addPosition('a'));
+    });
+  });
 }

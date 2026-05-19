@@ -186,6 +186,28 @@ class History {
     positions: IList<String>.empty(),
     initialSfen: null,
   );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is History &&
+            other.lastUsi == lastUsi &&
+            other.consecutiveAttacks == consecutiveAttacks &&
+            other.positions == positions &&
+            other.initialSfen == initialSfen &&
+            other.lastLionCapture == lastLionCapture &&
+            other.lastDest == lastDest;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    lastUsi,
+    consecutiveAttacks,
+    positions,
+    initialSfen,
+    lastLionCapture,
+    lastDest,
+  );
 }
 
 /// attacks made in a row
@@ -225,4 +247,15 @@ class ConsecutiveAttacks {
   }
 
   static const empty = ConsecutiveAttacks(0, 0);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is ConsecutiveAttacks &&
+            sente == other.sente &&
+            gote == other.gote;
+  }
+
+  @override
+  int get hashCode => Object.hash(sente, gote);
 }

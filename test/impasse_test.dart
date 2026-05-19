@@ -1,5 +1,4 @@
 import 'package:dartshogi/dartshogi.dart';
-import 'package:dartshogi/src/impasse.dart';
 import 'package:test/test.dart';
 
 void main() {
