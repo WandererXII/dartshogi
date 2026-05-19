@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
 import '../dartshogi.dart';
@@ -24,24 +25,24 @@ class History {
   final ConsecutiveAttacks consecutiveAttacks;
 
   /// Full SFEN positions history.
-  final List<String> positions;
+  final IList<String> positions;
 
   final String? initialSfen;
 
   /// only positions with the same side to play
-  List<String> get _currentTurnPositions {
+  IList<String> get _currentTurnPositions {
     final result = <String>[];
 
     for (int i = 0; i < positions.length; i += 2) {
       result.add(positions[i]);
     }
 
-    return result;
+    return IList(result);
   }
 
   @useResult
   History addPosition(String position) {
-    final newPositions = [...positions, position];
+    final newPositions = IList([...positions, position]);
     return copyWith(positions: newPositions);
   }
 
@@ -136,7 +137,7 @@ class History {
     return copyWith(consecutiveAttacks: attacks);
   }
 
-  History withPositions(List<String> positions) {
+  History withPositions(IList<String> positions) {
     return copyWith(positions: positions);
   }
 
@@ -147,7 +148,7 @@ class History {
   History copyWith({
     Object? lastUsi = sentinel,
     ConsecutiveAttacks? consecutiveAttacks,
-    List<String>? positions,
+    IList<String>? positions,
     Object? initialSfen = sentinel,
     Object? lastLionCapture = sentinel,
     Object? lastDest = sentinel,
@@ -182,7 +183,7 @@ class History {
     lastUsi: null,
     lastLionCapture: null,
     consecutiveAttacks: ConsecutiveAttacks.empty,
-    positions: [],
+    positions: IList<String>.empty(),
     initialSfen: null,
   );
 }

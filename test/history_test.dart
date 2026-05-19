@@ -1,5 +1,5 @@
 import 'package:dartshogi/dartshogi.dart';
-import 'package:dartshogi/src/history.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -10,7 +10,7 @@ void main() {
 
     for (final p in positions) {
       history = history.copyWith(
-        positions: [toPosition(p), ...history.positions],
+        positions: IList([toPosition(p), ...history.positions]),
       );
     }
 
