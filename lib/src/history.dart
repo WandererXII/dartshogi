@@ -1,7 +1,9 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
-import '../dartshogi.dart';
+import 'core/side.dart';
+import 'core/square.dart';
+import 'utils.dart';
 
 class History {
   const History({
@@ -42,8 +44,7 @@ class History {
 
   @useResult
   History addPosition(String position) {
-    final newPositions = IList([...positions, position]);
-    return copyWith(positions: newPositions);
+    return copyWith(positions: positions.add(position));
   }
 
   @useResult
@@ -128,22 +129,6 @@ class History {
   bool get threefoldRepetition => isRepetition(3);
 
   bool get fourfoldRepetition => isRepetition(4);
-
-  History withLastUsi(String usi) {
-    return copyWith(lastUsi: usi);
-  }
-
-  History withConsecutiveAttacks(ConsecutiveAttacks attacks) {
-    return copyWith(consecutiveAttacks: attacks);
-  }
-
-  History withPositions(IList<String> positions) {
-    return copyWith(positions: positions);
-  }
-
-  History withInitialSfen(String sfen) {
-    return copyWith(initialSfen: sfen);
-  }
 
   History copyWith({
     Object? lastUsi = sentinel,
