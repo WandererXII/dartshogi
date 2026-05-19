@@ -1,4 +1,10 @@
-import '../../dartshogi.dart';
+import '../core/piece.dart';
+import '../core/role.dart';
+import '../core/rule.dart';
+import '../core/side.dart';
+import '../core/square.dart';
+import '../position/position.dart';
+import '../square_set.dart';
 
 SquareSet aimingAt(Position pos, SquareSet pieces, int to) {
   SquareSet ambs = SquareSet.empty;

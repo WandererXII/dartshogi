@@ -1,5 +1,12 @@
 import 'dart:math' as math;
-import '../dartshogi.dart';
+
+import './core/role.dart';
+import './core/rule.dart';
+import './core/side.dart';
+import './handicap.dart';
+import './position/position.dart';
+import './position/utils.dart';
+import './sfen.dart';
 
 const int necessaryEnteredPieces = 10;
 const int necessarySenteScore = 28;

@@ -1,8 +1,19 @@
 import 'package:meta/meta.dart';
 import 'package:result_dart/result_dart.dart';
 
-import '../../../dartshogi.dart';
+import '../../attacks.dart';
+import '../../board.dart';
+import '../../core/piece.dart';
+import '../../core/role.dart';
+import '../../core/rule.dart';
+import '../../core/setup.dart';
+import '../../core/side.dart';
+import '../../core/square.dart';
+import '../../hands.dart';
 import '../../history.dart';
+import '../../square_set.dart';
+import '../position.dart';
+import './shogi.dart';
 
 @immutable
 abstract class Minishogi extends Position {
