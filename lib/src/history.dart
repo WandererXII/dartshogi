@@ -1,35 +1,32 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
+import 'core/move_drop.dart';
 import 'core/side.dart';
 import 'core/square.dart';
 import 'utils.dart';
 
 class History {
   const History({
-    required this.lastUsi,
-    required this.consecutiveAttacks,
-    required this.positions,
     required this.initialSfen,
-    this.lastLionCapture,
-    this.lastDest,
+    required this.positions,
+    required this.consecutiveAttacks,
+    required this.lastMoveOrDrop,
+    required this.lastLionCapture,
   });
 
-  final String? lastUsi;
-
-  /// The destination of the last move/drop played.
-  final Square? lastDest;
-
-  /// Square of an enemy lion captured by a non-lion piece on the previous move.
-  /// Used for the Chushogi anti-recapture rule.
-  final Square? lastLionCapture;
-
-  final ConsecutiveAttacks consecutiveAttacks;
+  final String? initialSfen;
 
   /// Full SFEN positions history.
   final IList<String> positions;
 
-  final String? initialSfen;
+  final ConsecutiveAttacks consecutiveAttacks;
+
+  final MoveOrDrop? lastMoveOrDrop;
+
+  /// Square of an enemy lion captured by a non-lion piece on the previous move.
+  /// Used for the Chushogi anti-recapture rule.
+  final Square? lastLionCapture;
 
   /// only positions with the same side to play
   IList<String> get _currentTurnPositions {
@@ -47,16 +44,6 @@ class History {
     return copyWith(positions: positions.add(position));
   }
 
-  @useResult
-  History addLastDest(Square? lastDest) {
-    return copyWith(lastDest: lastDest);
-  }
-
-  @useResult
-  History addLastLionCapture(Square? lastLionCapture) {
-    return copyWith(lastLionCapture: lastLionCapture);
-  }
-
   bool isRepetition(int times) {
     final requiredLength = (times - 1) * 4 + 1;
 
@@ -71,7 +58,6 @@ class History {
     }
 
     final current = currentPositions.first;
-
     final count = currentPositions.where((p) => p == current).length;
 
     return count >= times;
@@ -108,7 +94,6 @@ class History {
     }
 
     final senteAttacks = consecutiveAttacks(Side.sente) >= dist;
-
     final goteAttacks = consecutiveAttacks(Side.gote) >= dist;
 
     if (senteAttacks && goteAttacks) {
@@ -131,67 +116,65 @@ class History {
   bool get fourfoldRepetition => isRepetition(4);
 
   History copyWith({
-    Object? lastUsi = sentinel,
-    ConsecutiveAttacks? consecutiveAttacks,
-    IList<String>? positions,
     Object? initialSfen = sentinel,
+    IList<String>? positions,
+    ConsecutiveAttacks? consecutiveAttacks,
+    Object? lastMoveOrDrop = sentinel,
     Object? lastLionCapture = sentinel,
-    Object? lastDest = sentinel,
   }) {
     return History(
-      lastUsi: identical(lastUsi, sentinel) ? this.lastUsi : lastUsi as String?,
-      lastLionCapture:
-          identical(lastLionCapture, sentinel)
-              ? this.lastLionCapture
-              : lastLionCapture as Square?,
-      lastDest:
-          identical(lastDest, sentinel) ? this.lastDest : lastDest as Square?,
-      consecutiveAttacks: consecutiveAttacks ?? this.consecutiveAttacks,
-      positions: positions ?? this.positions,
       initialSfen:
           identical(initialSfen, sentinel)
               ? this.initialSfen
               : initialSfen as String?,
+      positions: positions ?? this.positions,
+      consecutiveAttacks: consecutiveAttacks ?? this.consecutiveAttacks,
+      lastMoveOrDrop:
+          identical(lastMoveOrDrop, sentinel)
+              ? this.lastMoveOrDrop
+              : lastMoveOrDrop as MoveOrDrop?,
+      lastLionCapture:
+          identical(lastLionCapture, sentinel)
+              ? this.lastLionCapture
+              : lastLionCapture as Square?,
     );
   }
 
   @override
   String toString() {
-    return '${lastUsi ?? "-"} '
-        '${lastLionCapture ?? "-"} '
+    return '${initialSfen ?? "-"} '
+        '[${positions.join(",")}] '
         '$consecutiveAttacks '
-        '${positions.join(" ")} '
-        '${initialSfen ?? "-"}';
+        '${lastMoveOrDrop?.usi ?? "-"} '
+        '${lastLionCapture ?? "-"}';
   }
 
   static const empty = History(
-    lastUsi: null,
-    lastLionCapture: null,
-    consecutiveAttacks: ConsecutiveAttacks.empty,
-    positions: IList<String>.empty(),
     initialSfen: null,
+    positions: IList<String>.empty(),
+    consecutiveAttacks: ConsecutiveAttacks.empty,
+    lastMoveOrDrop: null,
+    lastLionCapture: null,
   );
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         other is History &&
-            other.lastUsi == lastUsi &&
-            other.consecutiveAttacks == consecutiveAttacks &&
-            other.positions == positions &&
             other.initialSfen == initialSfen &&
-            other.lastLionCapture == lastLionCapture &&
-            other.lastDest == lastDest;
+            other.positions == positions &&
+            other.consecutiveAttacks == consecutiveAttacks &&
+            other.lastMoveOrDrop == lastMoveOrDrop &&
+            other.lastLionCapture == lastLionCapture;
   }
 
   @override
   int get hashCode => Object.hash(
-    lastUsi,
-    consecutiveAttacks,
-    positions,
     initialSfen,
+    positions,
+    consecutiveAttacks,
+    lastMoveOrDrop,
     lastLionCapture,
-    lastDest,
   );
 }
 

@@ -25,10 +25,10 @@ void main() {
     test('addLastLionCapture nullable', () {
       const original = History.empty;
 
-      final withValue = original.addLastLionCapture(const Square(0));
+      final withValue = original.copyWith(lastLionCapture: const Square(0));
       expect(withValue.lastLionCapture, equals(const Square(0)));
 
-      final cleared = withValue.addLastLionCapture(null);
+      final cleared = withValue.copyWith(lastLionCapture: null);
       expect(cleared.lastLionCapture, isNull);
     });
 

@@ -376,8 +376,7 @@ abstract class Position {
 
       final newHistory = history
           .addPosition(makeSfen(pos))
-          .addLastDest(md.to)
-          .addLastLionCapture(null);
+          .copyWith(lastMoveOrDrop: md, lastLionCapture: null);
 
       return pos.copyWith(history: newHistory);
     } else if (md is NormalMove) {
@@ -442,8 +441,7 @@ abstract class Position {
 
     final newHistory = history
         .addPosition(makeSfen(pos))
-        .addLastDest(md.to)
-        .addLastLionCapture(newLastLionCapture);
+        .copyWith(lastMoveOrDrop: md, lastLionCapture: newLastLionCapture);
 
     return pos.copyWith(history: newHistory);
   }
