@@ -1,10 +1,10 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:meta/meta.dart';
 
-import 'core/move_drop.dart';
-import 'core/side.dart';
-import 'core/square.dart';
-import 'utils.dart';
+import './core/move_drop.dart';
+import './core/side.dart';
+import './core/square.dart';
+import './utils.dart';
 
 class History {
   const History({

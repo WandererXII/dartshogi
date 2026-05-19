@@ -11,10 +11,10 @@ import './core/setup.dart';
 import './core/side.dart';
 import './core/square.dart';
 import './hands.dart';
+import './history.dart';
 import './position/position.dart';
 import './position/setup.dart';
 import './position/utils.dart';
-import 'history.dart';
 
 String initialSfen(Rule rule) => switch (rule) {
   Rule.chushogi =>
