@@ -330,6 +330,7 @@ abstract class Position {
       }
       return dropDests(Piece(side: side, role: md.role), ctx).has(md.to);
     } else if (md is NormalMove) {
+      if (md.midStep != null) return false;
       final piece = board.pieceAt(md.from);
       if (piece == null || !allRoles(rule).contains(piece.role)) return false;
       if (md.promotion == true &&
