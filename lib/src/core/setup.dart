@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../board.dart';
 import '../hands.dart';
 import '../history.dart';
-import './side.dart';
+import 'side.dart';
 
 @immutable
 class Setup {

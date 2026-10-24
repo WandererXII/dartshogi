@@ -1,8 +1,8 @@
-import './core/move_drop.dart';
-import './core/role.dart';
-import './position/position.dart';
-import './position/rules/chushogi.dart';
-import './position/utils.dart';
+import 'core/move_drop.dart';
+import 'core/role.dart';
+import 'position/position.dart';
+import 'position/rules/chushogi.dart';
+import 'position/utils.dart';
 
 const _lionPowerRoles = [Role.lion, Role.lionpromoted, Role.eagle, Role.falcon];
 

@@ -13,7 +13,7 @@ import '../../hands.dart';
 import '../../history.dart';
 import '../../square_set.dart';
 import '../position.dart';
-import './shogi.dart';
+import 'shogi.dart';
 
 @immutable
 abstract class Minishogi extends Position {

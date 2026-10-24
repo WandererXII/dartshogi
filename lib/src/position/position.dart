@@ -19,7 +19,7 @@ import '../history.dart';
 import '../impasse.dart';
 import '../sfen.dart';
 import '../square_set.dart';
-import './utils.dart';
+import 'utils.dart';
 
 @immutable
 class Context {

@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import './file.dart';
-import './rank.dart';
+import 'file.dart';
+import 'rank.dart';
 
 /// A square of the shogi board.
 ///

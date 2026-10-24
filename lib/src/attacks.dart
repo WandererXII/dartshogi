@@ -1,8 +1,8 @@
-import './core/piece.dart';
-import './core/role.dart';
-import './core/side.dart';
-import './core/square.dart';
-import './square_set.dart';
+import 'core/piece.dart';
+import 'core/role.dart';
+import 'core/side.dart';
+import 'core/square.dart';
+import 'square_set.dart';
 
 SquareSet kingAttacks(Square square) {
   return _neighbors[square];

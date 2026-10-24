@@ -16,7 +16,7 @@ import '../../history.dart';
 import '../../square_set.dart';
 import '../position.dart';
 import '../utils.dart';
-import './shogi.dart';
+import 'shogi.dart';
 
 @immutable
 abstract class Annanshogi extends Position {

@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-import './game_result.dart';
-import './side.dart';
+import 'game_result.dart';
+import 'side.dart';
 
 @immutable
 class Outcome {

@@ -1,4 +1,4 @@
-import './core/rule.dart';
+import 'core/rule.dart';
 
 class Handicap {
   final Rule rule;

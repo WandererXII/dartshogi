@@ -1,20 +1,20 @@
 import 'package:result_dart/result_dart.dart';
 
-import './board.dart';
-import './core/exceptions.dart';
-import './core/file.dart';
-import './core/piece.dart';
-import './core/rank.dart';
-import './core/role.dart';
-import './core/rule.dart';
-import './core/setup.dart';
-import './core/side.dart';
-import './core/square.dart';
-import './hands.dart';
-import './history.dart';
-import './position/position.dart';
-import './position/setup.dart';
-import './position/utils.dart';
+import 'board.dart';
+import 'core/exceptions.dart';
+import 'core/file.dart';
+import 'core/piece.dart';
+import 'core/rank.dart';
+import 'core/role.dart';
+import 'core/rule.dart';
+import 'core/setup.dart';
+import 'core/side.dart';
+import 'core/square.dart';
+import 'hands.dart';
+import 'history.dart';
+import 'position/position.dart';
+import 'position/setup.dart';
+import 'position/utils.dart';
 
 String initialSfen(Rule rule) => switch (rule) {
   Rule.chushogi =>

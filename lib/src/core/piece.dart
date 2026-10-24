@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-import './role.dart';
-import './side.dart';
+import 'role.dart';
+import 'side.dart';
 
 @immutable
 class Piece {

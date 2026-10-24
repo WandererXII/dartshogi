@@ -31,18 +31,9 @@ void main() {
 
   group('Square', () {
     test('fromCoords', () {
-      expect(
-        Square.fromCoords(const File(0), const Rank(0)),
-        Square.parse('1a'),
-      );
-      expect(
-        Square.fromCoords(const File(2), const Rank(5)),
-        Square.parse('3f'),
-      );
-      expect(
-        Square.fromCoords(const File(15), const Rank(15)),
-        Square.parse('16p'),
-      );
+      expect(Square.fromCoords(File.file1, Rank.rankA), Square.parse('1a'));
+      expect(Square.fromCoords(File.file3, Rank.rankF), Square.parse('3f'));
+      expect(Square.fromCoords(File.file16, Rank.rankP), Square.parse('16p'));
     });
 
     test('parse', () {

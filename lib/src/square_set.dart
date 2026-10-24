@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import './core/square.dart';
+import 'core/square.dart';
 
 /// Bitboard represantion of the shogi board.
 ///

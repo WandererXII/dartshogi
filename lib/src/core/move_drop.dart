@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-import './role.dart';
-import './square.dart';
+import 'role.dart';
+import 'square.dart';
 
 @immutable
 sealed class MoveOrDrop {

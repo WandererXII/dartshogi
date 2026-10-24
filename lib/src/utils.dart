@@ -1,9 +1,9 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-import './core/piece.dart';
-import './core/square.dart';
-import './position/position.dart';
-import './position/rules/chushogi.dart';
+import 'core/piece.dart';
+import 'core/square.dart';
+import 'position/position.dart';
+import 'position/rules/chushogi.dart';
 
 IMap<Square, ISet<Square>> makeLegalMoves(Position pos) {
   final Map<Square, ISet<Square>> result = {};
