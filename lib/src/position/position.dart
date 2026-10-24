@@ -414,6 +414,7 @@ abstract class Position {
       if (midStep != null) {
         final midCapture = newBoard.pieceAt(midStep);
         if (midCapture != null) {
+          newBoard = newBoard.removePieceAt(midStep);
           if (!Role.lionRoles.contains(piece.role) &&
               midCapture.side == turn.opposite &&
               Role.lionRoles.contains(midCapture.role)) {

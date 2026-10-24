@@ -146,6 +146,49 @@ void main() {
     expect(pos5Alt3.isLegal(MoveOrDrop.parse('6l8j')!), isTrue);
   });
 
+  test('lion removes intermediate capture when returning to start', () {
+    final pos =
+        parseSfen(
+          Rule.chushogi,
+          'k11/12/12/12/12/6p5/6N5/12/12/12/12/11K b',
+        ).getOrThrow();
+    final from = Square.parse('6g')!;
+    final midStep = Square.parse('6f')!;
+    final moved = pos.play(MoveOrDrop.parse('6g6f6g')!).getOrThrow();
+
+    expect(moved.board.pieceAt(midStep), isNull);
+    expect(moved.board.pieceAt(from), pos.board.pieceAt(from));
+    expect(pos.board.pieceAt(midStep), isNotNull);
+  });
+
+  test('lion removes captures on both steps', () {
+    final pos =
+        parseSfen(
+          Rule.chushogi,
+          'k11/12/12/12/6p5/6p5/6N5/12/12/12/12/11K b',
+        ).getOrThrow();
+    final from = Square.parse('6g')!;
+    final moved = pos.play(MoveOrDrop.parse('6g6f6e')!).getOrThrow();
+
+    expect(moved.board.pieceAt(from), isNull);
+    expect(moved.board.pieceAt(Square.parse('6f')!), isNull);
+    expect(moved.board.pieceAt(Square.parse('6e')!), pos.board.pieceAt(from));
+    expect(moved.board.bySide(Side.gote).size, equals(1));
+  });
+
+  test('lion captures king on intermediate square', () {
+    final pos =
+        parseSfen(
+          Rule.chushogi,
+          'p11/12/12/12/12/6k5/6N5/12/12/12/12/11K b',
+        ).getOrThrow();
+    final moved = pos.play(MoveOrDrop.parse('6g6f6g')!).getOrThrow();
+
+    expect(moved.board.pieceAt(Square.parse('6f')!), isNull);
+    expect(moved.outcome()?.result, equals(GameResult.kingsLost));
+    expect(moved.outcome()?.winner, equals(Side.sente));
+  });
+
   test('wiki lion moves and more', () {
     final pos =
         parseSfen(
