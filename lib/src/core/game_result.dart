@@ -7,4 +7,6 @@ enum GameResult {
   tryRule,
   impasse27,
   check,
+  repetition,
+  perpetualCheck,
 }

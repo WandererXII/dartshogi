@@ -288,16 +288,19 @@ abstract class Chushogi extends Position {
         result: GameResult.kingsLost,
         winner: context.side.opposite,
       );
+    } else if (_isBareKing(Side.sente)) {
+      return const Outcome(result: GameResult.bareKing, winner: Side.gote);
+    } else if (_isBareKing(Side.gote)) {
+      return const Outcome(result: GameResult.bareKing, winner: Side.sente);
     } else if (!hasDests(context)) {
       return Outcome(
         result: GameResult.stalemate,
         winner: context.side.opposite,
       );
-    } else if (_isBareKing(Side.sente)) {
-      return const Outcome(result: GameResult.bareKing, winner: Side.gote);
-    } else if (_isBareKing(Side.gote)) {
-      return const Outcome(result: GameResult.bareKing, winner: Side.sente);
-    } else if (_isDraw()) {
+    }
+    final repetition = repetitionOutcome();
+    if (repetition != null) return repetition;
+    if (_isDraw()) {
       return const Outcome(result: GameResult.draw, winner: null);
     }
     return null;

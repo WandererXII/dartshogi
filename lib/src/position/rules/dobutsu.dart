@@ -39,6 +39,13 @@ abstract class Dobutsu extends Position {
   @override
   Rule get rule => Rule.dobutsu;
 
+  // Three occurrences draw, including repetition with continuous attacks.
+  @override
+  Outcome? repetitionOutcome() =>
+      history.threefoldRepetition
+          ? const Outcome(result: GameResult.repetition, winner: null)
+          : null;
+
   @useResult
   static Result<Dobutsu> fromSetup(Setup s, {bool strict = false}) =>
       Position.fromSetupBase(s, Dobutsu.new, strict: strict);
@@ -139,7 +146,7 @@ abstract class Dobutsu extends Position {
       return Outcome(result: GameResult.stalemate, winner: ctx.side.opposite);
     }
 
-    return null;
+    return repetitionOutcome();
   }
 }
 

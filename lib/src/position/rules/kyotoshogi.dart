@@ -3,7 +3,9 @@ import 'package:result_dart/result_dart.dart';
 
 import '../../attacks.dart';
 import '../../board.dart';
+import '../../core/game_result.dart';
 import '../../core/move_drop.dart';
+import '../../core/outcome.dart';
 import '../../core/piece.dart';
 import '../../core/role.dart';
 import '../../core/rule.dart';
@@ -37,6 +39,13 @@ abstract class Kyotoshogi extends Position {
 
   @override
   Rule get rule => Rule.kyotoshogi;
+
+  // Three occurrences draw, including repetition with continuous attacks.
+  @override
+  Outcome? repetitionOutcome() =>
+      history.threefoldRepetition
+          ? const Outcome(result: GameResult.repetition, winner: null)
+          : null;
 
   @useResult
   static Result<Kyotoshogi> fromSetup(Setup s, {bool strict = false}) =>

@@ -3,6 +3,8 @@ import 'package:result_dart/result_dart.dart';
 
 import '../../attacks.dart';
 import '../../board.dart';
+import '../../core/game_result.dart';
+import '../../core/outcome.dart';
 import '../../core/piece.dart';
 import '../../core/role.dart';
 import '../../core/rule.dart';
@@ -35,6 +37,21 @@ abstract class Minishogi extends Position {
 
   @override
   Rule get rule => Rule.minishogi;
+
+  @override
+  Outcome? repetitionOutcome() {
+    final outcome = super.repetitionOutcome();
+    if (outcome?.result != GameResult.repetition) return outcome;
+
+    // Quiet repetition awards the win to the initial second player.
+    final fields = history.initialSfen?.split(' ');
+    final initialSide =
+        fields != null && fields.length > 1 ? Side.fromLetter(fields[1]) : null;
+    return Outcome(
+      result: GameResult.repetition,
+      winner: initialSide?.opposite ?? Side.gote,
+    );
+  }
 
   @useResult
   static Result<Minishogi> fromSetup(Setup s, {bool strict = false}) =>

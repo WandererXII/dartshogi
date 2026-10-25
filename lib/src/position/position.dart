@@ -274,6 +274,13 @@ abstract class Position {
         winner: c.side.opposite,
       );
     }
+    if (isImpasse(this)) {
+      return Outcome(result: GameResult.impasse27, winner: turn);
+    }
+
+    final repetition = repetitionOutcome();
+    if (repetition != null) return repetition;
+
     final totalSente =
         board.bySide(Side.sente).size + hands.side(Side.sente).count;
     final totalGote =
@@ -282,11 +289,23 @@ abstract class Position {
       return const Outcome(result: GameResult.draw, winner: null);
     }
 
-    if (isImpasse(this)) {
-      return Outcome(result: GameResult.impasse27, winner: turn);
+    return null;
+  }
+
+  /// Default fourfold repetition rule, with a loss for continuous attacks.
+  @protected
+  Outcome? repetitionOutcome() {
+    if (!history.fourfoldRepetition) return null;
+
+    final attacker = history.perpetualCheckAttacker;
+    if (attacker != null) {
+      return Outcome(
+        result: GameResult.perpetualCheck,
+        winner: attacker.opposite,
+      );
     }
 
-    return null;
+    return const Outcome(result: GameResult.repetition, winner: null);
   }
 
   Map<Square, SquareSet> allMoveDests([Context? ctx]) {
