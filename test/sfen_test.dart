@@ -14,6 +14,15 @@ void main() {
     expect(makeBoardSfen(Rule.shogi, Board.empty), equals('9/9/9/9/9/9/9/9/9'));
   });
 
+  test('truncated hand counts return a hands failure', () {
+    const expected = Failure(SfenException(IllegalSfenCause.hands));
+    for (final handsPart in ['1', '12', 'P12']) {
+      expect(parseHandsSfen(Rule.shogi, handsPart), expected);
+    }
+    final sfen = initialSfen(Rule.shogi).replaceFirst(' b - ', ' b 12 ');
+    expect(parseSfen(Rule.shogi, sfen), expected);
+  });
+
   test('parse initial sfen', () {
     final pos =
         parseSfen(

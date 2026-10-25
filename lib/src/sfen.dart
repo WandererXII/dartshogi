@@ -140,6 +140,9 @@ Result<Hands> parseHandsSfen(Rule rule, String handsPart) {
       count = 1;
     }
 
+    if (i >= handsPart.length) {
+      return const Failure(SfenException(IllegalSfenCause.hands));
+    }
     Piece? piece = forsythToPiece(rule)(handsPart[i]);
     if (piece == null) {
       return const Failure(SfenException(IllegalSfenCause.hands));
