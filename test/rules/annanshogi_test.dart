@@ -299,6 +299,46 @@ void main() {
     expect(perft(pos2, 1), equals(10));
   });
 
+  test('capture cannot restore a sliding attack while vacating its line', () {
+    for (final (sfen, usi) in [
+      ('9/7k1/4K4/9/1g+B6/1b7/9/9/9 b - 1', '7e8e'),
+      ('9/9/9/7B1/6+bG1/9/4k4/1K7/9 w - 1', '3e2e'),
+      ('9/7k1/9/9/1g7/1r+B1K4/9/9/9 b - 1', '7f8e'),
+    ]) {
+      final pos = parseSfen(Rule.annanshogi, sfen).getOrThrow();
+      final move = MoveOrDrop.parse(usi)! as NormalMove;
+      expect(pos.isCheck(pos.turn), isFalse, reason: sfen);
+      expect(pos.playUnchecked(move).isCheck(pos.turn), isTrue, reason: sfen);
+      expect(pos.moveDests(move.from).has(move.to), isFalse, reason: sfen);
+      expect(pos.isLegal(move), isFalse, reason: sfen);
+      expect(pos.play(move).isSuccess(), isFalse, reason: sfen);
+    }
+  });
+
+  test('capture cannot restore a lance attack on its own king', () {
+    final pos =
+        parseSfen(
+          Rule.annanshogi,
+          '9/7k1/9/9/1g7/1l+B6/9/9/1K7 b - 1',
+        ).getOrThrow();
+    final move = MoveOrDrop.parse('7f8e')!;
+    expect(pos.isCheck(pos.turn), isFalse);
+    expect(pos.playUnchecked(move).isCheck(pos.turn), isTrue);
+    expect(pos.isLegal(move), isFalse);
+    expect(pos.play(move).isSuccess(), isFalse);
+  });
+
+  test('capture may restore a sliding attack when its line stays blocked', () {
+    final pos =
+        parseSfen(
+          Rule.annanshogi,
+          '9/7k1/4K4/3P5/1g+B6/1b7/9/9/9 b - 1',
+        ).getOrThrow();
+    final move = MoveOrDrop.parse('7e8e')!;
+    expect(pos.isLegal(move), isTrue);
+    expect(pos.play(move).getOrThrow().isCheck(pos.turn), isFalse);
+  });
+
   test('allow moving/capturing square behind attacker with king', () {
     final pos =
         parseSfen(

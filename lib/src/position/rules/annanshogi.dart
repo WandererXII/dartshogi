@@ -167,6 +167,23 @@ abstract class Annanshogi extends Position {
           }
           pseudo = rayed;
         }
+
+        // A capture can restore an enemy's sliding movement while the mover
+        // vacates its line, escaping both the attacker and blocker shortcuts.
+        for (final to
+            in pseudo.intersect(board.bySide(context.side.opposite)).squares) {
+          final boardClone = board
+              .removePieceAt(square)
+              .setPieceAt(to, realPiece);
+          if (standardSquareAttackers(
+            king,
+            context.side.opposite,
+            _annanAttackBoard(boardClone),
+            boardClone.occupied,
+          ).isNotEmpty) {
+            pseudo = pseudo.withoutSquare(to);
+          }
+        }
       }
     }
 
