@@ -313,6 +313,8 @@ abstract class Chushogi extends Position {
     if (midStep == null) {
       return super.isLegal(md, ctx);
     }
+    // None of the roles with two-step moves can promote.
+    if (md.promotion == true) return false;
     return super.isLegal(NormalMove(from: md.from, to: midStep), ctx) &&
         secondLionStepDests(md.from, midStep).has(md.to);
   }

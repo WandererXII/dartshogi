@@ -20,6 +20,16 @@ const _soloPiecePerfts = [
 ];
 
 void main() {
+  test('two-step lion moves reject promotion', () {
+    final pos =
+        parseSfen(
+          Rule.chushogi,
+          'k11/12/12/12/12/12/6N5/12/12/12/12/11K b - 1',
+        ).getOrThrow();
+    expect(pos.isLegal(MoveOrDrop.parse('6g6f6e')!), isTrue);
+    expect(pos.isLegal(MoveOrDrop.parse('6g6f6e+')!), isFalse);
+  });
+
   test('valid promotions', () {
     final pos =
         parseSfen(
