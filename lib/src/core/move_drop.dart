@@ -86,7 +86,7 @@ class NormalMove extends MoveOrDrop {
   Iterable<Square> get squares => [from, to];
 
   NormalMove withPromotion(bool promotion) =>
-      NormalMove(from: from, to: to, promotion: promotion);
+      NormalMove(from: from, to: to, promotion: promotion, midStep: midStep);
 
   NormalMove withMidStep(Square? sq) =>
       NormalMove(from: from, to: to, promotion: promotion, midStep: sq);

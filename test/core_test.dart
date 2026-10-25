@@ -64,6 +64,12 @@ void main() {
   });
 
   group('Move', () {
+    test('withPromotion', () {
+      final move = MoveOrDrop.parse('5e5d5e')! as NormalMove;
+      expect(move.withPromotion(false), move);
+      expect(move.withPromotion(true).usi, '5e5d5e+');
+    });
+
     test('parse', () {
       expect(
         MoveOrDrop.parse('1a1b'),
