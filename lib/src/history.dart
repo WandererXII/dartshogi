@@ -17,7 +17,11 @@ class History {
 
   final String? initialSfen;
 
-  /// Full SFEN positions history.
+  /// Full SFEN positions, oldest first.
+  /// The first reversible move records its preceding position as well.
+  /// Irreversible moves discard earlier repetition entries.
+  /// Repetition identity excludes the move number but retains the board, side,
+  /// and hands (or the Chu anti-recapture square).
   final IList<String> positions;
 
   final ConsecutiveAttacks consecutiveAttacks;
@@ -32,11 +36,17 @@ class History {
   IList<String> get _currentTurnPositions {
     final result = <String>[];
 
-    for (int i = 0; i < positions.length; i += 2) {
-      result.add(positions[i]);
+    for (int i = positions.length - 1; i >= 0; i -= 2) {
+      result.add(_repetitionKey(positions[i]));
     }
 
     return IList(result);
+  }
+
+  // Full SFEN has four fields. Keep opaque keys supported by addPosition.
+  static String _repetitionKey(String position) {
+    final fields = position.split(' ');
+    return fields.length == 4 ? fields.take(3).join(' ') : position;
   }
 
   @useResult
@@ -45,16 +55,10 @@ class History {
   }
 
   bool isRepetition(int times) {
-    final requiredLength = (times - 1) * 4 + 1;
-
-    if (positions.length < requiredLength) {
-      return false;
-    }
-
     final currentPositions = _currentTurnPositions;
 
     if (currentPositions.isEmpty) {
-      return times <= 1;
+      return false;
     }
 
     final current = currentPositions.first;
@@ -64,7 +68,7 @@ class History {
   }
 
   /// number of moves/drops each player made
-  /// since the repeated position first occurred
+  /// since the current position first occurred
   int? get firstRepetitionDistance {
     final currentPositions = _currentTurnPositions;
 

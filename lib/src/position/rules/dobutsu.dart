@@ -4,6 +4,7 @@ import 'package:result_dart/result_dart.dart';
 import '../../attacks.dart';
 import '../../board.dart';
 import '../../core/game_result.dart';
+import '../../core/move_drop.dart';
 import '../../core/outcome.dart';
 import '../../core/piece.dart';
 import '../../core/role.dart';
@@ -49,6 +50,9 @@ abstract class Dobutsu extends Position {
     unpromotedForcedPromotion: false,
     maxNumberOfRoyalPieces: 1,
   );
+
+  @override
+  bool isAttacking(MoveOrDrop md) => false;
 
   @override
   SquareSet squareAttackers(Square square, Side attacker, SquareSet occupied) {

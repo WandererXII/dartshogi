@@ -44,6 +44,21 @@ abstract class Chushogi extends Position {
       Position.fromSetupBase(s, Chushogi.new, strict: strict);
 
   @override
+  bool isIrreversible(Position after, MoveOrDrop md) =>
+      md is NormalMove &&
+      (md.promotion ||
+          [Role.pawn, Role.lance].contains(after.board.pieceAt(md.to)?.role) ||
+          board.occupied.size != after.board.occupied.size);
+
+  @override
+  bool isAttacking(MoveOrDrop md) {
+    if (isCheck()) return true;
+    if (md is! NormalMove) return false;
+    final attacker = copyWith(turn: turn.opposite);
+    return attacker.moveDests(md.to).intersect(board.bySide(turn)).isNotEmpty;
+  }
+
+  @override
   PositionValidation get validation => const PositionValidation(
     doublePawn: false,
     oppositeCheck: false,

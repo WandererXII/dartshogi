@@ -375,11 +375,7 @@ abstract class Position {
         moveNumber: moveNumber + 1,
       );
 
-      final newHistory = history
-          .addPosition(makeSfen(pos))
-          .copyWith(lastMoveOrDrop: md, lastLionCapture: null);
-
-      return pos.copyWith(history: newHistory);
+      return _recordMoveOrDrop(pos, md, null);
     } else if (md is NormalMove) {
       final piece = board.pieceAt(md.from);
       // return the position thing for nonsense moves.
@@ -441,11 +437,42 @@ abstract class Position {
       moveNumber: moveNumber + 1,
     );
 
-    final newHistory = history
-        .addPosition(makeSfen(pos))
-        .copyWith(lastMoveOrDrop: md, lastLionCapture: newLastLionCapture);
+    return _recordMoveOrDrop(pos, md, newLastLionCapture);
+  }
 
-    return pos.copyWith(history: newHistory);
+  /// Whether this move makes positions before it impossible to repeat.
+  bool isIrreversible(Position after, MoveOrDrop md) => false;
+
+  /// Whether the last move attacks in the sense used for perpetual check.
+  /// Called on the resulting position, with the opponent to move.
+  bool isAttacking(MoveOrDrop md) => isCheck();
+
+  Position _recordMoveOrDrop(
+    Position pos,
+    MoveOrDrop md,
+    Square? lastLionCapture,
+  ) {
+    final base =
+        isIrreversible(pos, md)
+            ? history.copyWith(positions: History.empty.positions)
+            : history.positions.isEmpty
+            ? history.addPosition(makeSfen(this))
+            : history;
+    final next = pos.copyWith(
+      history: base.copyWith(
+        lastMoveOrDrop: md,
+        lastLionCapture: lastLionCapture,
+      ),
+    );
+    final attacks =
+        next.isAttacking(md)
+            ? history.consecutiveAttacks.add(turn)
+            : history.consecutiveAttacks.reset(turn);
+    return next.copyWith(
+      history: next.history
+          .addPosition(makeSfen(next))
+          .copyWith(consecutiveAttacks: attacks),
+    );
   }
 
   @useResult

@@ -3,6 +3,7 @@ import 'package:result_dart/result_dart.dart';
 
 import '../../board.dart';
 import '../../core/game_result.dart';
+import '../../core/move_drop.dart';
 import '../../core/outcome.dart';
 import '../../core/piece.dart';
 import '../../core/rule.dart';
@@ -39,6 +40,9 @@ abstract class Checkshogi extends Position {
   @useResult
   static Result<Checkshogi> fromSetup(Setup s, {bool strict = false}) =>
       Position.fromSetupBase(s, Checkshogi.new, strict: strict);
+
+  @override
+  bool isAttacking(MoveOrDrop md) => false;
 
   @override
   SquareSet squareAttackers(Square square, Side attacker, SquareSet occupied) {
