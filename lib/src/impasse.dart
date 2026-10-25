@@ -64,21 +64,22 @@ int impasseValueOf(Role role) {
 
 int missingImpassePoints(Position position) {
   final initialSfen = position.history.initialSfen;
-  final newPosition = parseSfen(Rule.shogi, initialSfen!).getOrThrow();
-
-  if (!Handicap.isHandicap(sfen: initialSfen, rule: position.rule)) {
+  if (initialSfen == null ||
+      !Handicap.isHandicap(sfen: initialSfen, rule: position.rule)) {
     return 0;
   }
+  final initialPosition = parseSfen(Rule.shogi, initialSfen).getOrNull();
+  if (initialPosition == null) return 0;
   final totalPoints =
-      newPosition.board.pieces.fold(
+      initialPosition.board.pieces.fold(
         0,
         (sum, entry) => sum + impasseValueOf(entry.$2.role),
       ) +
-      newPosition.hands.sente.handMap.entries.fold(
+      initialPosition.hands.sente.handMap.entries.fold(
         0,
         (sum, r) => sum + impasseValueOf(r.key) * r.value,
       ) +
-      newPosition.hands.gote.handMap.entries.fold(
+      initialPosition.hands.gote.handMap.entries.fold(
         0,
         (sum, r) => sum + impasseValueOf(r.key) * r.value,
       );

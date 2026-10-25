@@ -4,6 +4,51 @@ import 'package:test/test.dart';
 void main() {
   group('IsImpasse', () {
     group('Standard', () {
+      test('invalid move number in initial handicap SFEN', () {
+        const initialSfen =
+            'lnsgkgsnl/9/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - invalid';
+        final parsed =
+            parseSfen(
+              Rule.shogi,
+              '9/9/9/9/9/9/3r1lllg/+P+P1+bkssgg/K+P4ssg w r 2',
+            ).getOrThrow();
+        final position = parsed.copyWith(
+          history: parsed.history.copyWith(initialSfen: initialSfen),
+        );
+
+        expect(Handicap.isHandicap(sfen: initialSfen, rule: Rule.shogi), true);
+        expect(parseSfen(Rule.shogi, initialSfen).isError(), true);
+        expect(position.outcome(), isNull);
+        expect(isImpasse(position), false);
+        expect(missingImpassePoints(position), 0);
+      });
+      group('Without initial SFEN', () {
+        test('26 points for gote', () {
+          final position =
+              parseSfen(
+                Rule.shogi,
+                '9/9/9/9/9/9/3r1lllg/+P+P1+bkssgg/K+P4ssg w r 2',
+              ).getOrThrow();
+
+          expect(position.history.initialSfen, isNull);
+          expect(position.outcome(), isNull);
+          expect(isImpasse(position), false);
+          expect(missingImpassePoints(position), 0);
+        });
+
+        test('27 points for gote', () {
+          final position =
+              parseSfen(
+                Rule.shogi,
+                '9/9/9/9/9/9/3r1llll/+P+P1+bkssgg/K+P3ssgg w r 2',
+              ).getOrThrow();
+
+          expect(position.history.initialSfen, isNull);
+          expect(position.outcome()!.winner, Side.gote);
+          expect(isImpasse(position), true);
+          expect(missingImpassePoints(position), 0);
+        });
+      });
       group('Not be enough', () {
         test('starting position', () {
           final result = parseSfen(
