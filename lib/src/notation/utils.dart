@@ -351,14 +351,15 @@ int? parseJapaneseSquare(String str) {
   final fileOffset =
       str.length == 2 || (str.length == 3 && str[1] == '十') ? 1 : 2;
   final file =
-      int.tryParse(
-        str.substring(0, fileOffset).split('').map((c) {
-          return c.codeUnitAt(0) >= 0xfee0 + 48
-              ? String.fromCharCode(c.codeUnitAt(0) - 0xfee0)
-              : c;
-        }).join(),
-      ) ??
-      -1 - 1;
+      (int.tryParse(
+            str.substring(0, fileOffset).split('').map((c) {
+              return c.codeUnitAt(0) >= 0xfee0 + 48
+                  ? String.fromCharCode(c.codeUnitAt(0) - 0xfee0)
+                  : c;
+            }).join(),
+          ) ??
+          -1) -
+      1;
   final rank = kanjiToNumber(str.substring(fileOffset)) - 1;
   if (file < 0 || file >= 16 || rank < 0 || rank >= 16) return null;
   return file + 16 * rank;
