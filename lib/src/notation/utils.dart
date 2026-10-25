@@ -327,9 +327,10 @@ String makeNumberSquare(Square sq) {
 
 int? parseNumberSquare(String str) {
   if (str.length != 2) return null;
-  final file = str.codeUnitAt(0) - '1'.codeUnitAt(0);
-  final rank = str.codeUnitAt(1) - '1'.codeUnitAt(0);
-  if (file < 0 || file >= 16 || rank < 0 || rank >= 16) return null;
+  const coordinates = '123456789abcdefg';
+  final file = coordinates.indexOf(str[0]);
+  final rank = coordinates.indexOf(str[1]);
+  if (file < 0 || rank < 0) return null;
   return file + 16 * rank;
 }
 

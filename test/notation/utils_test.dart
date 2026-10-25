@@ -2,6 +2,41 @@ import 'package:dartshogi/dartshogi.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('all numeric squares round-trip', () {
+    for (var value = 0; value < 256; value++) {
+      final notation = makeNumberSquare(Square(value));
+      expect(parseNumberSquare(notation), value, reason: notation);
+    }
+  });
+
+  test('numeric squares decode digit and letter coordinates', () {
+    for (final entry
+        in {
+          '11': 0,
+          '76': 86,
+          '99': 136,
+          'a1': 9,
+          '1a': 144,
+          'bb': 170,
+          'cc': 187,
+          'g9': 143,
+          '9g': 248,
+          'gg': 255,
+        }.entries) {
+      expect(parseNumberSquare(entry.key), entry.value, reason: entry.key);
+    }
+  });
+
+  test('numeric squares reject invalid coordinates and lengths', () {
+    for (final character in '0:;<=>?@hHzAG'.split('')) {
+      expect(parseNumberSquare('${character}1'), isNull, reason: character);
+      expect(parseNumberSquare('1$character'), isNull, reason: character);
+    }
+    for (final notation in ['', '1', '111', 'a11', ' 11', '11 ', '１１']) {
+      expect(parseNumberSquare(notation), isNull, reason: notation);
+    }
+  });
+
   test('all Japanese squares round-trip in full and half width', () {
     for (var value = 0; value < 256; value++) {
       final square = Square(value);
