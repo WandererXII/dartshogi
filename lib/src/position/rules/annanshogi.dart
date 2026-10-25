@@ -218,7 +218,9 @@ abstract class Annanshogi extends Position {
       if (oppKing != null) {
         final kingFront = oppKing.offset(context.side == Side.sente ? 16 : -16);
         if (kingFront != null && mask.has(kingFront)) {
-          final child = playUnchecked(DropMove(role: Role.pawn, to: kingFront));
+          final child = copyWith(
+            turn: context.side,
+          ).playUnchecked(DropMove(role: Role.pawn, to: kingFront));
           final childResult = child.outcome()?.result;
           if (childResult == GameResult.checkmate ||
               childResult == GameResult.stalemate) {

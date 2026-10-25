@@ -250,9 +250,9 @@ SquareSet standardDropDests(Position pos, Piece piece, [Context? ctx]) {
     if (enemyKing != null) {
       final kingFront = enemyKing.offset(ctx.side == Side.sente ? 16 : -16);
       if (kingFront != null && mask.has(kingFront)) {
-        final child = pos.playUnchecked(
-          DropMove(role: Role.pawn, to: kingFront),
-        );
+        final child = pos
+            .copyWith(turn: ctx.side)
+            .playUnchecked(DropMove(role: Role.pawn, to: kingFront));
         if (child.outcome()?.result == GameResult.checkmate) {
           mask = mask.withoutSquare(kingFront);
         }

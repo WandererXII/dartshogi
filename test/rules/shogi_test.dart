@@ -250,6 +250,33 @@ void main() {
     expect(skPos.isLegal(MoveOrDrop.parse('P*5b')!), isFalse);
   });
 
+  test('pawn-drop mate uses the context side', () {
+    for (final (rule, sfen, target, defender) in [
+      (Rule.shogi, '3rkr3/9/4G4/9/9/9/9/9/K8 b Pp', '5b', '5c'),
+      (Rule.shogi, '8k/9/9/9/9/9/4g4/9/3RKR3 w Pp', '5h', '5g'),
+      (Rule.minishogi, '1rkr1/5/2G2/5/K4 b Pp', '3b', '3c'),
+      (Rule.minishogi, '4k/5/2g2/5/1RKR1 w Pp', '3d', '3c'),
+      (Rule.annanshogi, '4k4/9/4G4/9/9/9/9/9/K8 b Pp', '5b', '5c'),
+      (Rule.annanshogi, '8k/9/9/9/9/9/4g4/9/4K4 w Pp', '5h', '5g'),
+    ]) {
+      final mate = parseSfen(rule, sfen).getOrThrow();
+      final drop = DropMove(role: Role.pawn, to: Square.parse(target)!);
+      // Removing the defending gold lets the king capture the checking pawn.
+      final escapable = mate.copyWith(
+        board: mate.board.removePieceAt(Square.parse(defender)!),
+      );
+      for (final (pos, legal) in [(mate, false), (escapable, true)]) {
+        expect(pos.isLegal(drop), legal, reason: sfen);
+        final analysis = pos.copyWith(turn: pos.turn.opposite);
+        expect(
+          analysis.isLegal(drop, analysis.makeCtx(pos.turn)),
+          legal,
+          reason: sfen,
+        );
+      }
+    }
+  });
+
   test('multiple checkers', () {
     final pos =
         parseSfen(Rule.shogi, '9/9/2B3B2/9/4k4/9/2B3B2/9/8K w').getOrThrow();
