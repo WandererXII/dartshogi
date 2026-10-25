@@ -408,6 +408,8 @@ extension type const SquareSet(Uint32List value) {
     }
   }
 
+  int get contentHashCode => Object.hashAll(value);
+
   bool equals(SquareSet other) {
     if (value.length != other.value.length) return false;
     for (var i = 0; i < value.length; i++) {

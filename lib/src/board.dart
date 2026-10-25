@@ -138,20 +138,34 @@ class Board {
     );
   }
 
-  // Helper to ensure we don't store empty squares.
+  // Ignore empty role entries when comparing and hashing boards.
   static IMap<Role, SquareSet> _clean(IMap<Role, SquareSet> map) =>
       map.removeWhere((_, sqs) => sqs.isEmpty);
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) ||
-        other is Board &&
-            other.occupied.equals(occupied) &&
-            other.sente.equals(sente) &&
-            other.gote.equals(gote) &&
-            _clean(other.roles) == _clean(roles);
+    if (identical(this, other)) return true;
+    if (other is! Board) return false;
+    final ownRoles = _clean(roles);
+    final otherRoles = _clean(other.roles);
+    return other.occupied.equals(occupied) &&
+        other.sente.equals(sente) &&
+        other.gote.equals(gote) &&
+        ownRoles.length == otherRoles.length &&
+        ownRoles.entries.every(
+          (entry) => entry.value.equals(other.byRole(entry.key)),
+        );
   }
 
   @override
-  int get hashCode => Object.hash(occupied, sente, gote, _clean(roles));
+  int get hashCode => Object.hash(
+    occupied.contentHashCode,
+    sente.contentHashCode,
+    gote.contentHashCode,
+    Object.hashAllUnordered(
+      _clean(roles).entries.map(
+        (entry) => Object.hash(entry.key, entry.value.contentHashCode),
+      ),
+    ),
+  );
 }
