@@ -71,7 +71,7 @@ abstract class Checkshogi extends Position {
     if (ctx.checkers.isNotEmpty) {
       return Outcome(result: GameResult.check, winner: ctx.side.opposite);
     } else {
-      return super.outcome();
+      return super.outcome(ctx);
     }
   }
 }
