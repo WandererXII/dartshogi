@@ -178,13 +178,10 @@ extension type SquareSet._internal(Uint32List value) {
     final newRows = List<int>.from(value);
 
     for (int i = 0; i < 8; i++) {
-      final otherWithC = _toUint32(other.value[i] + c);
-      newRows[i] = _toUint32(newRows[i] - otherWithC);
-      c =
-          ((newRows[i] & otherWithC & 1) +
-              (otherWithC >>> 1) +
-              (newRows[i] >>> 1)) >>>
-          31;
+      final otherWithC = other.value[i] + c;
+      final row = newRows[i];
+      newRows[i] = _toUint32(row - otherWithC);
+      c = row < otherWithC ? 1 : 0;
     }
     return SquareSet.fromList(newRows);
   }

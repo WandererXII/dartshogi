@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dartshogi/dartshogi.dart';
@@ -1082,6 +1083,47 @@ void main() {
         SquareSet.fromList(random2).rbit256(),
         equals(SquareSet.fromList(reversed2)),
       );
+    });
+
+    test('subtraction matches modulo 2^256 arithmetic', () {
+      final mask = (BigInt.one << 256) - BigInt.one;
+      BigInt asBigInt(SquareSet set) {
+        var result = BigInt.zero;
+        for (var i = 7; i >= 0; i--) {
+          result = (result << 32) | BigInt.from(set.value[i]);
+        }
+        return result;
+      }
+
+      void check(SquareSet left, SquareSet right) {
+        final expected = (asBigInt(left) - asBigInt(right)) & mask;
+        expect(asBigInt(left.minus256(right)), expected);
+        expect(asBigInt(left - right), expected);
+      }
+
+      for (var length = 1; length < 8; length++) {
+        final words = List<int>.filled(8, 0);
+        words[0] = 1;
+        for (var i = 1; i <= length; i++) {
+          words[i] = 0xffffffff;
+        }
+        check(SquareSet.empty, SquareSet.fromList(words));
+      }
+      for (final left in [SquareSet.empty, SquareSet.full]) {
+        for (final right in [SquareSet.empty, SquareSet.full]) {
+          check(left, right);
+        }
+      }
+      final random = Random(1729);
+      SquareSet randomSet() => SquareSet.fromList(
+        List.generate(
+          8,
+          (_) => random.nextInt(0x10000) * 0x10000 + random.nextInt(0x10000),
+        ),
+      );
+      for (var i = 0; i < 200; i++) {
+        check(randomSet(), randomSet());
+      }
     });
 
     test('minus256', () {
