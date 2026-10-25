@@ -1,8 +1,37 @@
+import 'dart:typed_data';
+
 import 'package:dartshogi/dartshogi.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('SquareSet', () {
+    test('public constructor copies and protects its input', () {
+      final rows = Uint32List(8)..[0] = 1;
+      final squares = SquareSet(rows);
+      rows[0] = 0;
+      expect(squares.squares.toList(), [0]);
+      expect(() => squares.value[0] = 0, throwsUnsupportedError);
+    });
+
+    test('position and cached attack storage reject mutation', () {
+      final position =
+          parseSfen(Rule.shogi, initialSfen(Rule.shogi)).getOrThrow();
+      expect(
+        () => position.board.occupied.value.fillRange(0, 8, 0),
+        throwsUnsupportedError,
+      );
+      expect(position.board.occupied.size, 40);
+      expect(position.board.sente.size, 20);
+
+      final attacks = kingAttacks(const Square(17));
+      final before = attacks.value.toList();
+      expect(
+        () => attacks.value.buffer.asUint32List()[0] = 0,
+        throwsUnsupportedError,
+      );
+      expect(kingAttacks(const Square(17)).value, before);
+    });
+
     test('full set has all', () {
       for (int square = 0; square < 256; square++) {
         expect(SquareSet.full.has(square), isTrue);

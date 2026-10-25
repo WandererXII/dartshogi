@@ -7,15 +7,17 @@ import 'core/square.dart';
 /// Coordination system starts at top right.
 /// Assumes POV of sente player - up is smaller rank, down is greater rank, left is smaller file, right is greater file.
 /// Each element represents two ranks - board max size 16x16.
-extension type const SquareSet(Uint32List value) {
-  SquareSet._internal(Uint32List dRows) : value = dRows;
+/// Storage is owned by the set and exposed as an unmodifiable view.
+extension type SquareSet._internal(Uint32List value) {
+  SquareSet(Uint32List dRows)
+    : value = Uint32List.fromList(dRows).asUnmodifiableView();
 
   factory SquareSet.fromList(List<int> dRows) {
     final list = Uint32List(8);
     for (int i = 0; i < 8; i++) {
       list[i] = _toUint32(dRows[i]);
     }
-    return SquareSet._internal(list);
+    return SquareSet._internal(list.asUnmodifiableView());
   }
 
   factory SquareSet.fromSquare(int square) {
