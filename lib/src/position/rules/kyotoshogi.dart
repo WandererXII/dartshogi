@@ -162,7 +162,7 @@ abstract class Kyotoshogi extends Position {
         return false;
       }
 
-      return dropDests(Piece(side: turn, role: md.role), ctx).has(md.to);
+      return dropDests(Piece(side: side, role: md.role), ctx).has(md.to);
     } else {
       return super.isLegal(md, ctx);
     }
